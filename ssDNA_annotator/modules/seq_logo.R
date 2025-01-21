@@ -7,6 +7,7 @@ require(Biostrings, quietly = TRUE)
 args <- commandArgs(trailingOnly = TRUE)
 
 arg_list <- list(
+    fasta_file = NULL,
     seq_df = NULL,
     plot_title = 'sequence_logo',
     output_dir = "./",
@@ -24,13 +25,9 @@ for (arg in args) {
   }
 }
 
-# Check for required arguments
-if (is.null(arg_list$seq_df)) {
-  stop("Error: --motif_df is a required argument.")
-}
-
 # Assign arguments to variables
-path1 <- arg_list$seq_df
+fasta_file <- arg_list$fasta_file
+seq_df <- arg_list$seq_df
 plot_title <- arg_list$plot_title
 output_dir <- arg_list$output_dir
 output_name <- arg_list$output_name
@@ -45,19 +42,23 @@ if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 
-# get the args
-df_loc = read.delim(path1, sep = "\t")
-motifs = df_loc$matched
-# check if all the sequences have the same length
-# if not, performe the aligment
-if(length(unique(motifs)) == 1){
-  return(motifs)
+# Read input sequences
+if (!is.null(fasta_file) && file.exists(fasta_file)) {
+  seqs <- readBStringSet(fasta_file)
+} else if (!is.null(seq_df) && file.exists(seq_df)) {
+  df_loc <- read.delim(seq_df, sep = "\t")
+  seqs <- DNAStringSet(df_loc$matched)
 } else {
-  seqs = DNAStringSet(motifs)
-  # Perform multiple sequence alignment
-  aligned <- AlignSeqs(seqs)
-  motifs = as.character(aligned)
+  stop("Error: Either --fasta_file or --seq_df must be provided.")
 }
+
+# Align sequences if necessary
+if (length(unique(width(seqs))) > 1) {
+  seqs <- AlignSeqs(seqs)
+}
+
+# Convert to character for ggseqlogo
+motifs <- as.character(seqs)
 
 # Generate sequence logo
 p_mot = ggplot() + geom_logo(motifs) + theme_logo() + labs(title = plot_title)
