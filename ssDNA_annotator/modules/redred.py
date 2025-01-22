@@ -111,8 +111,11 @@ while len(seen_dict) != num_cont:
     comm1 = (path_to_mummer + 'nucmer -maxmatch --nooptimize -p nucmer temporal_2.fasta temporal_1.fasta').split()
     comm2 = (path_to_mummer + 'show-coords -r -l -T -H nucmer.delta').split()
 
-    subprocess.call(comm1)
-    subprocess.call(comm2, stdout=open('nucmer.coords','w'))    
+    try:
+        subprocess.call(comm1)
+        subprocess.call(comm2, stdout=open('nucmer.coords','w'))
+    except subprocess.SubprocessError as e:
+        print(f"Error running mummer commands: {e}")  
 
     print('\nParsing of the alignment result...\n')
     subprocess.call('sort -k8,8rn nucmer.coords > nucmer_sorted.coords', shell=True)
