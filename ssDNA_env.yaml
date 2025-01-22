@@ -1,0 +1,18 @@
+name: ssDNA_dev
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - mafft==7.525
+  - trimal==1.5.0
+  - iqtree==2.3.6
+  - seqkit==2.9.0
+  - pandas==2.2.3
+  - biopython==1.85
+  - r-base>=4.4
+  - r-ape==5.8
+  - r-dendextend==1.19.0
+  - r-ggseqlogo==0.2
+  - bioconductor-biostrings==2.74.0
+  - bioconductor-decipher==3.2.0
+  - r-ggplot2==3.5.1
