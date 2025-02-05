@@ -20,7 +20,7 @@ the test data is a fasta file from [Kazlauskas et al 2018](https://www.mdpi.com/
 Code examples to run each file (arguments, etc) is at the end of each python script
 
 # DB with all protein sequences
-Families were collected from the ICTV website
+[Families](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/test_data/family.txt) were collected from the ICTV website
 
 Only the Pleolipoviridae Family (contains both dsDNA and ssDNA) were filtered by Genus names:
 - Alphapleolipovirus finnoniense
