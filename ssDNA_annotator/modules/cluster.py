@@ -7,7 +7,7 @@ import logging
 from typing import List, Union, Optional
 from pathlib import Path
 
-UTILS_DIR = "/fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/utils"
+UTILS_DIR = "~/ssDNA_annotator/utils"
 
 class CommandExecutor:
     @staticmethod
