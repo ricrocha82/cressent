@@ -179,3 +179,5 @@ subprocess.call(['rm', '-f', 'temporal_2.fasta'])
 
 
 print(f"\n\n >>>>> output saved in {prefix}\n\n")
+
+#  /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/redred.py --fna /fs/project/PAS1117/ricardo/ssDNA_test/test_data/virus/1.virus_detection/vs2_1.5kb/Ferretti_2018_SRR5273881_final-viral-combined.fa 

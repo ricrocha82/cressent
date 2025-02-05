@@ -1,4 +1,4 @@
-awk -F , 'NR > 1 {print ">" $1 "|" $3 "\n" $2}' /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/ORF_seq.csv > /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/reps.fa
+awk -F , 'NR > 1 {print ">" $1 "|" $3 "\n" $2}' /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/test_data/ORF_seq.csv > /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/test_data/reps.fa
 
 
 # searching fro walker a motif

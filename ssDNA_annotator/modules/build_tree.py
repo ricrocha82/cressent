@@ -81,10 +81,11 @@ def main():
     parser.add_argument("-d", "--directory", required=True, help="Directory containing input FASTA file and for saving outputs.")
 
     args = parser.parse_args()
+    prefix = os.path.splitext(os.path.basename(args.input_fasta))[0]
     input_fasta = os.path.join(args.directory, args.input_fasta)
     output_dir = args.directory
-    name_table_file = os.path.join(output_dir, "sanitized_name_table.tsv")
-    sanitized_fasta = os.path.join(output_dir, "sanitized_sequences.fasta")
+    name_table_file = os.path.join(output_dir, f"{prefix}_sanitized_name_table.tsv")
+    sanitized_fasta = os.path.join(output_dir, f"{prefix}_sanitized_sequences.fasta")
 
     # Create nested directories
     try:
