@@ -15,7 +15,7 @@ the test data is a fasta file from [Kazlauskas et al 2018](https://www.mdpi.com/
   3. make phylogenetic tree (IQTREE) (./ssDNA_tool/ssDNA_annotator/modules/build_tree.py)
   4. tanglegram (R) (./ssDNA_tool/ssDNA_annotator/modules/tanglegram.py)
   5. Sequence logo (R) (./ssDNA_tool/ssDNA_annotator/modules/seq_logo.py)
-  6. You can use RedRed to cluster sequences (./ssDNA_tool/ssDNA_annotator/modules/redred.py - updated to Python3)
+  6. Cluster sequences (./ssDNA_tool/ssDNA_annotator/modules/cluster.py)
 
 Code examples to run each file (arguments, etc) is at the end of each python script
 
@@ -47,6 +47,8 @@ All the families are here: "/fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotat
 ## processing DB (for global comparison)
 - clustered at 95% amino acid identity > 90% (`CD-HIT`)
 - clustered using `MCL` algorithm - inflation rate at 1.5
-- Clusters with proteins >= 10 annotated Rep and Capsid will be aligned using `MAFFT` with the auto parameter.
+- Clusters with annotated Rep and Capsid will be concatenated and aligned using `MAFFT` with the auto parameter.
+- trimmed using `Trimal` with gap threshold 0.15
 
-
+- families without Rep proteins: Bidnaviridae, Finnlakeviridae, Metaxyviridae, and Spiraviridae
+- families without Cap proteins: Alphasatellitidae, Inoviridae, Spiraviridae, and Tolecusatellitidae
