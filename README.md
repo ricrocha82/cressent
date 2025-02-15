@@ -24,6 +24,9 @@ Code examples to run each file (arguments, etc) is at the end of each python scr
 - https://yulab-smu.top/treedata-book
 
 
+
+
+
 # ssDNA Annotator Pipeline Example
 
 This pipeline demonstrates how to process metagenomic sequences and build phylogenetic trees using the ssDNA_annotator tool. The workflow includes sequence clustering (dereplication), alignment, tree building, and visualization.
@@ -52,7 +55,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/cluster.py \
 
 ### Expected Outputs
 The output directory (`output_clusters/`) will contain:
-```bash
+```pgsql
 output_clusters/.
 ├── clusters.tsv           # File with the first column as the cluster representative
 ├── cluster_sequences.fa     # Clustered FASTA file
@@ -94,7 +97,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/align.py --threads 24 \
 
 ##### Alignment Outputs
 The alignment output directory (`output/`) will include:
-```bash
+```pgsql
 output/.
 ├── alignment.log                            # Log file
 ├── metadata.csv                             # Metadata with protein_id, protein_description, family, scientific_name, protein_name, and source.
