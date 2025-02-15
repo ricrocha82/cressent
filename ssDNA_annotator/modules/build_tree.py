@@ -6,6 +6,7 @@ import os
 import re
 import pandas as pd
 from Bio import SeqIO
+import logging
 
 def run_command(command, error_message):
     """
@@ -13,9 +14,9 @@ def run_command(command, error_message):
     """
     try:
         subprocess.run(command, shell=True, check=True)
-        print(f"Command succeeded: {command}")
+        logging.info(f"Command succeeded: {command}")
     except subprocess.CalledProcessError as e:
-        print(f"{error_message}: {e}")
+        logging.error(f"{error_message}: {e}")
         exit(1)
         
 def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file):
@@ -44,17 +45,17 @@ def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file):
         record.description = ""  # Remove description 
 
         # Add to the name table
-        name_table.append({"Original Name": original_id, "Sanitized Name": sanitized_id})
+        name_table.append({"Original_Name": original_id, "Sanitized_Name": sanitized_id})
         sanitized_records.append(record)
 
     # Write the sanitized FASTA file
     SeqIO.write(sanitized_records, sanitized_fasta, "fasta")
-    print(f"Sanitized sequence names and saved to {sanitized_fasta}.")
+    logging.info(f"Sanitized sequence names and saved to {sanitized_fasta}.")
 
     # Save the name table as a tab-delimited file
     name_table_df = pd.DataFrame(name_table)
     name_table_df.to_csv(name_table_file, sep="\t", index=False)
-    print(f"Name table saved to {name_table_file}.")
+    logging.info(f"Name table saved to {name_table_file}.")
 
 # def convert_to_phylip(sanitized_fasta, phylip_file):
 #     """
@@ -72,6 +73,7 @@ def generate_phylogenetic_tree(input_fasta):
     """
 
     cmd = f"iqtree2 -s {input_fasta} -B 1000 -T AUTO"
+    logging.info(f"Running phylogenetic tree generation with command: {cmd}")
     run_command(cmd, "Error building Phylogenetic tree")
 
 
@@ -84,6 +86,7 @@ def main():
     prefix = os.path.splitext(os.path.basename(args.input_fasta))[0]
     input_fasta = os.path.join(args.directory, args.input_fasta)
     output_dir = args.directory
+    log_file = os.path.join(output_dir, "build_tree.log")
     name_table_file = os.path.join(output_dir, f"{prefix}_sanitized_name_table.tsv")
     sanitized_fasta = os.path.join(output_dir, f"{prefix}_sanitized_sequences.fasta")
 
@@ -99,8 +102,28 @@ def main():
         print(f"An error occurred: {e}")
 
     # run pipeline
+    # Setup logging to save logs in the output directory
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    # Clear any existing handlers
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+    # File handler writes log messages to the log file
+    fh = logging.FileHandler(log_file)
+    fh.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+    # Stream handler outputs log messages to the console
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+
+    logging.info("Starting pipeline")
     sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file)
     generate_phylogenetic_tree(sanitized_fasta)
+    logging.info(f"Phylogenetic tree analysis complete. Outputs saved in {output_dir}")
 
     print(f"Phylogenetic tree analysis complete. Outputs saved in {output_dir}")
 
@@ -125,3 +148,8 @@ if __name__ == "__main__":
 # /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
 #         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/split_sequences_helicase.fasta \
 #         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/tree_helic
+
+
+# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
+#         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/sub_reps_aligned_trimmed_sequences.fasta \
+#         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree
