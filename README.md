@@ -26,12 +26,11 @@ Code examples to run each file (arguments, etc) is at the end of each python scr
 
 
 
-===============
+---
 # ssDNA Annotator Pipeline Example
 
 This pipeline demonstrates how to process metagenomic sequences and build phylogenetic trees using the ssDNA_annotator tool. The workflow includes sequence clustering (dereplication), alignment, tree building, and visualization.
 
----
 
 ## Input Files
 
@@ -40,7 +39,8 @@ This pipeline demonstrates how to process metagenomic sequences and build phylog
 
 - **Database for Phylogenetic Analysis**  
 path/to/database
-here [build_db](https://github.com/ricrocha82/ssDNA_tool/tree/main/build_db) is the pipeline used to build the database
+
+- here [build_db](https://github.com/ricrocha82/ssDNA_tool/tree/main/build_db) is the pipeline used to build the database
 
 ---
 
