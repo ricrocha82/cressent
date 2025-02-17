@@ -157,7 +157,7 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
  - tip_label: name of the color group (default is `family` which is based on the [build_tree](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/modules/build_tree.py) module metadata)
  - fig_width and fig_height are based on [ggsave](https://ggplot2.tidyverse.org/reference/ggsave.html) function in R
 
-```
+```bash
 # Use the teefile from IQ-TREE
 python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
@@ -171,7 +171,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--plot_name my_custom_tree.pdf
 
 # or use the distance table from IQ-TREE
-python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
+python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--dist_matrix my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
 			--outdir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
 			--metadata_1 ./output/metadata.csv \
@@ -194,15 +194,15 @@ The additional --split flag instructs the module to:
 
 ```bash
 # Running Without Splitting
-python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif.py \
-    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/sub_reps_aligned_trimmed_sequences.fasta \
-    -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif \
+python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
+    -i my_sequences_aligned_trimmed_sequences.fasta \
+    -d ./output/motif \
     -p "[GA].{4}GK[TS]"
 
 # Running With Splitting
-python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif.py \
-    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/sub_reps_aligned_trimmed_sequences.fasta \
-    -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif_split \
+python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
+    -i my_sequences__aligned_trimmed_sequences.fasta \
+    -d ./motif_split \
     -p "[GA].{4}GK[TS]" \
     --split
 ```
