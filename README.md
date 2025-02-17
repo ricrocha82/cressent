@@ -153,7 +153,7 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
  - branch_length: if `none` draw cladogram
  - open_angle only for `fan` layout
  - offset: tiplab offset, horizontal adjustment to nudge tip labels, defaults to 0.14
- - tip_label: name of the color group (default is `family` which is based on the build_tree module metadata)
+ - tip_label: name of the color group (default is `family` which is based on the [build_tree](..master/ssDNA_tool/blob/main/ssDNA_annotator/modules/build_tree.py) module metadata)
  - fig_width and fig_height are based on [ggsave](https://ggplot2.tidyverse.org/reference/ggsave.html) function in R
 
 ```
