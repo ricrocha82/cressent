@@ -58,21 +58,22 @@ def main():
         sys.exit(1)
     
     # Build a list of arguments to pass to the R script in the form --option=value
-    r_args = [
-        f"--tree={args.tree}",
-        f"--dist_matrix={args.dist_matrix}",
-        f"--outdir={args.outdir}",
-        f"--layout={args.layout}",
-        f"--branch_length={args.branch_length}",
-        f"--open_angle={args.open_angle}",
-        f"--offset={args.offset}",
-        f"--tip_label={args.tip_label}",
-        f"--fig_width={args.fig_width}",
-        f"--fig_height={args.fig_height}",
-        f"--plot_name={args.plot_name}",
-        f"--color={str(args.color).upper()}",
-        f"--plot_tips={str(args.plot_tips).upper()}"
-    ]
+    r_args = []
+    if args.tree is not None:
+        r_args.append(f"--tree={args.tree}")
+    if args.dist_matrix is not None:
+        r_args.append(f"--dist_matrix={args.dist_matrix}")
+    r_args.append(f"--outdir={args.outdir}")
+    r_args.append(f"--layout={args.layout}")
+    r_args.append(f"--branch_length={args.branch_length}")
+    r_args.append(f"--open_angle={args.open_angle}")
+    r_args.append(f"--offset={args.offset}")
+    r_args.append(f"--tip_label={args.tip_label}")
+    r_args.append(f"--fig_width={args.fig_width}")
+    r_args.append(f"--fig_height={args.fig_height}")
+    r_args.append(f"--plot_name={args.plot_name}")
+    r_args.append(f"--color={str(args.color).upper()}")
+    r_args.append(f"--plot_tips={str(args.plot_tips).upper()}")
     
     # Add optional arguments if provided
     if args.metadata_1:

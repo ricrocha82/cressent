@@ -62,9 +62,6 @@ opt$plot_tips <- tolower(as.character(opt$plot_tips)) %in% c("true", "1", "yes")
 # opt$dist_matrix <- tolower(as.character(opt$dist_matrix)) %in% c("true", "1", "yes")
 
 # Validate required arguments
-if (is.null(opt$tree)) {
-  stop("Error: You must provide a tree file using --tree=FILE", call.=FALSE)
-}
 if (is.null(opt$outdir)) {
   stop("Error: You must provide an output directory using --outdir=DIR", call.=FALSE)
 }

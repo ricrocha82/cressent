@@ -45,7 +45,7 @@ path/to/database
 
 ---
 
-## Step 1: Dereplication (Clustering)
+## 1: Dereplication (Clustering)
 
 If you want to cluster (dereplicate) the metagenomic sequences, run:
 
@@ -66,7 +66,7 @@ output_clusters/.
 └── clustering.log           # Module log file
 ```
 
-## Step 2: Build a Phylogenetic Tree
+## 2: Build a Phylogenetic Tree
 ### a) Sequence Alignment
 You have three options for performing the alignment:
 
@@ -160,25 +160,26 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
 ```
 # Use the teefile from IQ-TREE
 python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
-			--tree=my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-			--outdir=./output/tree \
-			--metadata_1=./output/metadata.csv \
-			--metadata_2=./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-			--layout=rectangular --branch_length=branch.length \
-			--open_angle=0 --offset=0.15 \
-			--tip_label=family \
-			--fig_width=20 --fig_height=15 \
-			--plot_name=my_custom_tree.pdf
+			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
+			--outdir ./output/tree \
+			--metadata_1 ./output/metadata.csv \
+			--metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
+			--layout rectangular --branch_length branch.length \
+			--open_angle 0 --offset 0.15 \
+			--tip_label family \
+			--fig_width 20 --fig_height 15 \
+			--plot_name my_custom_tree.pdf
 
 # or use the distance table from IQ-TREE
 python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
-			--dist_matrix=my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
-			--outdir=/fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
-			--metadata_1=./output/metadata.csv \
-			--metadata_2=./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-			--layout=rectangular --branch_length=branch.length \
-			--open_angle=0 --offset=0.15 \
-			--tip_label=family \
-			--fig_width=20 --fig_height=15 \
-			--plot_name=my_custom_tree_dist.pdf
+			--dist_matrix my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
+			--outdir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
+			--metadata_1 ./output/metadata.csv \
+			--metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
+			--layout rectangular --branch_length branch.length \
+			--open_angle 0 --offset 0.15 \
+			--tip_label family \
+			--fig_width 20 --fig_height 15 \
+			--plot_name my_custom_tree_dist.pdf
 ```
+## 3: MOTIF
