@@ -31,7 +31,9 @@ def generate_seqlogo(fasta_file, seq_df, output_dir, output_name="sequence_logo.
 
     """
     # Path to the R script
-    r_script_path = "/fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.R"  # Update with the actual path
+    # Automatically set the path to the modules directory
+    modules_dir = Path(__file__).resolve().parent  # Directory where the script is located
+    r_script_path = modules_dir / "seq_logo.R"  # Update with the actual path
 
     # Build the command
     cmd = [
@@ -60,6 +62,8 @@ def main():
     parser.add_argument("--height", default = 10, type=float, help = "Height of the sequence logo PDF file.") 
 
     args = parser.parse_args()
+    setup_logging(args.directory)
+    logging.info(f"Output directory set to {args.directory}")
     
     # Validate inputs
     if args.fasta is None and args.seq_df is None:

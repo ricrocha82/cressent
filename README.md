@@ -149,5 +149,14 @@ output/tree/.
 ### c) Plotting the Tree
 A plotting module (using ggtree) is available to visualize the tree. Note that the script provides automated plotting with some limitations regarding annotation and coloring. For more detailed tree customization, consider using tools like FigTree or iTOL.
 ```
-python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py (under construction)
+python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
+			--tree=my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
+			--outdir=./output/tree \
+			--metadata_1=./output/metadata.csv \
+			--metadata_2=./output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv \
+			--layout=rectangular --branch_length=branch.length \
+			--open_angle=0 --offset=0.15 \
+			--tip_label=family \
+			--fig_width=20 --fig_height=15 \
+			--plot_name=my_custom_tree.pdf
 ```
