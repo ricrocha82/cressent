@@ -183,3 +183,26 @@ python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/plot_tree.
 			--plot_name my_custom_tree_dist.pdf
 ```
 ## 3: MOTIF
+This module lets you search for a motif in a FASTA file (using the regex pattern provided) and optionally split the sequences at the motif occurrence. It logs every step to a log file named `motif.log` in the specified output directory.
+
+The additional --split flag instructs the module to:
+- Read the generated motif positions.
+- Split each sequence into two parts:
+     - The part before the motif.
+     - The part from the motif onward.
+- Write the split sequences to two FASTA files (named with a _1.fasta and _2.fasta suffix) in the specified output directory.
+
+```bash
+# Running Without Splitting
+python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif.py \
+    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/sub_reps_aligned_trimmed_sequences.fasta \
+    -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif \
+    -p "[GA].{4}GK[TS]"
+
+# Running With Splitting
+python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif.py \
+    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/sub_reps_aligned_trimmed_sequences.fasta \
+    -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif_split \
+    -p "[GA].{4}GK[TS]" \
+    --split
+```
