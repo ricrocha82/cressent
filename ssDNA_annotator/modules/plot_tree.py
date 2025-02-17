@@ -22,7 +22,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Wrapper to run the plot_tree_cli.R script from the ssDNA tool."
     )
-    parser.add_argument("-t", "--tree", required=True, help="Input tree file (Newick format)")
+    parser.add_argument("-t", "--tree", help="Input tree file (Newick format)")
+    parser.add_argument("--dist_matrix", help="Use distance matrix method for tree construction")
     parser.add_argument("-o", "--outdir", required=True, help="Output directory to save the figure")
     parser.add_argument("--metadata_1", help="Optional CSV metadata file")
     parser.add_argument("--metadata_2", help="Optional TSV name table file")
@@ -36,7 +37,6 @@ def main():
     parser.add_argument("--fig_width", type=float, default=7, help="Figure width (ggsave)")
     parser.add_argument("--fig_height", type=float, default=7, help="Figure height (ggsave)")
     parser.add_argument("--plot_tips", default=True, type=lambda s: s.lower() in ['true', '1', 'yes'], help="Include tip labels in the plot")
-    parser.add_argument("--use_dist_matrix", default=False, type=lambda s: s.lower() in ['true', '1', 'yes'], help="Use distance matrix method for tree construction")
     parser.add_argument("--plot_name", default="tree_plot.pdf", help="Name of the output plot file")
     args = parser.parse_args()
     
@@ -60,6 +60,7 @@ def main():
     # Build a list of arguments to pass to the R script in the form --option=value
     r_args = [
         f"--tree={args.tree}",
+        f"--dist_matrix={args.dist_matrix}",
         f"--outdir={args.outdir}",
         f"--layout={args.layout}",
         f"--branch_length={args.branch_length}",
@@ -70,8 +71,7 @@ def main():
         f"--fig_height={args.fig_height}",
         f"--plot_name={args.plot_name}",
         f"--color={str(args.color).upper()}",
-        f"--plot_tips={str(args.plot_tips).upper()}",
-        f"--use_dist_matrix={str(args.use_dist_matrix).upper()}"
+        f"--plot_tips={str(args.plot_tips).upper()}"
     ]
     
     # Add optional arguments if provided
@@ -104,5 +104,5 @@ if __name__ == "__main__":
 #      --tree=mytree.treefile --outdir=output_dir \
 #     --metadata=meta.csv --name_table=name_table.tsv --alignment=alignment.fasta \
 #     --layout=circular --branch_length=branch.length --open_angle=90 --offset=0.2 \
-#     --tip_label=family --color --fig_width=8 --fig_height=8 --plot_tips --use_dist_matrix \
+#     --tip_label=family --color --fig_width=8 --fig_height=8 --plot_tips --dist_matrix \
 #     --plot_name=my_custom_tree.pdf

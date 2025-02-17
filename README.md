@@ -134,11 +134,11 @@ output/tree/.
 │    # Consensus tree with branch supports (branch lengths optimized on the original alignment)
 ├── my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.log  
 │    # Log file for the entire tree-building run
-├── sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist  
+├── my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist  
 │    # Pairwise distance matrix (for downstream analyses)
-├── sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.model.gz  
+├── my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.model.gz  
 │    # IQ-TREE model checkpoint file
-├── sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.splits.nex  
+├── my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.splits.nex  
 │    # Support values (percentages) for splits, computed from bootstrap trees
 ├── my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.iqtree  
 │    # Main IQ-tree report file (self-readable; see computational results)
@@ -147,16 +147,37 @@ output/tree/.
 ```
 
 ### c) Plotting the Tree
-A plotting module (using ggtree) is available to visualize the tree. Note that the script provides automated plotting with some limitations regarding annotation and coloring. For more detailed tree customization, consider using tools like FigTree or iTOL.
+A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is available to visualize the tree. Note that the script provides automated plotting with some limitations regarding annotation and coloring. For more detailed tree customization, consider using tools like FigTree or iTOL.
+
+ - layout can be one of `'rectangular', 'dendrogram', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'`
+ - branch_length: if `none` draw cladogram
+ - open_angle only for `fan` layout
+ - offset: tiplab offset, horizontal adjustment to nudge tip labels, defaults to 0.14
+ - tip_label: name of the color group (default is `family` which is based on the build_tree module metadata)
+ - fig_width and fig_height are based on [ggsave](https://ggplot2.tidyverse.org/reference/ggsave.html) function in R
+
 ```
+# Use the teefile from IQ-TREE
 python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--tree=my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
 			--outdir=./output/tree \
 			--metadata_1=./output/metadata.csv \
-			--metadata_2=./output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv \
+			--metadata_2=./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
 			--layout=rectangular --branch_length=branch.length \
 			--open_angle=0 --offset=0.15 \
 			--tip_label=family \
 			--fig_width=20 --fig_height=15 \
 			--plot_name=my_custom_tree.pdf
+
+# or use the distance table from IQ-TREE
+python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
+			--dist_matrix=my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
+			--outdir=/fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
+			--metadata_1=./output/metadata.csv \
+			--metadata_2=./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
+			--layout=rectangular --branch_length=branch.length \
+			--open_angle=0 --offset=0.15 \
+			--tip_label=family \
+			--fig_width=20 --fig_height=15 \
+			--plot_name=my_custom_tree_dist.pdf
 ```
