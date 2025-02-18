@@ -195,14 +195,53 @@ The additional --split flag instructs the module to:
 ```bash
 # Running Without Splitting
 python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
-    -i my_sequences_aligned_trimmed_sequences.fasta \
+    -i my_sequences.fasta \
     -d ./output/motif \
     -p "[GA].{4}GK[TS]"
 
 # Running With Splitting
 python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
-    -i my_sequences__aligned_trimmed_sequences.fasta \
+    -i my_sequences.fasta \
     -d ./motif_split \
     -p "[GA].{4}GK[TS]" \
     --split
+
+# if using an aligment file, you may want to remove gaps (-) before detecting patterns
+python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
+    -i my_sequences_aligned_trimmed_sequences.fasta \
+    -d ./motif_split \
+    -p "[GA].{4}GK[TS]" \
+    --split --remove-gaps
+```
+
+## 4: make Sequence log
+This module generates sequence logos from FASTA files or motif detection tables. It supports splitting the figure by a metadata column and automatically detects protein vs. nucleotide sequences. A log file (`seq_logo.log`) is automatically created in the output directory.
+```bash
+# Basic Sequence Logo Generation using the output of the MOTIF module
+python seq_logo.py -tb pattern_positions.txt -o output_dir --output_name logo.pdf
+
+# Generating Sequence Logo from a FASTA File
+python seq_logo.py -f sequences.fasta -o output_dir --output_name fasta_logo.pdf
+```
+- -tb pattern_positions.txt: Input motif table (e.g., from seqkit locate).
+- -o output_dir: Output directory for the generated logo.
+- --output_name logo.pdf: Name of the output sequence logo.
+
+```bash
+# Splitting the Figure by Group Labels (Metadata)
+python seq_logo.py -tb pattern_positions.txt -o output_dir \
+    --output_name logo_split.pdf --split \
+    --metadata metadata.csv --ncol 2 --group_label family
+```
+- --split: Enables splitting based on a metadata column.
+- --metadata metadata.csv: Metadata file (must contain seqID and group labels).
+- --ncol 2: Number of columns in the split figure.
+- --group_label family: Column name in metadata.csv for grouping.
+
+example of the metadata
+```pgsql
+seqID,family
+seq1,Family_A
+seq2,Family_B
+seq3,Family_A
 ```

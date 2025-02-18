@@ -29,14 +29,37 @@ def run_command(command, error_message):
         logging.error(f"{error_message}: {e}")
         exit(1)
 
-def find_pattern(input_fasta, seq_pattern, output_dir, table_name="pattern_positions.txt"):
+def find_pattern(input_fasta, seq_pattern, output_dir, table_name="pattern_positions.txt", remove_gaps=False):
     """
     Use seqkit to find the motif positions in the input FASTA file.
     The output table is saved in output_dir/table_name.
     """
     seq_table = os.path.join(output_dir, table_name)
+
+    if remove_gaps:
+        ungapped_fasta = os.path.join(output_dir, "ungapped_sequences.fasta")
+        run_command(f"seqkit seq --remove-gaps {input_fasta} > {ungapped_fasta}", "Error removing gaps")
+        input_fasta = ungapped_fasta  # Use the ungapped file
+
     cmd = f"seqkit locate --id-ncbi -i -r -p '{seq_pattern}' {input_fasta} > {seq_table}"
     run_command(cmd, "Error locating patterns with SeqKit")
+
+    try:
+        with open(seq_table, "r") as f:
+            lines = f.readlines()
+
+        # Check if file has more than just a header
+        if len(lines) > 1:
+            num_patterns = len(lines) - 1  # Subtract header line
+        else:
+            num_patterns = 0  # No motifs found
+
+        logging.info(f"Total number of patterns found: {num_patterns}")
+        
+    except Exception as e:
+        logging.error(f"Error counting patterns: {e}")
+        return 0
+
     return seq_table
 
 def split_fasta(table_file, fasta_file, prefix_out):
@@ -80,7 +103,7 @@ def main():
     )
     parser.add_argument("-i", "--input_fasta", required=True,
                         help="Input FASTA file with sequences (absolute or relative path).")
-    parser.add_argument("-d", "--directory", required=True,
+    parser.add_argument("-d", "--directory", default=".",
                         help="Directory for saving outputs and log files.")
     parser.add_argument("-p", "--pattern", required=True,
                         help="Sequence pattern (regex) for motif searching.")
@@ -88,6 +111,8 @@ def main():
                         help="If set, the sequences will be split at the motif position.")
     parser.add_argument("-n", "--table_name", default="pattern_positions.txt",
                         help="Name of the file that will store motif positions (default: pattern_positions.txt).")
+    parser.add_argument("--remove-gaps", action="store_true",
+                        help="If set, removes gaps ('-') before searching for motifs.")
     
     args = parser.parse_args()
     output_dir = args.directory
@@ -112,7 +137,7 @@ def main():
     logging.info(f"Searching for motif with pattern: {args.pattern}")
 
     # Run motif finding using seqkit
-    seq_table = find_pattern(input_fasta, args.pattern, output_dir, table_name=args.table_name)
+    seq_table = find_pattern(input_fasta, args.pattern, output_dir, table_name=args.table_name, remove_gaps=args.remove_gaps)
     logging.info(f"Motif positions saved in: {seq_table}")
 
     # Optionally split sequences if --split flag is provided
