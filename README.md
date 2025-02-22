@@ -80,6 +80,11 @@ python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
 
 ##### Option 2: Option 2: Use the Provided Database
 Select sequences by family (e.g., `Circoviridae`, `Microviridae`, etc.) or use `all` to include all families.
+
+If using the tool's DB the `path/to/database` should be:
+- `./ssDNA_tool/tree/main/DB/caps` for CAPs
+- `./ssDNA_tool/tree/main/DB/reps` for REPS
+
 ```bash
 python ./ssDNA_tool/ssDNA_annotator/modules/align.py  --threads 24 \
                     --input_fasta /path/to/my_sequence.fa \

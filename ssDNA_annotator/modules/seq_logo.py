@@ -132,35 +132,6 @@ if __name__ == "__main__":
     main()
 
 
-# running motif detection table by seqkit
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.py \
-#     -tb /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/motif_positions.txt \
-#     --output_dir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/ \
-#     --output_name my_seq_log_test_py.pdf \
-#     --plot_title test_py \
-#     --height 5 \
-#     --width 10
-
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.py \
-#     -tb /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/Anelloviridae_rep_position.txt \
-#     --output_dir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/ \
-#     --output_name Anelloviridae_rep_logo.pdf \
-#     --plot_title AAGTATT*AC \
-#     --height 5 \
-#     --width 10
-
-
-
-# running with fasta file
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.py \
-#     -f /fs/project/PAS1117/ricardo/ssDNA_test/test_data/output_2/aligned_trimmed_sequences.fasta \
-#     --output_dir /fs/project/PAS1117/ricardo/ssDNA_test/test_data/output_2/ \
-#     --output_name Anelloviridae_rep_logo_test_fasta.pdf \
-#     --plot_title AAGTATT*AC \
-#     --height 5 \
-#     --width 10
-
-
 # without spliting
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.py \
 #             -tb /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif/pattern_positions.txt \

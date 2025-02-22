@@ -2,7 +2,8 @@
 a modular tool to help researchers to automatically annotate ssDNA contigs
 
 # DB with all protein sequences
-[Families](/fs/project/PAS1117/ricardo/ssDNA_tool/build_db/names_to_query_ssdna.csv) were collected from the ICTV website
+[Families](/fs/project/PAS1117/ricardo/ssDNA_tool/build_db/names_to_query_ssdna.csv) were collected from the [ICTV website](https://ictv.global/vmr)
+[NCBI Viruses portal](https://www.ncbi.nlm.nih.gov/labs/virus)
 
 Only the Pleolipoviridae Family (contains both dsDNA and ssDNA) were filtered by Genus names:
 - Alphapleolipovirus finnoniense

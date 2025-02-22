@@ -23,3 +23,10 @@ dependencies:
   - bioconductor-treeio==1.30.0
   - bioconductor-ggtree==3.14.0
   - bioconductor-ggtreeextra==1.16.0
+  - viennarna==2.7.0
+  - argcomplete==1.9.4
+  - argh==0.26.2
+  - gff3==0.3.0
+  - gffutils==0.13
+  - simplejson==3.16.0
+  - six==1.11.0
