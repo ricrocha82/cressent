@@ -78,7 +78,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
                       -d path/to/output/directory
 ```
 
-##### Option 2: Option 2: Use the Provided Database
+##### Option 2: Use the Database that comes with the tool
 Select sequences by family (e.g., `Circoviridae`, `Microviridae`, etc.) or use `all` to include all families.
 
 If using the tool's DB the `path/to/database` should be:
@@ -111,6 +111,14 @@ output/.
 ├── my_sequences_aligned_sequences.fasta     # Sequence alignment FASTA file
 ├── my_sequences_aligned_trimmed_sequences.fasta  # Trimmed sequence alignment FASTA file
 └── my_sequences_merged.fasta                # Merged FASTA file (all sequences used in alignment and trimming)
+```
+
+metadata.csv
+```pgsql
+protein_id,protein_description,family,scientific_name,protein_name,source
+seq1,description_seq1,Family_A,scientific_name1,protein_name1,my_seqs
+seq2,description_seq2,Family_B,scientific_name2,protein_name2,db
+seq3,description_seq3,Family_A,scientific_name3,protein_name3,my_seqs
 ```
 
 ### b) Phylogenetic Tree Construction
@@ -152,6 +160,14 @@ output/tree/.
      # ML tree in NEWICK format (compatible with viewers like FigTree or iTOL)
 ```
 
+my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv
+```pgsql
+Original_Name	Sanitized_Name
+Zebra finch circovirus|Circoviridae	Zebra_finch_circovirus_Circoviridae
+Bat associated cyclovirus 11|Circoviridae	Bat_associated_cyclovirus_11_Circoviridae
+Bat associated cyclovirus 11|Circoviridae	Bat_associated_cyclovirus_11_Circoviridae_1
+```
+
 ### c) Plotting the Tree
 A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is available to visualize the tree. Note that the script provides automated plotting with some limitations regarding annotation and coloring. For more detailed tree customization, consider using tools like FigTree or iTOL.
 
@@ -161,6 +177,7 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
  - offset: tiplab offset, horizontal adjustment to nudge tip labels, defaults to 0.14
  - tip_label: name of the color group (default is `family` which is based on the [build_tree](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/modules/build_tree.py) module metadata)
  - fig_width and fig_height are based on [ggsave](https://ggplot2.tidyverse.org/reference/ggsave.html) function in R
+
 
 ```bash
 # Use the teefile from IQ-TREE
@@ -186,7 +203,24 @@ python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--tip_label family \
 			--fig_width 20 --fig_height 15 \
 			--plot_name my_custom_tree_dist.pdf
+
+# you can also use the align file to plot the tree with the alginmet
+python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
+			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
+			--outdir ./output/tree \
+            --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
+			--metadata_1 ./output/metadata.csv \
+			--metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
+			--layout rectangular --branch_length branch.length \
+			--open_angle 0 --offset 0.15 \
+			--tip_label family \
+			--fig_width 20 --fig_height 15 \
+			--plot_name my_custom_tree.pdf 
+            
 ```
+
+
+
 ## 3: MOTIF
 This module lets you search for a motif in a FASTA file (using the regex pattern provided) and optionally split the sequences at the motif occurrence. It logs every step to a log file named `motif.log` in the specified output directory.
 
@@ -219,34 +253,251 @@ python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
     --split --remove-gaps
 ```
 
+The tree output directory (`output/motif/`) will contain:
+```pgsql
+output/motif/.
+├── logo.pdf 
+├── logo_split.pdf
+│  # pdf figures
+├── motif.log
+├── pattern_positions.txt 
+│  # filte containg the pattern positions (seqID patternName pattern strand start end matched)
+├── seq_logo.log
+│  # log file
+│  # sequences if option (--split or/and --remove-gaps) are selected
+├── ungapped_sequences.fasta
+├── split_sequences_1.fasta
+└── split_sequences_2.fasta
+
+```
+
 ## 4: make Sequence log
 This module generates sequence logos from FASTA files or motif detection tables. It supports splitting the figure by a metadata column and automatically detects protein vs. nucleotide sequences. A log file (`seq_logo.log`) is automatically created in the output directory.
-```bash
-# Basic Sequence Logo Generation using the output of the MOTIF module
-python seq_logo.py -tb pattern_positions.txt -o output_dir --output_name logo.pdf
 
-# Generating Sequence Logo from a FASTA File
-python seq_logo.py -f sequences.fasta -o output_dir --output_name fasta_logo.pdf
-```
 - -tb pattern_positions.txt: Input motif table (e.g., from seqkit locate).
 - -o output_dir: Output directory for the generated logo.
 - --output_name logo.pdf: Name of the output sequence logo.
+- --split: Enables splitting based on a metadata column.
+- --metadata: Metadata file (must contain protein_id and group labels). From the aligment module.
+- --ncol 2: Number of columns in the split figure.
+- --group_label: Column name in metadata.csv for grouping. for example `family`
 
 ```bash
-# Splitting the Figure by Group Labels (Metadata)
-python seq_logo.py -tb pattern_positions.txt -o output_dir \
-    --output_name logo_split.pdf --split \
-    --metadata metadata.csv --ncol 2 --group_label family
-```
-- --split: Enables splitting based on a metadata column.
-- --metadata metadata.csv: Metadata file (must contain seqID and group labels).
-- --ncol 2: Number of columns in the split figure.
-- --group_label family: Column name in metadata.csv for grouping.
+# Basic Sequence Logo Generation using the output of the MOTIF module
+python seq_logo.py -tb output/motif/pattern_positions.txt -o output/motif/ --output_name logo.pdf
 
-example of the metadata
-```pgsql
-seqID,family
-seq1,Family_A
-seq2,Family_B
-seq3,Family_A
+# Generating Sequence Logo from a FASTA File
+python seq_logo.py -f my_sequences.fasta -o output/motif/ --output_name fasta_logo.pdf
+
+# Splitting the Figure by Group Labels (Metadata)
+python seq_logo.py \
+    -tb output/motif/pattern_positions.txt 
+    -o output/motif \
+    --output_name logo_split.pdf \
+    --split \
+    --metadata /output/metadata.csv \
+    --ncol 2 --group_label family
 ```
+
+## 5: Putative Stem Loop and Iterons annotation
+### 5.1 Stem Loop Finder
+
+# StemLoop-Finder Module
+
+**StemLoop-Finder** is a bioinformatic tool designed to detect and annotate stem-loop (DNA hairpin) structures with conserved motifs. Originally developed to help identify replication origins in CRESS DNA viruses, this module automates the process of finding candidate stem-loop regions using secondary structure prediction. It leverages the `ViennaRNA` library for folding predictions and scores candidate structures based on how closely they match user-defined ideal stem and loop lengths.
+
+## Features
+
+- **Automated Detection:** Searches DNA sequences for potential stem-loop structures near conserved nonanucleotide motifs.
+- **Secondary Structure Prediction:** Uses ViennaRNA’s minimum free energy algorithms to predict the dot-bracket structure of candidate regions.
+- **Scoring System:** Calculates a score based on deviations from ideal stem and loop lengths. Lower scores indicate candidates closer to the ideal.
+- **Flexible Input:** Can use a specific motif (or select a viral family to use a predefined motif) and adjust the number of flanking nucleotides used for folding.
+- **Multiple Output Formats:** Produces a GFF file with genome annotations for each predicted stem-loop, and optionally a CSV file with detailed candidate information.
+- **(Optional) Logging:** If integrated with logging (similar to the CRUISE module), a log file can be generated to track the analysis process.
+
+## Input Files
+
+- **FASTA File:** Contains the DNA sequences to be analyzed.  
+  *(Example: `input.fasta`)*
+- **GFF File:** Contains genome annotations, including previously annotated features. This file is used to integrate or overlay new stem-loop annotations.  
+  *(Example: `input.gff`)*
+
+## Command-Line Arguments
+
+The StemLoop-Finder module accepts several arguments to customize its behavior:
+
+- `-i`: Path to the input FASTA file.  
+- `--gff_in`: Path to the input GFF file.  
+- `--out_gff`: Path for the output GFF file containing annotated stem-loops.  
+- `--motif`: Conserved nonanucleotide motif to search within candidate regions (allows ambiguous bases). Default:`nantantan`
+- `--output_dir`: Path to the output directory
+- `--family`: Specify a CRESS DNA virus family (e.g., geminiviridae, circoviridae, etc.) to use a family-specific motif.
+- `--idealstemlen` or `-s`: Ideal stem length to score candidate stem-loops. Default:`11`
+- `--ideallooplen` or `-l`: Ideal loop length to score candidate stem-loops. Default:`11`
+- `--frame` or `-f`: Number of nucleotides flanking the motif (used as the window for folding prediction). Default:`15`
+- `--csv_out`: (Optional) Path for an output CSV file with detailed candidate information (e.g., scores, positions, and predicted structures).
+
+## Running the Module
+
+From the command line, run the StemLoop-Finder module as follows:
+
+```bash
+python ./ssDNA_annotator/modules/sl_finder.py \
+     -i ./test.fasta \
+     --gff_in ./test.gff \
+     --output_dir ./sl_finder_output \
+     --out_gff test_out.gff \
+     --csv_out test.csv 
+```
+
+Or, if you prefer to specify a motif and/or a family directly:
+```bash
+python ./ssDNA_annotator/modules/sl_finder.py \
+     -i ./test.fasta \
+     --gff_in ./test.gff \
+     --output_dir ./sl_finder_output \
+     --out_gff test_out.gff \ 
+     --motif nantantan \
+     --family geminiviridae \
+     --idealstemlen 11 --ideallooplen 11 --frame 15
+```
+#### Output files
+```pgsql
+output/
+├── stemloop_finder.log   # Log file capturing the analysis process
+├── output.gff            # GFF file with stem-loop annotations
+└── output.csv            # (Optional) CSV file with detailed candidate data
+```
+
+### 5.1 Cruise
+CRUISE (CRiteria-based Uncovering of Iteron SEquences) is a Python module designed to search CRESS DNA virus genomes for iterons. The module scans around nonanucleotide features and stem-loop structures from an input GFF file (with associated FASTA sequences) to identify and score candidate iteron repeats. Iteron annotations are then output to a new GFF file, and a detailed log is saved for tracking the analysis process.
+
+#### Features
+- **Iteron Detection**: Searches for candidate iteron substrings in the genomic sequence.
+- **Scoring and Ranking**: Scores iteron candidates based on distance criteria, length, and proximity to stem-loop features.
+- **Annotation Output**: Annotates iteron and stem-loop repeat features into a new GFF file.
+- **Logging**: Generates a log file (cruise.log) that records key steps and outcomes.
+- **Customizable Parameters**: Accepts several command-line arguments to fine-tune the iteron search.
+
+```bash 
+python cruise.py --inputFasta examples/test.fasta \
+                 --inputGFF examples/out.gff \
+                 --outputGFF examples/finaloutput.gff \
+                 --outputDir output/ \
+                 --verbose
+```
+
+#### Input Files
+**Input FASTA File**: Contains the complete genome sequences. (Example: `examples/test.fasta`)
+**Input GFF File**: Contains genome annotations including nonanucleotide features and stem-loop features. (Example: `examples/out.gff`)
+
+#### Arguments
+The module accepts the following arguments:
+
+- `--inputFasta`: Path for input FASTA file with all sequences.
+- `--inputGFF`: Path for associated input GFF file.
+- `--outputGFF`: Path for the output GFF file (with iteron annotations).
+- `--minLength`: Minimum iteron length (in nucleotides). Default: 5
+- `--maxLength`: Maximum iteron length (in nucleotides). Default: 12
+- `--range`: Number of base pairs around the nonanucleotide to search. Default: 65
+- `--rank`: Use ranking system for iteron candidates (True/False). Default: True
+- `--numberTopIterons`: Number of iterons returned in rank order. Default: 5
+- `--maxScore`: Maximum score allowed for iterons if ranking is not used. Default: 40
+- `--wiggle`: Max difference between iteron length and distance allowed before score detriment. Default: 5
+- `--goodLength`: Highest favorable iteron length. Default: 11
+- `--doStemLoop`: Whether to annotate stem-loop repeats (True/False). Default: True
+- `--doKnownIterons`: Whether to annotate known iterons (True/False). Default: True
+- `--maxDist`: Maximum allowed distance between iteron occurrences. Default: 20
+- `--bestDist`: Optimal maximum distance between iterons. Default: 10
+- `--scoreRange`: Score range between output candidates (used for filtering ranked iterons). Default: 50
+- `--outputDir`: Directory to save all output files (GFF, log, etc.). Default: "." (current directory)
+- `--verbose`: Enable verbose output (prints progress to the console).
+
+#### Output files
+```pqsql
+output/
+├── cruise.log
+└── finaloutput.gff
+```
+
+## 6: Recombination detection
+The recombination module is designed to detect recombination events in nucleotide sequences using multiple detection methods. It integrates a customized version of [OpenRDP](https://github.com/aglucaci/OpenRDP/tree/master) (Recombination Detection Program) to provide a comprehensive suite of recombination detection algorithms.
+
+```bash
+python recombination.py -i <input_alignment> -o <output_file> [options]
+
+# Run all methods
+python recombination.py -i aligned_sequences.fasta -o results.csv
+
+# Specify output directory
+python recombination.py -i aligned_sequences.fasta -o results.csv -d output_dir
+
+# Run specific methods
+python recombination.py -i aligned_sequences.fasta -o results.csv -rdp -maxchi -bootscan
+
+# Use custom configuration
+python recombination.py -i aligned_sequences.fasta -o results.csv -c my_config.ini -all
+```
+### Basic Options
+
+- `-i`, `--input`: Input alignment file in FASTA format (required). 
+    - **Input Alignment File**: A multiple sequence alignment in FASTA format
+    - Must contain at least 3 sequences
+    - All sequences must be of the same length (aligned)
+    - Should be in standard nucleotide format (A, T, G, C)
+- `-o`, `--output`: Output file for results in CSV format (required)
+- `-d`, `--outdir`: Output directory for all files (default: current directory)
+- `-c`, `--config`: Configuration file in INI format for OpenRDP parameters
+    - **Configuration File**: An INI format file with parameters for each method
+    - If not provided, default parameters will be used
+    - Example configuration files can be found in the `scripts/default_config.ini`
+
+
+### Method Selection
+
+- `-rdp`: Run RDP method
+- `-threeseq`: Run 3Seq method
+- `-geneconv`: Run GENECONV method
+- `-maxchi`: Run MaxChi method
+- `-chimaera`: Run Chimaera method
+- `-bootscan`: Run Bootscan method
+- `-siscan`: Run Siscan method
+- `-all`: Run all methods (default if no method is specified)
+
+#### Methods
+
+The module implements seven recombination detection methods:
+
+1. **RDP**: Recombination Detection Program
+   - Uses a sliding window to identify changes in sequence similarity patterns
+   - Good at detecting recent recombination events
+
+2. **3Seq**: 3-Sequence Method
+   - Detects recombination by examining triplets of sequences
+   - Tests whether a sequence is a recombinant of two parental sequences
+   - Robust to rate heterogeneity
+
+3. **GENECONV**: Gene Conversion Detection
+   - Detects gene conversion events by identifying unusually similar sequence fragments
+   - Particularly useful for detecting older recombination events
+
+4. **MaxChi**: Maximum Chi-Square
+   - Uses chi-square statistic to detect breakpoints
+   - Looks for significant differences in proportions of variable sites
+
+5. **Chimaera**: Similar to MaxChi
+   - Modified version of MaxChi with different statistical approach
+   - Often detects breakpoints missed by other methods
+
+6. **Bootscan**: Bootscanning Method
+   - Analyzes phylogenetic signal changes along the sequence
+   - Identifies regions where evolutionary relationships change
+
+7. **Siscan**: Sister-Scanning Method
+   - Uses statistical tests to identify changes in phylogenetic relationships
+   - Particularly good at detecting distant recombination events
+
+### Output Control
+
+- `-quiet`: Suppress console output
+- `-verbose`: Enable verbose logging
