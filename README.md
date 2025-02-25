@@ -304,7 +304,7 @@ python seq_logo.py \
 
 # StemLoop-Finder Module
 
-**StemLoop-Finder** is a bioinformatic tool designed to detect and annotate stem-loop (DNA hairpin) structures with conserved motifs. Originally developed to help identify replication origins in CRESS DNA viruses, this module automates the process of finding candidate stem-loop regions using secondary structure prediction. It leverages the `ViennaRNA` library for folding predictions and scores candidate structures based on how closely they match user-defined ideal stem and loop lengths.
+Customized version of [StemLoop-Finder](https://journals.asm.org/doi/10.1128/mra.00424-21) designed to detect and annotate stem-loop (DNA hairpin) structures with conserved motifs. This module automates the process of finding candidate stem-loop regions using secondary structure prediction. It leverages the `ViennaRNA` library for folding predictions and scores candidate structures based on how closely they match user-defined ideal stem and loop lengths.
 
 ## Features
 
@@ -370,7 +370,7 @@ output/
 ```
 
 ### 5.1 Cruise
-CRUISE (CRiteria-based Uncovering of Iteron SEquences) is a Python module designed to search CRESS DNA virus genomes for iterons. The module scans around nonanucleotide features and stem-loop structures from an input GFF file (with associated FASTA sequences) to identify and score candidate iteron repeats. Iteron annotations are then output to a new GFF file, and a detailed log is saved for tracking the analysis process.
+Customized version of [CRUISE](https://journals.asm.org/doi/10.1128/mra.01123-22) (CRiteria-based Uncovering of Iteron SEquences) to search virus genomes for iterons. The module scans around nonanucleotide features and stem-loop structures from an input GFF file (with associated FASTA sequences) to identify and score candidate iteron repeats. Iteron annotations are then output to a new GFF file, and a detailed log is saved for tracking the analysis process.
 
 #### Features
 - **Iteron Detection**: Searches for candidate iteron substrings in the genomic sequence.
@@ -421,7 +421,7 @@ output/
 ```
 
 ## 6: Recombination detection
-The recombination module is designed to detect recombination events in nucleotide sequences using multiple detection methods. It integrates a customized version of [OpenRDP](https://github.com/aglucaci/OpenRDP/tree/master) (Recombination Detection Program) to provide a comprehensive suite of recombination detection algorithms.
+The recombination module is designed to detect recombination events in nucleotide sequences using multiple detection methods. It integrates a customized version of [OpenRDP](https://github.com/aglucaci/OpenRDP/tree/master) ([Recombination Detection Program](https://academic.oup.com/ve/article/7/1/veaa087/6020281)) to provide a comprehensive suite of recombination detection algorithms.
 
 ```bash
 python recombination.py -i <input_alignment> -o <output_file> [options]
@@ -472,12 +472,12 @@ The module implements seven recombination detection methods:
    - Uses a sliding window to identify changes in sequence similarity patterns
    - Good at detecting recent recombination events
 
-2. **3Seq**: 3-Sequence Method
+2. **3Seq**: [3-Sequence Method](https://mol.ax/software/3seq/)
    - Detects recombination by examining triplets of sequences
    - Tests whether a sequence is a recombinant of two parental sequences
    - Robust to rate heterogeneity
 
-3. **GENECONV**: Gene Conversion Detection
+3. **GENECONV**: [Gene Conversion Detection](https://www.math.wustl.edu/~sawyer/geneconv/)
    - Detects gene conversion events by identifying unusually similar sequence fragments
    - Particularly useful for detecting older recombination events
 
