@@ -271,6 +271,15 @@ output/motif/.
 
 ```
 
+pattern_positions.txt 
+```pgsql
+seqID	patternName	pattern	strand	start	end	matched
+Rhynchosia golden mosaic Havana virus-[Cuba:Havana:28:2007]|Geminiviridae	[GA].{4}GK[TS]	[GA].{4}GK[TS]	+	235	242	GPSRTGKT
+Macroptilium mosaic Puerto Rico virus-[Bean]|Geminiviridae	[GA].{4}GK[TS]	[GA].{4}GK[TS]	+	235	242	GPSRTGKT
+Cowpea golden mosaic virus-[Nigeria]|Geminiviridae	[GA].{4}GK[TS]	[GA].{4}GK[TS]	+	235	242	GESRTGKT
+(...)
+```
+
 ## 4: make Sequence log
 This module generates sequence logos from FASTA files or motif detection tables. It supports splitting the figure by a metadata column and automatically detects protein vs. nucleotide sequences. A log file (`seq_logo.log`) is automatically created in the output directory.
 
@@ -423,6 +432,8 @@ output/
 ## 6: Recombination detection
 The recombination module is designed to detect recombination events in nucleotide sequences using multiple detection methods. It integrates a customized version of [OpenRDP](https://github.com/aglucaci/OpenRDP/tree/master) ([Recombination Detection Program](https://academic.oup.com/ve/article/7/1/veaa087/6020281)) to provide a comprehensive suite of recombination detection algorithms.
 
+When run for the first time, recombination.py will if binary executables exist (3Seq and GENECONV), compile from source if not. Also, it will generate a new 500 × 500 × 500 P-value table. If you don't want to genearate a p-value table you can extract from [here](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/modules/openrdp/bin/source_code/myPvalueTable.tar.gz)
+
 ```bash
 python recombination.py -i <input_alignment> -o <output_file> [options]
 
@@ -501,3 +512,71 @@ The module implements seven recombination detection methods:
 
 - `-quiet`: Suppress console output
 - `-verbose`: Enable verbose logging
+
+## 7: GC Content Heatmap
+Calculates %G+C content using a sliding window approach.
+Output is a heatmap with GC content. Rows as sequence names (left) and % of GC (right).
+
+```bash
+python ./ssDNA_annotator/modules/gc_patchiness.py \
+                                          -i ./test_fast.fa \
+                                        --output_dir ./output \
+                                          --output_name gc_heatmap.pdf \
+                                        --fig_width 10 --fig_height 20 
+```
+
+
+
+## 8: _De novo_ Motif Discovery
+Pipeline designed to discover __de novo__ motifs from an input FASTA file using [MEME](https://pubmed.ncbi.nlm.nih.gov/7584402/) and/or [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/).
+
+### Basic Options
+
+- `-i`, `--fasta`:The input FASTA file containing the sequences to be analyzed (required). 
+- `-o`, `--output`: output directory (optional; default: current directory).
+- `-nmotifs`: The number of motifs to discover using MEME. (optional; default: 5).
+- `-minw`: The minimum motif width that MEME should conside (optional; default: 6).
+- `-maxw`: The maximum motif width that MEME should conside (optional; default: 50).
+- `--meme_extra`: Additional MEME arguments provided as key-value pairs. This allows users to pass extra options to MEME without modifying the code (optional).
+- `--scanprosite`: Run both MEME and ScanProsite
+
+```bash
+# basic
+python ./ssDNA_annotator/modules/motif_disc.py <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...]
+
+# only MEME
+python ./ssDNA_annotator/modules/motif_disc.py \
+                    -i ./seq_meme.fa \
+                    -o ./motif_disc \
+                    -nmotifs 5 -minw 6 -maxw 50 \
+                    --meme_extra -mod zoops -evt 0.05
+
+# MEME + ScanProsite
+python ./ssDNA_annotator/modules/motif_disc.py \
+                    -i ./seq_meme.fa \
+                    -o ./motif_disc \
+                    -nmotifs 5 -minw 6 -maxw 50 \
+                    --meme_extra -mod zoops -evt 0.05 \
+                    --scanprosite
+
+```
+
+#### Outputs
+```pgsql
+.
+├── consensus_table.csv
+│  # table with the consensus motif sequences (id,consensus,length,occurrences)
+├── logo1.eps
+│  # sequence logo in eps format (meme output) for each discovered motif.
+├── MEME-1_pwm_matrix.csv
+│  # Position Weight Matrix (PWM) matrix for each discovered motif.
+├── meme.html # meme output
+├── meme.txt # meme output
+├── meme.xml # meme output
+├── motif_discovery.log
+│  # log file
+├── motif_table.csv
+│  # table with all the motif sequences and attributes (length,motif_name,pvalue,sequence_id,sequence_name,start,end,strand)
+└── scanprosite_results.csv (if --scanprofile selected)
+    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name)
+```
