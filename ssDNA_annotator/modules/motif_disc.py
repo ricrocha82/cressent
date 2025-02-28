@@ -9,6 +9,7 @@ import logging
 import pandas as pd
 from Bio import SeqIO, motifs
 from Bio.ExPASy import ScanProsite
+from Bio import ExPASy
 import time
 
 
@@ -166,7 +167,7 @@ def create_pwm_matrix(motifs, output_dir):
                 writer.writerow(row)
         logging.info(f"PWM matrix for motif {motif.name} saved to: {matrix_file}")
 
-def run_scanprosite(fasta_file, output_dir):
+def run_scanprosite(fasta_file, seq_type):
     """
     Scans each protein sequence in the input FASTA file using Biopython's ScanProsite.
     For each record, a request is sent to the ExPASy server and the scan results are parsed.
@@ -180,37 +181,94 @@ def run_scanprosite(fasta_file, output_dir):
     Returns:
       combined_df: The combined pandas DataFrame with scan results for all sequences.
     """
-
-    all_dfs = []
-    logging.info("Scanning protein sequences online against the Prosite database")
-
-    for record in SeqIO.parse(fasta_file, "fasta"):
-        # Prepare the FASTA string for the protein sequence.
-        fasta_str = record.format("fasta")
-        try:
-            # Call ScanProsite via Biopython; this sends a request to the ExPASy server.
-            handle = ScanProsite.scan(seq=fasta_str, output = 'xml', skip=0)
-            scan_results = ScanProsite.read(handle)
-            # Build a DataFrame from the scan results.
-            df = pd.DataFrame(scan_results)
-            # Add columns to track which sequence produced the results.
-            df["sequence_id"] = record.id
-            df["sequence_name"] = record.description
-            all_dfs.append(df)
-        except Exception as e:
-            logging.error(f"Error scanning sequence {record.id}: {e}")
-        # Pause briefly to avoid overwhelming the ExPASy server.
-        time.sleep(1)
-
-    # Combine all individual DataFrames into one.
-    if all_dfs:
-        combined_df = pd.concat(all_dfs, ignore_index=True)
+    # Add the sequence type flag.
+    if seq_type == "dna":
+        logging.info("ScanProsite requires protein sequences. Skipping ScanProsite analysis.")
+        return pd.DataFrame()  # Return an empty DataFrame for DNA sequences.
     else:
-        combined_df = pd.DataFrame()
+        all_dfs = []
+        logging.info("Scanning protein sequences online against the Prosite database")
 
-    output_csv = os.path.join(output_dir, "scanprosite_results.csv")
-    combined_df.to_csv(output_csv, sep='\t', index=False)
-    logging.info(f"ScanProsite results saved to: {output_csv}")
+        for record in SeqIO.parse(fasta_file, "fasta"):
+            # Prepare the FASTA string for the protein sequence.
+            fasta_str = record.format("fasta")
+            try:
+                # Call ScanProsite via Biopython; this sends a request to the ExPASy server.
+                handle = ScanProsite.scan(seq=fasta_str, output = 'xml', skip=0)
+                scan_results = ScanProsite.read(handle)
+                # Build a DataFrame from the scan results.
+                df = pd.DataFrame(scan_results)
+                # Add columns to track which sequence produced the results.
+                df["sequence_id"] = record.id
+                df["sequence_name"] = record.description
+                all_dfs.append(df)
+            except Exception as e:
+                logging.error(f"Error scanning sequence {record.id}: {e}")
+            # Pause briefly to avoid overwhelming the ExPASy server.
+            time.sleep(1)
+
+        # Combine all individual DataFrames into one.
+        if all_dfs:
+            combined_df = pd.concat(all_dfs, ignore_index=True)
+        else:
+            combined_df = pd.DataFrame()
+
+        return combined_df
+
+def add_annotation_to_scanprosite_results(df, output_dir):
+    """
+    Adds an 'annotation' column to the ScanProsite results DataFrame.
+    
+    For each unique signature_ac in the DataFrame, this function:
+      1. Uses Bio.ExPASy's get_prosite_raw() to fetch the raw Prosite entry.
+      2. Parses the raw text to extract the description line (the line starting with "DE").
+      3. Stores the description as the annotation for that signature.
+      
+    Parameters:
+      df (pandas.DataFrame): DataFrame containing the ScanProsite results. 
+                             It must include a 'signature_ac' column.
+                             
+    Returns:
+      pandas.DataFrame: The input DataFrame with an added 'annotation' column.
+    """
+    annotations = {}
+
+    logging.info("Adding Prosite annotation")
+
+    if df.empty:
+        logging.info("ScanProsite results DataFrame is empty. Skipping annotation step.")
+        return df
+    
+    # Iterate over each unique signature_ac in the DataFrame.
+    for signature in df["signature_ac"].unique():
+        try:
+            # Fetch the raw Prosite entry for this signature.
+            handle = ExPASy.get_prosite_raw(signature)
+            text = handle.read()
+            # Initialize annotation as an empty string.
+            annotation = ""
+            # Parse the raw text: the description is on the line starting with "DE".
+            for line in text.splitlines():
+                if line.startswith("DE"):
+                    # Extract the description (remove the "DE" prefix and any trailing semicolon).
+                    annotation = line[2:].strip().rstrip(";")
+                    break
+            annotations[signature] = annotation
+        except Exception as e:
+            annotations[signature] = ""
+            logging.error(f"Error retrieving annotation for {signature}: {e}")
+    
+    # Map the annotations to a new 'annotation' column.
+    df["prosite_ann"] = df["signature_ac"].map(annotations)
+
+    try:
+        # Save the updated DataFrame with annotations.
+        output_csv = os.path.join(output_dir, "scanprosite_results.csv")
+        df.to_csv(output_csv, sep='\t', index=False)
+        logging.info(f"ScanProsite results saved to: {output_csv}")
+    except Exception as e:
+        logging.error(f"Error saving annotated ScanProsite results: {e}")
+
 
 def main():
     parser = argparse.ArgumentParser(description="motif_discovery: Discover de novo motifs using MEME")
@@ -265,12 +323,16 @@ def main():
     create_pwm_matrix(motifs, args.output)
     consensus_motif(motifs, args.output)
 
+
     # Determine if ScanProsite will be used
     scanprosite = args.scanprosite
     if scanprosite:
         logging.info("ScanProsite selected.")
-        run_scanprosite(args.fasta, args.output)
-            
+        # Run ScanProsite and get the combined DataFrame.
+        scan_df = run_scanprosite(args.fasta, seq_type)
+        # Add the annotation column.
+        add_annotation_to_scanprosite_results(scan_df, args.output)
+
 
 if __name__ == "__main__":
     main()

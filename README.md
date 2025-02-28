@@ -528,7 +528,9 @@ python ./ssDNA_annotator/modules/gc_patchiness.py \
 
 
 ## 8: _De novo_ Motif Discovery
-Pipeline designed to discover __de novo__ motifs from an input FASTA file using [MEME](https://pubmed.ncbi.nlm.nih.gov/7584402/) and/or [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/).
+Pipeline designed to discover __de novo__ motifs from an input FASTA file using [MEME](https://pubmed.ncbi.nlm.nih.gov/7584402/).
+
+It is optional to use [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/) to scan the protein sequences against the PROSITE collection of motifs
 
 ### Basic Options
 
@@ -542,7 +544,7 @@ Pipeline designed to discover __de novo__ motifs from an input FASTA file using 
 
 ```bash
 # basic
-python ./ssDNA_annotator/modules/motif_disc.py <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...]
+python ./ssDNA_annotator/modules/motif_disc.py <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
 
 # only MEME
 python ./ssDNA_annotator/modules/motif_disc.py \
@@ -578,5 +580,5 @@ python ./ssDNA_annotator/modules/motif_disc.py \
 ├── motif_table.csv
 │  # table with all the motif sequences and attributes (length,motif_name,pvalue,sequence_id,sequence_name,start,end,strand)
 └── scanprosite_results.csv (if --scanprofile selected)
-    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name)
+    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name,prosite_ann)
 ```
