@@ -582,3 +582,12 @@ python ./ssDNA_annotator/modules/motif_disc.py \
 └── scanprosite_results.csv (if --scanprofile selected)
     # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name,prosite_ann)
 ```
+
+You can plot a gene map using the motif_table.csv as input
+```bash
+python ./ssDNA_annotator/modules/gene_map.py \
+                    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_disc/motif_table.csv \
+                    -o ./motif_disc/gene_map_motif.pdf \
+                    --height 10 --width 10 \
+                    -t "Motif Distribution in Genes"
+```
