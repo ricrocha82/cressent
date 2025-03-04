@@ -222,6 +222,8 @@ python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 
 
 ## 3: MOTIF
+
+### 3.1: Using Regex
 This module lets you search for a motif in a FASTA file (using the regex pattern provided) and optionally split the sequences at the motif occurrence. It logs every step to a log file named `motif.log` in the specified output directory.
 
 The additional --split flag instructs the module to:
@@ -280,7 +282,72 @@ Cowpea golden mosaic virus-[Nigeria]|Geminiviridae	[GA].{4}GK[TS]	[GA].{4}GK[TS]
 (...)
 ```
 
-## 4: make Sequence log
+### 3.1: _De novo_ Motif Discovery
+Pipeline designed to discover __de novo__ motifs from an input FASTA file using [MEME](https://pubmed.ncbi.nlm.nih.gov/7584402/).
+
+It is optional to use [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/) to scan the protein sequences against the PROSITE collection of motifs
+
+### Basic Options
+
+- `-i`, `--fasta`:The input FASTA file containing the sequences to be analyzed (required). 
+- `-o`, `--output`: output directory (optional; default: current directory).
+- `-nmotifs`: The number of motifs to discover using MEME. (optional; default: 5).
+- `-minw`: The minimum motif width that MEME should conside (optional; default: 6).
+- `-maxw`: The maximum motif width that MEME should conside (optional; default: 50).
+- `--meme_extra`: Additional MEME arguments provided as key-value pairs. This allows users to pass extra options to MEME without modifying the code (optional).
+- `--scanprosite`: Run both MEME and ScanProsite
+
+```bash
+# basic
+python ./ssDNA_annotator/modules/motif_disc.py <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
+
+# only MEME
+python ./ssDNA_annotator/modules/motif_disc.py \
+                    -i ./seq_meme.fa \
+                    -o ./motif_disc \
+                    -nmotifs 5 -minw 6 -maxw 50 \
+                    --meme_extra -mod zoops -evt 0.05
+
+# MEME + ScanProsite
+python ./ssDNA_annotator/modules/motif_disc.py \
+                    -i ./seq_meme.fa \
+                    -o ./motif_disc \
+                    -nmotifs 5 -minw 6 -maxw 50 \
+                    --meme_extra -mod zoops -evt 0.05 \
+                    --scanprosite
+
+```
+
+#### Outputs
+```pgsql
+.
+├── consensus_table.csv
+│  # table with the consensus motif sequences (id,consensus,length,occurrences)
+├── logo1.eps
+│  # sequence logo in eps format (meme output) for each discovered motif.
+├── MEME-1_pwm_matrix.csv
+│  # Position Weight Matrix (PWM) matrix for each discovered motif.
+├── meme.html # meme output
+├── meme.txt # meme output
+├── meme.xml # meme output
+├── motif_discovery.log
+│  # log file
+├── motif_table.csv
+│  # table with all the motif sequences and attributes (length,motif_name,pvalue,sequence_id,sequence_name,start,end,strand)
+└── scanprosite_results.csv (if --scanprofile selected)
+    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name,prosite_ann)
+```
+
+You can plot a gene map using the motif_table.csv as input
+```bash
+python ./ssDNA_annotator/modules/gene_map.py \
+                    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_disc/motif_table.csv \
+                    -o ./motif_disc/gene_map_motif.pdf \
+                    --height 10 --width 10 \
+                    -t "Motif Distribution in Genes"
+```
+
+## 4: make Sequence logo and more
 This module generates sequence logos from FASTA files or motif detection tables. It supports splitting the figure by a metadata column and automatically detects protein vs. nucleotide sequences. A log file (`seq_logo.log`) is automatically created in the output directory.
 
 - -tb pattern_positions.txt: Input motif table (e.g., from seqkit locate).
@@ -307,6 +374,8 @@ python seq_logo.py \
     --metadata /output/metadata.csv \
     --ncol 2 --group_label family
 ```
+
+(...) plot the motifs in pile style ([Motifstack](https://bioconductor.org/packages/devel/bioc/vignettes/motifStack/inst/doc/motifStack_HTML.html#motifPiles) package)
 
 ## 5: Putative Stem Loop and Iterons annotation
 ### 5.1 Stem Loop Finder
@@ -527,67 +596,3 @@ python ./ssDNA_annotator/modules/gc_patchiness.py \
 
 
 
-## 8: _De novo_ Motif Discovery
-Pipeline designed to discover __de novo__ motifs from an input FASTA file using [MEME](https://pubmed.ncbi.nlm.nih.gov/7584402/).
-
-It is optional to use [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/) to scan the protein sequences against the PROSITE collection of motifs
-
-### Basic Options
-
-- `-i`, `--fasta`:The input FASTA file containing the sequences to be analyzed (required). 
-- `-o`, `--output`: output directory (optional; default: current directory).
-- `-nmotifs`: The number of motifs to discover using MEME. (optional; default: 5).
-- `-minw`: The minimum motif width that MEME should conside (optional; default: 6).
-- `-maxw`: The maximum motif width that MEME should conside (optional; default: 50).
-- `--meme_extra`: Additional MEME arguments provided as key-value pairs. This allows users to pass extra options to MEME without modifying the code (optional).
-- `--scanprosite`: Run both MEME and ScanProsite
-
-```bash
-# basic
-python ./ssDNA_annotator/modules/motif_disc.py <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
-
-# only MEME
-python ./ssDNA_annotator/modules/motif_disc.py \
-                    -i ./seq_meme.fa \
-                    -o ./motif_disc \
-                    -nmotifs 5 -minw 6 -maxw 50 \
-                    --meme_extra -mod zoops -evt 0.05
-
-# MEME + ScanProsite
-python ./ssDNA_annotator/modules/motif_disc.py \
-                    -i ./seq_meme.fa \
-                    -o ./motif_disc \
-                    -nmotifs 5 -minw 6 -maxw 50 \
-                    --meme_extra -mod zoops -evt 0.05 \
-                    --scanprosite
-
-```
-
-#### Outputs
-```pgsql
-.
-├── consensus_table.csv
-│  # table with the consensus motif sequences (id,consensus,length,occurrences)
-├── logo1.eps
-│  # sequence logo in eps format (meme output) for each discovered motif.
-├── MEME-1_pwm_matrix.csv
-│  # Position Weight Matrix (PWM) matrix for each discovered motif.
-├── meme.html # meme output
-├── meme.txt # meme output
-├── meme.xml # meme output
-├── motif_discovery.log
-│  # log file
-├── motif_table.csv
-│  # table with all the motif sequences and attributes (length,motif_name,pvalue,sequence_id,sequence_name,start,end,strand)
-└── scanprosite_results.csv (if --scanprofile selected)
-    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name,prosite_ann)
-```
-
-You can plot a gene map using the motif_table.csv as input
-```bash
-python ./ssDNA_annotator/modules/gene_map.py \
-                    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_disc/motif_table.csv \
-                    -o ./motif_disc/gene_map_motif.pdf \
-                    --height 10 --width 10 \
-                    -t "Motif Distribution in Genes"
-```
