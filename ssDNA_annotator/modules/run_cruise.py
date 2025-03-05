@@ -12,7 +12,6 @@ import logging
 from pathlib import Path
 import shutil
 
-
 import cruise
 import args
 
@@ -69,10 +68,10 @@ def input_convert(input_fasta_file, input_gff, input_folder):
             with output_file.open('w') as fout:
                 # Write GFF3 header
                 fout.write(f"""##gff-version 3
-##source-version geneious 2020.1.2
-##sequence-region\t{name}\t1\t{len(sequence)+1}
-{name}\tGeneious\tregion\t1\t{len(sequence)+1}\t.\t+\t0\tIs_circular=true
-""")
+                            ##source-version geneious 2020.1.2
+                            ##sequence-region\t{name}\t1\t{len(sequence)+1}
+                            {name}\tGeneious\tregion\t1\t{len(sequence)+1}\t.\t+\t0\tIs_circular=true
+                            """)
                 
                 # Write matching GFF entries
                 gff.seek(0)

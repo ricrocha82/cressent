@@ -268,7 +268,7 @@ def run_sl_finder(fasta_file, gff_file, out_gff, output_dir, out_csv=None, **kwa
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A module for putative stem-loop annotation")
     parser.add_argument("-i", "--fasta_in", required=True, help="Input FASTA file")
-    parser.add_argument("--gff_in", required=True, help="Input GFF file")
+    parser.add_argument("--gff_in", required=True, help="Input GFF/GTF file")
     parser.add_argument("--out_gff", required=True, help="Output GFF filename")
     parser.add_argument("--output_dir", help="Directory to save output files", default=".")
     parser.add_argument("--csv_out", help="Output CSV filename", default=None)
