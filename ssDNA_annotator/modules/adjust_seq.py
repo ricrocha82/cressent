@@ -24,7 +24,7 @@ def process_fasta(input_fasta, output_dir, motif="TAGTATTAC"):
 
     # Generate output file path
     prefix = os.path.splitext(os.path.basename(input_fasta))[0]
-    output_fasta = os.path.join(output_dir, f"{prefix}_motif_adj.fasta")
+    output_fasta = os.path.join(output_dir, f"{prefix}_motif_adj.fa")
 
     with open(output_fasta, "w") as out_fh:
         for record in SeqIO.parse(input_fasta, "fasta"):

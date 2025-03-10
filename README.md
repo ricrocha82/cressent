@@ -79,13 +79,19 @@ python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
                       -d path/to/output/directory
 ```
 
-If you want to adjust the sequence to begin with determined conserved nonanucleotide sequence run
+Before the aligment, if you want to adjust the sequence to begin with determined conserved nonanucleotide sequence run
 
 ```bash
 python ./ssDNA_tool/ssDNA_annotator/modules/adjust_seq.py  \
                       -i /path/to/my_sequence.fa \
-                      -o /path/to/output_directoryu # default is the current directory
+                      -o /path/to/output_directory # default is the current directory
                       -m "ATCG" # default: TAGTATTAC
+
+# then, run the align module
+python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
+                      --threads 24 \
+                      --input_fasta /path/to/my_sequence_motif_adj.fa \
+                      -d path/to/output/directory
 ```
 
 If the pattern is found, the output is a fasta file with each sequence beginning with the sequence `-m`
