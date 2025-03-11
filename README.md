@@ -46,7 +46,9 @@ path/to/database
 
 ---
 
-## 1: Dereplication (Clustering) AND/Or Decontamination
+## 1: Dereplication (Clustering) and/or Decontamination
+
+#### Dereplication
 
 If you want to cluster (dereplicate) the metagenomic sequences, run:
 
@@ -55,12 +57,11 @@ python ./ssDNA_tool/ssDNA_annotator/modules/cluster.py \
      -i /path/to/my_sequence.fa \
      -o ./output_clusters
 ```
+#### Detecting contamination
 
 HTS data is susceptible to contamination from various sources, including laboratory reagents, kits, and environmental factors (the "kitome").
 
 It's good practice for researchers to sequence negative or blank samples that have undergone the same processing pathway. However, this is not always done or feasible, and it may still fail to detect certain contaminants.
-
-Running `detect_contamination.py` using the [contaminant_db](DB/contaminant/contaminant_db.fasta) you can search for potential contaminating viral sequences.
 
 The `decont_accesion_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
 
@@ -79,6 +80,7 @@ DB/
 ├── contaminant_db_metadata.tsv # Sequence metadata
 └── contaminant_build.log
 ```
+Running `detect_contamination.py` using the [contaminant_db](DB/contaminant/contaminant_db.fasta) you can search for potential contaminating viral sequences.
 
 ```bash           
 # run decontamination
