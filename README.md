@@ -63,7 +63,7 @@ HTS data is susceptible to contamination from various sources, including laborat
 
 It's good practice for researchers to sequence negative or blank samples that have undergone the same processing pathway. However, this is not always done or feasible, and it may still fail to detect certain contaminants.
 
-The `decont_accesion_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
+The `decont_accession_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
 
 ```bash
 # to build the contaminant_db.fasta run, you can add additional sequences to the csv file or concatenate to the output fasta file later
