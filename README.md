@@ -57,6 +57,16 @@ python ./ssDNA_tool/ssDNA_annotator/modules/cluster.py \
      -i /path/to/my_sequence.fa \
      -o ./output_clusters
 ```
+Outputs:
+```pgsql
+output_clusters/.
+├── clusters.tsv           # File with the first column as the cluster representative
+├── cluster_sequences.fa     # Clustered FASTA file
+├── ani_results.tsv          # Pairwise ANI (average identity) results
+├── blast_results.tsv        # BLAST (n/p) results
+└── clustering.log           # Module log file
+```
+
 #### Detecting contamination
 
 HTS data is susceptible to contamination from various sources, including laboratory reagents, kits, and environmental factors (the "kitome").
@@ -101,16 +111,6 @@ results/
 └── clean_sequences_decontamination.log  # Detailed log file
 ```
 
-### Expected Outputs
-The output directory (`output_clusters/`) will contain:
-```pgsql
-output_clusters/.
-├── clusters.tsv           # File with the first column as the cluster representative
-├── cluster_sequences.fa     # Clustered FASTA file
-├── ani_results.tsv          # Pairwise ANI (average identity) results
-├── blast_results.tsv        # BLAST (n/p) results
-└── clustering.log           # Module log file
-```
 
 ## 2: Build a Phylogenetic Tree
 ### a) Sequence Alignment
