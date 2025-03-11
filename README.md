@@ -46,7 +46,7 @@ path/to/database
 
 ---
 
-## 1: Dereplication (Clustering)
+## 1: Dereplication (Clustering) AND/Or Decontamination
 
 If you want to cluster (dereplicate) the metagenomic sequences, run:
 
@@ -54,6 +54,49 @@ If you want to cluster (dereplicate) the metagenomic sequences, run:
 python ./ssDNA_tool/ssDNA_annotator/modules/cluster.py \
      -i /path/to/my_sequence.fa \
      -o ./output_clusters
+```
+
+HTS data is susceptible to contamination from various sources, including laboratory reagents, kits, and environmental factors (the "kitome").
+
+It's good practice for researchers to sequence negative or blank samples that have undergone the same processing pathway. However, this is not always done or feasible, and it may still fail to detect certain contaminants.
+
+Running `detect_contamination.py` using the [contaminant_db](DB/contaminant/contaminant_db.fasta) you can search for potential contaminating viral sequences.
+
+The `decont_accesion_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
+
+```bash
+# to build the contaminant_db.fasta run, you can add additional sequences to the csv file or concatenate to the output fasta file later
+python ./ssDNA_tool/ssDNA_annotator/modules/build_contaminant_db.py \
+            --accession-csv ./ssDNA_tool/DB/decont_accesion_list.csv \
+            --output-dir ./ssDNA_tool/DB \    
+            --email your_email@mail.com \
+            --batch-size 10
+```
+Outputs:
+```pgsql
+DB/
+├── contaminant.fasta       # Main database FASTA file
+├── contaminant_db_metadata.tsv # Sequence metadata
+└── contaminant_build.log
+```
+
+```bash           
+# run decontamination
+python ./ssDNA_tool/ssDNA_annotator/modules/detect_contamination.py \
+                    --input my_sequences.fasta \
+                    --db ./ssDNA_tool/DB/contaminant/contaminant_db.fasta \
+                    --output-dir results \
+                    --output-name clean_sequences.fa \
+                    --threads 4 \
+                    --keep-temp
+```
+Outputs:
+```pgsql
+results/
+├── clean_sequences.fasta             # Decontaminated sequences
+├── clean_sequences_stats.txt         # Decontamination statistics
+├── clean_sequences_blast.tsv         # BLAST results (if keep-temp is used)
+└── clean_sequences_decontamination.log  # Detailed log file
 ```
 
 ### Expected Outputs
@@ -79,13 +122,15 @@ python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
                       -d path/to/output/directory
 ```
 
-Before the aligment, if you want to adjust the sequence to begin with determined conserved nonanucleotide sequence run
+Before the alignment, if you want to adjust the sequence to begin with determined conserved nonanucleotide sequence run:
 
 ```bash
 python ./ssDNA_tool/ssDNA_annotator/modules/adjust_seq.py  \
                       -i /path/to/my_sequence.fa \
                       -o /path/to/output_directory # default is the current directory
-                      -m "ATCG" # default: TAGTATTAC
+                      -m "ATCG..." # default: TAGTATTAC
+
+# If the pattern is found, the output is a fasta file with each sequence beginning with the sequence -m
 
 # then, run the align module
 python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
@@ -93,8 +138,6 @@ python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
                       --input_fasta /path/to/my_sequence_motif_adj.fa \
                       -d path/to/output/directory
 ```
-
-If the pattern is found, the output is a fasta file with each sequence beginning with the sequence `-m`
 
 ##### Option 2: Use the Database that comes with the tool
 Select sequences by family (e.g., `Circoviridae`, `Microviridae`, etc.) or use `all` to include all families.
