@@ -111,8 +111,6 @@ results/
 └── clean_sequences_decontamination.log  # Detailed log file
 ```
 
-#### 1.3 Adjust sequence based on a sequence
-
 ## 2: Build a Phylogenetic Tree
 ### a) Sequence Alignment
 You have three options for performing the alignment:
