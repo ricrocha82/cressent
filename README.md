@@ -48,7 +48,7 @@ path/to/database
 
 ## 1: Dereplication (Clustering) and/or Decontamination
 
-#### Dereplication
+#### 1.1 Dereplication
 
 If you want to cluster (dereplicate) the metagenomic sequences, run:
 
@@ -67,7 +67,7 @@ output_clusters/.
 └── clustering.log           # Module log file
 ```
 
-#### Detecting contamination
+#### 1.2 Detecting contamination
 
 HTS data is susceptible to contamination from various sources, including laboratory reagents, kits, and environmental factors (the "kitome").
 
@@ -111,6 +111,7 @@ results/
 └── clean_sequences_decontamination.log  # Detailed log file
 ```
 
+#### 1.3 Adjust sequence based on a sequence
 
 ## 2: Build a Phylogenetic Tree
 ### a) Sequence Alignment
@@ -283,6 +284,8 @@ python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 ```
 
 ### d) Plotting a Tanglegram (or “cophylo plot”) 
+
+The module calculates the [Robinson-Foulds distance](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-07011-0) (RF score)
 
 ```bash
 /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/tanglegram.py \
@@ -524,7 +527,7 @@ output/
 └── output.csv            # (Optional) CSV file with detailed candidate data
 ```
 
-### 5.1 Cruise
+### 5.1 CRUISE
 Customized version of [CRUISE](https://journals.asm.org/doi/10.1128/mra.01123-22) (CRiteria-based Uncovering of Iteron SEquences) to search virus genomes for iterons. The module scans around nonanucleotide features and stem-loop structures from an input GFF file (with associated FASTA sequences) to identify and score candidate iteron repeats. Iteron annotations are then output to a new GFF file, and a detailed log is saved for tracking the analysis process.
 
 #### Features

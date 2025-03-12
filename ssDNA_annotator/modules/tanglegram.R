@@ -82,9 +82,9 @@ num_labels <- max(length(labels1), length(labels2))
 # createa dendrogram list
 dl <- dendlist(dend1, dend2)
 
-# # calculate RF score
-# RF_score = dist.dendlist(dl, method = c("edgeset"))
-# print(RF_score)
+# # calculate RF score (Robinson-Foulds distance)
+RF_score = dist.dendlist(dl, method = c("edgeset"))
+print(RF_score)
 # save the plot
 # Dynamically Adjust the PDF Dimensions
 pdf(file = file.path(output_dir, output_name), width = max(width, num_labels / 10), height = max(height, num_labels / 15))
@@ -93,6 +93,7 @@ dl %>%
     # dendextend::untangle(method = "step2side") %>%
     tanglegram(main_left = label1,
             main_right = label2,
+            main = paste("RF score:", RF_score),
             highlight_distinct_edges = TRUE,
             highlight_branches_col = TRUE,
             common_subtrees_color_branches = FALSE,

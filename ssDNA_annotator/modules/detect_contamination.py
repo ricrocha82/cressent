@@ -131,14 +131,14 @@ def run_blast(query_file: str, db_file: str, output_file: str,
 
 def parse_blast_results(blast_output: str, 
                         min_identity: float = 90.0,
-                        min_coverage: float = 80.0) -> Set[str]:
+                        min_coverage: float = 50.0) -> Set[str]:
     """
     Parse BLAST results to identify contaminant sequences.
     
     Args:
         blast_output: Path to the BLAST output file
         min_identity: Minimum percent identity to consider a match (default: 90.0)
-        min_coverage: Minimum query coverage to consider a match (default: 80.0)
+        min_coverage: Minimum query coverage to consider a match (default: 50.0)
         
     Returns:
         Set of sequence IDs identified as contaminants
@@ -226,7 +226,7 @@ def decontaminate(input_file: str,
                   output_file: str,
                   evalue: float = 1e-10,
                   identity: float = 90.0, 
-                  coverage: float = 80.0,
+                  coverage: float = 50.0,
                   threads: int = 1,
                   keep_temp: bool = False,
                   blast_output: str = None,
@@ -240,7 +240,7 @@ def decontaminate(input_file: str,
         output_file: Path to save filtered sequences
         evalue: BLAST E-value threshold (default: 1e-10)
         identity: Percent identity threshold (default: 90.0)
-        coverage: Query coverage threshold (default: 80.0)
+        coverage: Query coverage threshold (default: 50.0)
         threads: Number of CPU threads to use (default: 1)
         keep_temp: Whether to keep temporary files (default: False)
         blast_output: Path to save BLAST results (default: None)
@@ -283,8 +283,8 @@ def parse_arguments():
                         help="BLAST E-value threshold (default: 1e-10)")
     parser.add_argument("--identity", type=float, default=90.0, 
                         help="Minimum percent identity to consider a match (default: 90.0)")
-    parser.add_argument("--coverage", type=float, default=80.0, 
-                        help="Minimum query coverage to consider a match (default: 80.0)")
+    parser.add_argument("--coverage", type=float, default=50.0, 
+                        help="Minimum query coverage to consider a match (default: 50.0)")
     parser.add_argument("--threads", type=int, default=1, 
                         help="Number of CPU threads for BLAST (default: 1)")
     parser.add_argument("--keep-temp", action="store_true", 
