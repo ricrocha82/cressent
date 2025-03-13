@@ -65,17 +65,26 @@ def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file):
 #     AlignIO.write(alignment, phylip_file, "phylip")
 #     print(f"Converted {sanitized_fasta} to {phylip_file} in PHYLIP format.")
 
-def generate_phylogenetic_tree(input_fasta, bootstrap, threads, extra_args, model):
+def generate_phylogenetic_tree(input_fasta, bootstrap, threads, output_prefix, extra_args, model):
     """
     Build phylonetic tree using IQTREE
     Step 1: find the appropriate evolutionary model using ModelFinder (Kalyaanamoorthy et al., 2017) > version 1.5.4 and older, -m MFP is the default behavior.
     Step 2: generate tree using bootstrap support generated for 1,000 iterations
     """
 
-    cmd = f"iqtree2 -s {input_fasta} -m {model} -B {bootstrap} -T {threads} {extra_args}"
+    cmd = f"iqtree2 -s {input_fasta} -m {model} -B {bootstrap} -T {threads} --prefix {output_prefix} {extra_args}"
 
     logging.info(f"Running phylogenetic tree generation with command: {cmd}")
     run_command(cmd, "Error building Phylogenetic tree")
+
+# Extract chosen model from IQ-TREE log
+def extract_chosen_model(iqtree_log_file):
+    with open(iqtree_log_file, 'r') as file:
+        for line in file:
+            match = re.search(r"Best-fit model according to .+: ([^\s]+)", line)
+            if match:
+                return match.group(1)
+    return "Model not found"
 
 
 def main():
@@ -129,8 +138,13 @@ def main():
 
     logging.info("Starting pipeline")
     sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file)
-    generate_phylogenetic_tree(sanitized_fasta, args.bootstrap, args.threads, args.extra_args, args.model)
+    generate_phylogenetic_tree(sanitized_fasta, args.bootstrap, args.threads, prefix, args.extra_args, args.model)
     print(f"Phylogenetic tree analysis complete. Outputs saved in {output_dir}")
+
+    # Log the chosen model
+    iqtree_log_file = output_dir / f"{prefix}.iqtree"
+    chosen_model = extract_chosen_model(iqtree_log_file)
+    logging.info(f"Chosen evolutionary model for {prefix}: {chosen_model}")
 
 
 if __name__ == "__main__":
@@ -158,3 +172,7 @@ if __name__ == "__main__":
 # /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
 #         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/sub_reps_aligned_trimmed_sequences.fasta \
 #         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data
+
+# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
+#         -i /fs/scratch/Sullivan_Lab/Ricardo/ssDNA_db/aligned_db/caps/Microviridae_aligned_cap_trim.fa \
+#         -d /fs/scratch/Sullivan_Lab/Ricardo/tree_test
