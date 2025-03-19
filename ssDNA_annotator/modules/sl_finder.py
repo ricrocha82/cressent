@@ -12,6 +12,8 @@ import logging
 import os
 import sys
 from pathlib import Path
+from Bio import SeqIO
+import sys
 
 # Add the parent directory to sys.path to help find pos_stem_loop
 current_dir = Path(__file__).resolve().parent
@@ -284,13 +286,31 @@ if __name__ == "__main__":
                        type=int, default=15)
     
     args = parser.parse_args()
+
+    # Create output directory
+    output_dir = args.output_dir
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Determine the input FASTA full path
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+
+    # check fasta
+    input_fasta = validate_fasta(args.fasta_in)
     
     try:
         run_sl_finder(
-            args.fasta_in, 
+            input_fasta, 
             args.gff_in, 
             args.out_gff, 
-            args.output_dir,
+            output_dir,
             out_csv=args.csv_out,
             motif=args.motif, 
             family=args.family,

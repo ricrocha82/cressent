@@ -6,7 +6,7 @@ This script screens sequence data against a database of known viral contaminants
 and filters out potential contamination.
 
 Usage:
-    python decontaminate.py --input sequences.fasta --db viralContaminants.fasta --output-dir results
+    python decontaminate.py --input_fasta sequences.fasta --db viralContaminants.fasta --output-dir results
 
 Dependencies:
     - Biopython
@@ -274,7 +274,7 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Filter viral contaminants from sequence data")
     
-    parser.add_argument("-i","--input", required=True, help="Input FASTA file")
+    parser.add_argument("-i","--input_fasta", required=True, help="Input FASTA file")
     parser.add_argument("--db", required=True, help="Contaminant database FASTA file")
     parser.add_argument("-o","--output-dir", required=True, help="Output directory for results")
     parser.add_argument("--output-name", default="clean_sequences", 
@@ -296,20 +296,35 @@ if __name__ == "__main__":
     args = parse_arguments()
     
     # Create output directory if it doesn't exist
-    os.makedirs(args.output_dir, exist_ok=True)
+    output_dir = args.output_dir
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Determine the input FASTA full path
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+                logging.info(f"Using: {input_fasta} is not in the FASTA format")
+    # check fasta
+    input_fasta = validate_fasta(args.input_fasta)
     
     # Set up file paths
-    output_fasta = os.path.join(args.output_dir, f"{args.output_name}.fasta")
-    stats_file = os.path.join(args.output_dir, f"{args.output_name}_stats.txt")
-    blast_output_file = os.path.join(args.output_dir, f"{args.output_name}_blast.tsv")
-    log_file = os.path.join(args.output_dir, f"{args.output_name}_decontamination.log")
+    output_fasta = os.path.join(output_dir, f"{args.output_name}.fasta")
+    stats_file = os.path.join(output_dir, f"{args.output_name}_stats.txt")
+    blast_output_file = os.path.join(output_dir, f"{args.output_name}_blast.tsv")
+    log_file = os.path.join(output_dir, f"{args.output_name}_decontamination.log")
     
     # Set up logging
     logger = setup_logging(log_file)
     logger.info(f"Starting viral decontamination process")
-    logger.info(f"Input file: {args.input}")
+    logger.info(f"Input file: {input_fasta}")
     logger.info(f"Contaminant database: {args.db}")
-    logger.info(f"Output directory: {args.output_dir}")
+    logger.info(f"Output directory: {output_dir}")
     
     # Check dependencies
     if not check_dependencies():
@@ -326,7 +341,7 @@ if __name__ == "__main__":
         
         # Run decontamination
         decontaminate(
-            args.input, 
+            input_fasta, 
             args.db, 
             output_fasta,
             args.evalue,
@@ -339,7 +354,7 @@ if __name__ == "__main__":
         )
     
     logger.info(f"Decontamination process completed")
-    logger.info(f"Results saved to {args.output_dir}")
+    logger.info(f"Results saved to {output_dir}")
     logger.info(f"- Filtered sequences: {output_fasta}")
     logger.info(f"- Statistics file: {stats_file}")
     if args.keep_temp:
@@ -349,9 +364,9 @@ if __name__ == "__main__":
 
 
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/detect_contamination.py \
-#                     --input /fs/project/PAS1117/ricardo/CONGO/metaG/3.assembly/SRR6743910_spades_contigs.fasta \
+#                     --input_fasta /fs/project/PAS1117/ricardo/CONGO/metaG/3.assembly/SRR6743910_spades_contigs.fasta \
 #                     --db /fs/project/PAS1117/ricardo/ssDNA_tool/DB/contaminant/contaminant_db.fasta \
-#                     --output-dir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/decont_results \
+#                     --output-dir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/decont_results_1 \
 #                     --output-name decontaminated \
 #                     --threads 4 \
 #                     --keep-temp

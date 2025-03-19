@@ -8,6 +8,8 @@ from typing import List, Union, Optional
 from pathlib import Path
 import pandas as pd
 from collections import defaultdict
+from Bio import SeqIO
+import sys
 
 class CommandExecutor:
     @staticmethod
@@ -292,7 +294,7 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     
-    parser.add_argument("-i", "--input", required=True, help="Path to input FASTA file")
+    parser.add_argument("-i", "--input_fasta", required=True, help="Path to input FASTA file")
     parser.add_argument("-o", "--output", default=".", help="Directory to save output")
     parser.add_argument("-t", "--threads", type=int, default=32, help="Number of threads for BLAST")
     parser.add_argument("--min_ani", type=float, default=95.0, help="Minimum average identity for clustering")
@@ -300,11 +302,27 @@ def main():
     parser.add_argument("--min_qcov", type=float, default=0.0, help="Minimum query coverage")
     
     args = parser.parse_args()
+
+    output_dir = args.output
+
+    # Determine the input FASTA full path
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+                logging.info(f"Using: {input_fasta} is not in the FASTA format")
+    # check fasta
+    input_fasta = validate_fasta(args.input_fasta)
     
     try:
         clusterer = SequenceClusterer(
-            fasta_file=args.input,
-            output_dir=args.output,
+            fasta_file=input_fasta,
+            output_dir=output_dir,
             threads=args.threads,
             # evalue=args.evalue,
             min_ani=args.min_ani,

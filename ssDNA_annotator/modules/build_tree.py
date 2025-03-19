@@ -7,6 +7,7 @@ import re
 import pandas as pd
 from Bio import SeqIO
 import logging
+import sys
 
 def run_command(command, error_message):
     """
@@ -99,8 +100,20 @@ def main():
 
     args = parser.parse_args()
     prefix = os.path.splitext(os.path.basename(args.input_fasta))[0]
-    input_fasta = os.path.join(args.directory, args.input_fasta)
     output_dir = args.directory
+    # Determine the input FASTA full path
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+                logging.info(f"Using: {input_fasta} is not in the FASTA format")
+    # check fasta
+    input_fasta = validate_fasta(args.input_fasta)
     log_file = os.path.join(output_dir, "build_tree.log")
     name_table_file = os.path.join(output_dir, f"{prefix}_sanitized_name_table.tsv")
     sanitized_fasta = os.path.join(output_dir, f"{prefix}_sanitized_sequences.fasta")
@@ -174,5 +187,5 @@ if __name__ == "__main__":
 #         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data
 
 # /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
-#         -i /fs/scratch/Sullivan_Lab/Ricardo/ssDNA_db/aligned_db/caps/Microviridae_aligned_cap_trim.fa \
+#         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/align_test/metadata.csv\
 #         -d /fs/scratch/Sullivan_Lab/Ricardo/tree_test

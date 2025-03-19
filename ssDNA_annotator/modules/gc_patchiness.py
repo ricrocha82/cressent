@@ -122,7 +122,24 @@ if __name__ == "__main__":
     parser.add_argument("--output_name", default="gc_heatmap.pdf", help="Name of output image file with extension (default: gc_heatmap.png).")
 
     args = parser.parse_args()
-    plot_gc_heatmap(args.fasta_file, args.output_dir, args.window_size, args.step_size,
+
+    output_dir = args.output_dir
+    # Determine the input FASTA full path
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+                logging.info(f"Using: {input_fasta} is not in the FASTA format")
+    # check fasta
+    input_fasta = validate_fasta(args.input_fasta)
+
+    # run the script
+    plot_gc_heatmap(input_fasta, output_dir, args.window_size, args.step_size,
                     args.xticklabels, args.fig_width, args.fig_height, args.output_name)
 
 

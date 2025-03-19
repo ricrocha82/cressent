@@ -3,6 +3,7 @@ import re
 import argparse
 from Bio import SeqIO
 from Bio.Seq import Seq
+import sys
 
 def is_nucleotide_sequence(sequence: str) -> bool:
     """Check if a sequence contains only valid nucleotide characters (A, T, G, C, and optionally N)."""
@@ -47,8 +48,22 @@ def main():
     parser.add_argument("-m","--motif", default="TAGTATTAC", help="Motif to adjust sequences to start with (default: TAGTATTAC).")
     
     args = parser.parse_args()
-    os.makedirs(args.output_fasta, exist_ok=True)
-    process_fasta(args.input_fasta, args.output_fasta, args.motif)
+    output_dir = args.output_fasta
+    os.makedirs(output_dir , exist_ok=True)
+
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+
+    # check fasta
+    input_fasta = validate_fasta(args.input_fasta)
+    process_fasta(input_fasta, output_dir , args.motif)
 
 if __name__ == "__main__":
     main()
@@ -57,5 +72,5 @@ if __name__ == "__main__":
 
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/adjust_seq.py \
 #             -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/rearrange/alpha_complete.fa \
-#             -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/rearrange \
+#             -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/rearrange1 \
 #               -m "CCGCAAATAACACTAAC"

@@ -290,25 +290,23 @@ The additional --split flag instructs the module to:
 - Write the split sequences to two FASTA files (named with a _1.fasta and _2.fasta suffix) in the specified output directory.
 
 ```bash
-# Running Without Splitting
-python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
-    -i my_sequences.fasta \
-    -d ./output/motif \
-    -p "[GA].{4}GK[TS]"
+# 1. Basic motif finding:
+python ./ssDNA_annotator/modules/motif.py -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]"
 
-# Running With Splitting
-python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
-    -i my_sequences.fasta \
-    -d ./motif_split \
-    -p "[GA].{4}GK[TS]" \
-    --split
+# 2. Motif finding with sequence splitting:
+python ./ssDNA_annotator/modules/motif.py -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]" --split-sequences
 
-# if using an aligment file, you may want to remove gaps (-) before detecting patterns
-python ./ssDNA_tool/ssDNA_annotator/modules/motif.py \
-    -i my_sequences_aligned_trimmed_sequences.fasta \
-    -d ./motif_split \
-    -p "[GA].{4}GK[TS]" \
-    --split --remove-gaps
+# 3. Motif finding with sequence logo generation:
+python ./ssDNA_annotator/modules/motif.py \
+        -i sequences.fasta -d /path/to/output \
+        -p "[GA].{4}GK[TS]" \
+        --generate-logo --logo-name motif_logo.pdf --plot-title "My Motif Logo"
+
+# 4. Complete workflow with splitting by group label:
+python ./ssDNA_annotator/modules/motif.py \
+        -i sequences.fasta -d /path/to/output \
+        -p "[GA].{4}GK[TS]" --split-sequences \
+        --generate-logo --split-logo --metadata metadata.csv --ncol 2 --group-label family
 ```
 
 The tree output directory (`output/motif/`) will contain:
@@ -514,7 +512,7 @@ Customized version of [CRUISE](https://journals.asm.org/doi/10.1128/mra.01123-22
 - **Customizable Parameters**: Accepts several command-line arguments to fine-tune the iteron search.
 
 ```bash 
-python cruise.py --inputFasta examples/test.fasta \
+python run_cruise.py --inputFasta examples/test.fasta \
                  --inputGFF examples/out.gff \
                  --outputGFF examples/finaloutput.gff \
                  --outputDir output/ \

@@ -15,6 +15,9 @@ import shutil
 import cruise
 import args
 
+from Bio import SeqIO
+import sys
+
 def setup_logger(output_dir):
     """Set up logging configuration with file output in the specified directory"""
     logger = logging.getLogger(__name__)
@@ -175,23 +178,35 @@ def main():
     internal_output_dir.mkdir(parents=True, exist_ok=True)
     
     try:
+        # Determine the input FASTA full path
+        def validate_fasta(filename):
+            with open(filename, "r") as handle:
+                fasta = SeqIO.parse(handle, "fasta")
+                if any(fasta):
+                    print("FASTA checked.")
+                    input_fasta = os.path.join(output_dir, filename)
+                    return input_fasta
+                else:
+                    sys.exit("Error: Input file is not in the FASTA format.\n")
+                    logging.info(f"Using: {input_fasta} is not in the FASTA format")
         # Convert input paths to absolute paths
         input_fasta = Path(args_ns.inputFasta).resolve()
+        if not input_fasta.exists():
+            raise FileNotFoundError(f"Input FASTA file not found: {input_fasta}")
+        # check fasta
+        input_fasta = validate_fasta(input_fasta)
         input_gff = Path(args_ns.inputGFF).resolve()
+        # Verify input files exist
+        if not input_gff.exists():
+            raise FileNotFoundError(f"Input GFF file not found: {input_gff}")
         output_gff = output_dir / Path(args_ns.outputGFF).name
-        
+                
         logger.info(f"Output directory: {output_dir}")
         logger.info(f"Input FASTA: {input_fasta}")
         logger.info(f"Input GFF: {input_gff}")
         logger.info(f"Output GFF: {output_gff}")
         logger.info(f"Internal working directory: {internal_dir}")
-        
-        # Verify input files exist
-        if not input_fasta.exists():
-            raise FileNotFoundError(f"Input FASTA file not found: {input_fasta}")
-        if not input_gff.exists():
-            raise FileNotFoundError(f"Input GFF file not found: {input_gff}")
-        
+            
         # Process files
         input_convert(input_fasta, input_gff, input_dir)
         
@@ -264,7 +279,7 @@ if __name__ == "__main__":
 
 
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/run_cruise.py \
-#         --outputDir /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data \
+#         --outputDir /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data_1 \
 #         --inputFasta /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/test.fasta \
 #         --inputGFF /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/out_slf.gff \
 #         --outputGFF results_cruise.gff

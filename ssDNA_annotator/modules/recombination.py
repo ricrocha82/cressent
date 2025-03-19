@@ -34,6 +34,8 @@ import tarfile
 import platform
 from datetime import datetime
 from pathlib import Path
+from Bio import SeqIO
+import sys
 
 # Get the absolute path to the module directory
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -665,10 +667,25 @@ def main(args=None):
         run_maxchi = True
         run_chimaera = True
         run_bootscan = True
+
+    output_dir = parsed_args.output
+    # Determine the input FASTA full path
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+                logging.info(f"Using: {input_fasta} is not in the FASTA format")
+    # check fasta
+    input_fasta = validate_fasta(parsed_args.input)
     
     # Run recombination detection
     success = detect_recombination(
-        parsed_args.input,
+        input_fasta,
         parsed_args.output,
         parsed_args.outdir,
         parsed_args.config,
@@ -687,3 +704,9 @@ def main(args=None):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/recombination.py \
+#     -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/recombination_test/recomb2.fa \
+#     -o test_2.csv \
+#     -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/recombination_test

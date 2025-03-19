@@ -5,6 +5,8 @@ import subprocess
 import os
 import logging
 from pathlib import Path
+from Bio import SeqIO
+import sys
 
 def setup_logging(output_dir):
     """Set up logging to save logs in the output directory."""
@@ -92,14 +94,33 @@ def main():
     args = parser.parse_args()
 
     # Create output directory
-    os.makedirs(args.output_dir, exist_ok=True)
+    output_dir = args.output_dir
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Determine the input FASTA full path
+    def validate_fasta(filename):
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                print("FASTA checked.")
+                input_fasta = os.path.join(output_dir, filename)
+                return input_fasta
+            else:
+                sys.exit("Error: Input file is not in the FASTA format.\n")
+
+    # check fasta
+    input_fasta = validate_fasta(args.fasta)
 
     # Set up logging
-    setup_logging(args.output_dir)
+    setup_logging(output_dir)
     logging.info("Starting sequence logo generation.")
 
     # Validate inputs
-    if args.fasta is None and args.seq_df is None:
+    if input_fasta and args.seq_df:
+        logging.error("you need to put in either a table -tb or a fasta -f.")
+        parser.error("you need to put in either a table -tb or a fasta -f.")
+
+    if input_fasta is None and args.seq_df is None:
         logging.error("Either --fasta or --seq_df must be provided.")
         parser.error("Either --fasta or --seq_df must be provided.")
 
@@ -112,7 +133,7 @@ def main():
 
     # Run R script to generate sequence logos
     generate_seqlogo(
-        fasta_file=args.fasta,
+        fasta_file=input_fasta,
         seq_df=args.seq_df,
         output_dir=args.output_dir,
         output_name=args.output_name,
@@ -140,6 +161,7 @@ if __name__ == "__main__":
 
 # with spltting by group label
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.py \
+#     -f /fs/project/PAS1117/ricardo/ssDNA_tool/DB/reps/Adamaviridae.fa \
 #     -tb /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif/pattern_positions.txt \
 #     -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif \
 #     --output_name logo_split.pdf \

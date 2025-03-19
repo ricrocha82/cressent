@@ -9,6 +9,7 @@ import pandas as pd
 import re
 from Bio import SeqIO
 from typing import List, Optional
+import sys
 
 
 def setup_logging(output_dir):
