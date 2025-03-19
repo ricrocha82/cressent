@@ -40,7 +40,7 @@ def get_database_files(db_path: str, families: List[str], protein_type: Optional
 
     for family in families:
         if protein_type:
-            filename = f"{family}_{protein_type}.fa"
+            filename = f"{protein_type}/{family}.fa"
         else:
             filename = f"{family}.fa"
         
@@ -193,7 +193,7 @@ def main():
     parser.add_argument("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
     parser.add_argument("--db_family", nargs='+', help="List of family names or 'all' to use multiple database sequences")
     parser.add_argument("--db_path", default="./db", help="Path to the database FASTA files")
-    parser.add_argument("--protein_type", choices=['Rep', 'Cap', 'ORF'], help="Specify protein type (Rep or Cap) for database files")
+    parser.add_argument("--protein_type", choices=['reps', 'caps', 'orf'], help="Specify protein type (Rep or Cap) for database files")
     
     args = parser.parse_args()
     
@@ -264,9 +264,10 @@ if __name__ == "__main__":
 # with DB
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py  --threads 24 \
 #                     --input_fasta /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/test_data/sub_reps.fa \
-#                     --db_family all \
-#                     --db_path /fs/scratch/Sullivan_Lab/Ricardo/ssDNA_db/concat/reps \
-#                     -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_1/
+#                     --db_family Circoviridae \
+#                     --db_path /fs/project/PAS1117/ricardo/ssDNA_tool/DB \
+#                      --protein_type reps \
+#                     -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/align_test
 
 # only input sequences
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py  --threads 24 \
