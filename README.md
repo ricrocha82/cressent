@@ -1,4 +1,4 @@
-# ssDNA tool
+# CRESSENT (CRESSdna Extended/Exploratory aNnotation Toolkit)
 a modular tool to help researchers to automatically annotate ssDNA contigs
 
 # Install
@@ -6,7 +6,7 @@ a modular tool to help researchers to automatically annotate ssDNA contigs
 conda env create -f ./ssDNA_tool/ssDNA_env.yaml
 ```
 ---
-# ssDNA Annotator Pipeline Example
+# CRESSENT Pipeline Example
 
 This pipeline demonstrates how to process metagenomic sequences and build phylogenetic trees using the ssDNA_annotator tool. The workflow includes sequence clustering (dereplication), alignment, tree building, and visualization.
 
@@ -51,7 +51,7 @@ HTS data is susceptible to contamination from various sources, including laborat
 
 It's good practice for researchers to sequence negative or blank samples that have undergone the same processing pathway. However, this is not always done or feasible, and it may still fail to detect certain contaminants.
 
-The `decont_accession_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
+The `decont_accession_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Naccache et al 2013](https://journals.asm.org/doi/10.1128/jvi.02323-13),[Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), [Keeler et al 2021](https://doi.org/10.1128/MRA.00273-21), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
 
 ```bash
 # to build the contaminant_db.fasta run, you can add additional sequences to the csv file or concatenate to the output fasta file later
