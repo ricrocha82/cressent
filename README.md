@@ -546,7 +546,7 @@ The module accepts the following arguments:
 - `--verbose`: Enable verbose output (prints progress to the console).
 
 #### Output files
-```pqsql
+```pgsql
 output/
 ├── cruise.log
 └── finaloutput.gff
@@ -637,8 +637,8 @@ The module implements seven recombination detection methods:
 - `-verbose`: Enable verbose logging
 
 Outputs:
-```pqsql
-output/.
+```pgsql
+output/
 ├── recombination.log               # log file
 ├── aligned_sequences.3s.log        # 3Seq output
 ├── aligned_sequences.3s.pvalHist   # 3Seq output
