@@ -51,7 +51,7 @@ HTS data is susceptible to contamination from various sources, including laborat
 
 It's good practice for researchers to sequence negative or blank samples that have undergone the same processing pathway. However, this is not always done or feasible, and it may still fail to detect certain contaminants.
 
-The `decont_accession_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Naccache et al 2013](https://journals.asm.org/doi/10.1128/jvi.02323-13),[Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), [Keeler et al 2021](https://doi.org/10.1128/MRA.00273-21), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
+The `decont_accession_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Naccache et al 2013](https://journals.asm.org/doi/10.1128/jvi.02323-13), [Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), [Keeler et al 2021](https://doi.org/10.1128/MRA.00273-21), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
 
 ```bash
 # to build the contaminant_db.fasta run, you can add additional sequences to the csv file or concatenate to the output fasta file later
@@ -61,7 +61,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/build_contaminant_db.py \
             --email your_email@mail.com \
             --batch-size 10
 ```
-Outputs:
+Database:
 ```pgsql
 DB/
 ├── contaminant.fasta       # Main database FASTA file
@@ -635,6 +635,17 @@ The module implements seven recombination detection methods:
 
 - `-quiet`: Suppress console output
 - `-verbose`: Enable verbose logging
+
+Outputs:
+```pqsql
+output/
+├── recombination.log               # log file
+├── aligned_sequences.3s.log        # 3Seq output
+├── aligned_sequences.3s.pvalHist   # 3Seq output
+├── aligned_sequences.3s.longRec    # 3Seq output
+├── aligned_sequences.3s.rec        # 3Seq output
+└── output.csv
+```
 
 ## 7: GC Content Heatmap
 Calculates %G+C content using a sliding window approach.
