@@ -638,7 +638,7 @@ The module implements seven recombination detection methods:
 
 Outputs:
 ```pqsql
-output/
+output/.
 ├── recombination.log               # log file
 ├── aligned_sequences.3s.log        # 3Seq output
 ├── aligned_sequences.3s.pvalHist   # 3Seq output
