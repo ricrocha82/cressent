@@ -401,7 +401,7 @@ python ./ssDNA_annotator/modules/gene_map.py \
                     -t "Motif Distribution in Genes"
 ```
 
-## 4: make Sequence logo and more
+## 4: make Sequence logo
 This module generates sequence logos from FASTA files or motif detection tables. It supports splitting the figure by a metadata column and automatically detects protein vs. nucleotide sequences. A log file (`seq_logo.log`) is automatically created in the output directory.
 
 - -tb pattern_positions.txt: Input motif table (e.g., from seqkit locate).
@@ -428,8 +428,6 @@ python seq_logo.py \
     --metadata /output/metadata.csv \
     --ncol 2 --group_label family
 ```
-
-(...) plot the motifs in pile style ([Motifstack](https://bioconductor.org/packages/devel/bioc/vignettes/motifStack/inst/doc/motifStack_HTML.html#motifPiles) package)
 
 ## 5: Putative Stem Loop and Iterons annotation
 ### 5.1 Stem Loop Finder
