@@ -107,7 +107,7 @@ def main():
             fasta = SeqIO.parse(handle, "fasta")
             if any(fasta):
                 print("FASTA checked.")
-                input_fasta = os.path.join(output_dir, filename)
+                input_fasta = filename
                 return input_fasta
             else:
                 sys.exit("Error: Input file is not in the FASTA format.\n")
