@@ -151,7 +151,7 @@ def split_fasta(table_file, fasta_file, prefix_out):
     logging.info(f"Split sequences saved to: {out1} and {out2}")
     return out1, out2
 
-def generate_seqlogo(fasta_file, seq_table, output_dir, output_name="sequence_logo.pdf",
+def generate_seqlogo(seq_table, output_dir, output_name="sequence_logo.pdf",
                      plot_title="sequence_logo", width=10, height=10, split=False,
                      metadata=None, ncol=None, group_label=None):
     """
@@ -185,7 +185,6 @@ def generate_seqlogo(fasta_file, seq_table, output_dir, output_name="sequence_lo
     cmd = [
         "Rscript",
         str(r_script_path),
-        f"fasta_file={fasta_file if fasta_file else ''}",
         f"seq_df={seq_table if seq_table else ''}",
         f"plot_title={plot_title}",
         f"output_dir={output_dir}",
@@ -293,7 +292,6 @@ def main():
             exit(1)
         
         logo_file = generate_seqlogo(
-            fasta_file=input_fasta if not args.remove_gaps else None,
             seq_table=seq_table,
             output_dir=output_dir,
             output_name=args.logo_name,
@@ -322,7 +320,7 @@ if __name__ == "__main__":
 
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif.py \
 #               -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif/ungapped_sequences.fasta \
-#                  -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_test \
+#                  -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_test_2 \
 #                  -p "[GA].{4}GK[TS]" \
 #                  --generate-logo \
 #                  --logo-name motif_logo.pdf \

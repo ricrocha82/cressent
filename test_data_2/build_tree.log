@@ -1,0 +1,15 @@
+2025-03-28 17:29:37,135 - INFO - Starting pipeline
+2025-03-28 17:29:37,139 - INFO - Sanitized sequence names and saved to /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.
+2025-03-28 17:29:37,147 - INFO - Name table saved to /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv.
+2025-03-28 17:29:37,147 - INFO - Running phylogenetic tree generation with command: iqtree2 -s /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta -m VT+F+R7 -B 1000 -T AUTO --prefix sub_reps_aligned_trimmed_sequences 
+2025-03-28 17:29:37,188 - ERROR - Error building Phylogenetic tree: Command 'iqtree2 -s /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta -m VT+F+R7 -B 1000 -T AUTO --prefix sub_reps_aligned_trimmed_sequences ' returned non-zero exit status 2.
+2025-03-28 17:30:53,856 - INFO - Starting pipeline
+2025-03-28 17:30:53,860 - INFO - Sanitized sequence names and saved to /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.
+2025-03-28 17:30:53,868 - INFO - Name table saved to /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv.
+2025-03-28 17:30:53,868 - INFO - Running phylogenetic tree generation with command: iqtree2 -s /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta -m MFP -B 1000 -T AUTO --prefix sub_reps_aligned_trimmed_sequences redo_tree
+2025-03-28 17:30:53,912 - ERROR - Error building Phylogenetic tree: Command 'iqtree2 -s /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta -m MFP -B 1000 -T AUTO --prefix sub_reps_aligned_trimmed_sequences redo_tree' returned non-zero exit status 2.
+2025-03-28 17:31:33,521 - INFO - Starting pipeline
+2025-03-28 17:31:33,526 - INFO - Sanitized sequence names and saved to /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.
+2025-03-28 17:31:33,535 - INFO - Name table saved to /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv.
+2025-03-28 17:31:33,535 - INFO - Running phylogenetic tree generation with command: iqtree2 -s /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta -m MFP -B 1000 -T AUTO --prefix sub_reps_aligned_trimmed_sequences redo-tree
+2025-03-28 17:31:33,575 - ERROR - Error building Phylogenetic tree: Command 'iqtree2 -s /fs/project/PAS1117/ricardo/ssDNA_tool/test_data_2/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta -m MFP -B 1000 -T AUTO --prefix sub_reps_aligned_trimmed_sequences redo-tree' returned non-zero exit status 2.

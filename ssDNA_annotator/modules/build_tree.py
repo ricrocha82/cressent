@@ -155,7 +155,8 @@ def main():
     print(f"Phylogenetic tree analysis complete. Outputs saved in {output_dir}")
 
     # Log the chosen model
-    iqtree_log_file = output_dir / f"{prefix}.iqtree"
+    iqtree_log_file = os.path.join(output_dir, f"{prefix}.iqtree")
+    # iqtree_log_file = output_dir / f"{prefix}.iqtree"
     chosen_model = extract_chosen_model(iqtree_log_file)
     logging.info(f"Chosen evolutionary model for {prefix}: {chosen_model}")
 
