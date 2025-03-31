@@ -1,0 +1,8 @@
+biopython
+pandas
+matplotlib
+seaborn
+numpy
+gffutils
+click
+viennarna

@@ -18,7 +18,7 @@ setup(
     include_package_data=True,
     entry_points={
         "console_scripts": [
-            "cressent=ssDNA_annotator.cressent:main",
+            "cressent=cressent_core.cli:cli",
         ],
     },
     install_requires=[
@@ -28,12 +28,12 @@ setup(
         "seaborn",
         "numpy",
         "gffutils",
-        "ape",  # For R scripts
-        "ViennaRNA",  # For RNA folding
+        "click",
+        "viennarna",
     ],
     python_requires=">=3.6",
     description="A comprehensive toolkit for ssDNA virus analysis",
     author="Pavan R. & Tisza M.",
     author_email="pavan.4@osu.edu",
-    url="https://github.com/ricrocha82/ssdna_tool",
+    url="https://github.com/ricrocha82/cressent",
 )

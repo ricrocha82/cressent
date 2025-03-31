@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: cressent
+Version: 0.1.0
+Summary: A comprehensive toolkit for ssDNA virus analysis
+Home-page: https://github.com/ricrocha82/cressent
+Author: Pavan R. & Tisza M.
+Author-email: pavan.4@osu.edu
+Requires-Python: >=3.6
+License-File: LICENSE

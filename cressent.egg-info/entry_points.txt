@@ -1,0 +1,2 @@
+[console_scripts]
+cressent = cressent_core.cli:cli

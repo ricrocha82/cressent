@@ -1,0 +1,78 @@
+{% set name = "cressent" %}
+{% set version = "0.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: .
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  entry_points:
+    - cressent = cressent_core.cli:cli
+  noarch: python
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - biopython
+    - pandas
+    - matplotlib
+    - seaborn
+    - numpy
+    - gff3
+    - gffutils
+    - click
+    - blast
+    - mafft
+    - trimal
+    - iqtree
+    - r-base
+    - r-ape
+    - r-dendextend
+    - r-ggseqlogo
+    - bioconductor-biostrings
+    - bioconductor-decipher
+    - r-ggplot2
+    - r-tidytree
+    - r-dplyr
+    - bioconductor-treeio
+    - bioconductor-ggtree
+    - bioconductor-ggtreeextra
+    - viennarna
+    - meme
+    - seqkit
+    - simplejson
+    - six
+    - scipy
+    - argh
+    - argcomplete
+
+
+test:
+  commands:
+    - cressent --help
+    - cressent build_tree --help
+    - cressent align --help
+
+about:
+  home: https://github.com/ricrocha82/cressent
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'A comprehensive toolkit for ssDNA virus analysis'
+  description: |
+    cressent is a tool for analyzing ssDNA viruses, providing modules for 
+    sequence alignment, phylogenetic analysis, motif discovery, visualization and more.
+  doc_url: https://github.com/ricrocha82/cressent
+  dev_url: https://github.com/ricrocha82/cressent
+
+extra:
+  recipe-maintainers:
+    - ricrocha82
