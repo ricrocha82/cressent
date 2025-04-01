@@ -173,10 +173,22 @@ if (!is.null(opt$alignment)) {
 # --- Optionally color the tree if --color is TRUE and metadata is provided ---
 if (opt$color && !is.null(opt$metadata_1) && !is.null(opt$metadata_2)) {
     new_labels <- trda %>% select(label, !!as.name(tip_label), isTip)
+    # count number of lables
+    n_groups = length(unique(na.omit(new_labels[[tip_label]])))
+    
     grp <- split(new_labels$label[new_labels$isTip], new_labels[[tip_label]][new_labels$isTip])
     p <- groupOTU(p, grp, tip_label) +
         aes(color = !!sym(tip_label)) +
         theme(legend.position = "right")
+
+    # Create a discrete color palette based on the number of groups
+    if (n_groups <= 9) {
+        pal <- RColorBrewer::brewer.pal(n_groups, "Set1")
+    } else {
+        pal <- grDevices::rainbow(n_groups)
+    }
+      # Apply the palette to the plot
+    p <- p + scale_color_manual(values = pal)
 }
 
 # --- Save the plot ---
