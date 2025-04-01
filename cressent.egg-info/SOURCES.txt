@@ -1,6 +1,6 @@
 LICENSE
 README.md
-setup.py
+pyproject.toml
 cressent.egg-info/PKG-INFO
 cressent.egg-info/SOURCES.txt
 cressent.egg-info/dependency_links.txt

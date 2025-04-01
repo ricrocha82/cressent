@@ -17,7 +17,7 @@ build:
 
 requirements:
   host:
-    - python >=3.6
+    - python >=3.10
     - pip
   run:
     - mafft=7.525 #
@@ -44,16 +44,11 @@ requirements:
     - bioconductor-ggtree=3.14.0
     - bioconductor-ggtreeextra=1.16.0
     - viennarna
-    # - argcomplete=1.9.4
-    # - argh=0.26.2
     - gffutils=0.13
-    # - simplejson>=3.17.0
-    # - six=1.11.0
     - scipy=1.15.2
     - matplotlib=3.10.0
     - seaborn=0.13.2
     - meme=5.5.7
-    - python=3.10
 
 channels:
   - bioconda
@@ -61,6 +56,8 @@ channels:
   - defaults
 
 test:
+  imports:
+    - cressent_core
   commands:
     - cressent --help
     - cressent build_tree --help
@@ -81,3 +78,4 @@ about:
 extra:
   recipe-maintainers:
     - ricrocha82
+    - mtisza1

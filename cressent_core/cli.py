@@ -247,10 +247,10 @@ def gene_map(input, output, height, width, title):
 @click.option("--open_angle", default=0, type=float, help="Open angle for circular/unrooted layouts")
 @click.option("--offset", default=0.14, type=float, help="Tip label offset")
 @click.option("--tip_label", default="family", help="Column name to use as the tip label")
-@click.option("--color/--no-color", default=True, help="Color tree by group (requires metadata)")
+@click.option("--color", default=True, help="Color tree by group (requires metadata)")
 @click.option("--fig_width", type=float, default=7, help="Figure width (ggsave)")
 @click.option("--fig_height", type=float, default=7, help="Figure height (ggsave)")
-@click.option("--plot_tips/--no-plot_tips", default=True, help="Include tip labels in the plot")
+@click.option("--plot_tips", default=True, help="Include tip labels in the plot")
 @click.option("--plot_name", default="tree_plot.pdf", help="Name of the output plot file")
 def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layout, 
              branch_length, open_angle, offset, tip_label, color, fig_width, 
@@ -281,12 +281,14 @@ def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layo
             sys.argv.extend(['--offset', str(offset)])
         if tip_label:
             sys.argv.extend(['--tip_label', tip_label])
-        sys.argv.extend(['--color' if color else '--no-color'])
+        if color:
+            sys.argv.extend(['--color', str(color).upper()])
         if fig_width:
             sys.argv.extend(['--fig_width', str(fig_width)])
         if fig_height:
             sys.argv.extend(['--fig_height', str(fig_height)])
-        sys.argv.extend(['--plot_tips' if plot_tips else '--no-plot_tips'])
+        if plot_tips:
+            sys.argv.extend(['--plot_tips', str(plot_tips).upper()])
         if plot_name:
             sys.argv.extend(['--plot_name', plot_name])
         plot_tree_main()

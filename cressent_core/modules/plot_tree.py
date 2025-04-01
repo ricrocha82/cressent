@@ -113,6 +113,14 @@ if __name__ == "__main__":
 #     --outdir /fs/project/PAS1117/ricardo/cressent/test_data/output/tree \
 #     --metadata_1 /fs/project/PAS1117/ricardo/cressent/test_data/output/metadata.csv \
 #     --metadata_2 /fs/project/PAS1117/ricardo/cressent/test_data/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv\
-#     --layou circular --branch_length branch.length --open_angle=90 --offset 0.2 \
+#     --layout circular --branch_length branch.length --open_angle=90 --offset 0.2 \
 #     --tip_label family --fig_width 8 --fig_height 8 \
 #     --plot_name my_custom_tree.pdf
+
+# cressent plot_tree \
+#     --tree /fs/project/PAS1117/ricardo/cressent/test_data/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
+#     --outdir /fs/project/PAS1117/ricardo/cressent/test_data/output/tree \
+#     --metadata_1 /fs/project/PAS1117/ricardo/cressent/test_data/output/metadata.csv \
+#     --metadata_2 /fs/project/PAS1117/ricardo/cressent/test_data/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv\
+#     --tip_label family --fig_width 8 --fig_height 8 \
+#     --plot_name my_custom_tree_cressent.pdf

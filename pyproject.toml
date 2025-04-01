@@ -1,31 +1,33 @@
 [build-system]
-requires = ["setuptools>=61", "wheel"]
+requires = ["setuptools>=64.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cressent"
 version = "0.1.0"
 description = "A comprehensive toolkit for ssDNA virus analysis"
+authors = [
+    {name = "Pavan R. & Tisza M.", email = "pavan.4@osu.edu"}
+]
 readme = "README.md"
 requires-python = ">=3.6"
-license = { text = "MIT" }
-authors = [
-  { name = "Pavan R.", email = "pavan.4@osu.edu" },
-  { name = "Tisza M." }
-]
-urls = { 
-  "Homepage" = "https://github.com/ricrocha82/cressent"
-}
 dependencies = [
-  "biopython",
-  "pandas",
-  "matplotlib",
-  "seaborn",
-  "numpy",
-  "gffutils",
-  "click",
-  "viennarna"  # NOTE: only available via Bioconda, not PyPI
+    "biopython",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "numpy",
+    "gffutils",
+    "click",
+    "viennarna",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ricrocha82/cressent"
+Repository = "https://github.com/ricrocha82/cressent"
 
 [project.scripts]
 cressent = "cressent_core.cli:cli"
+
+[tool.setuptools]
+packages = ["cressent_core"]
