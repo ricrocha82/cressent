@@ -1,6 +1,11 @@
 # CRESSENT (CRESSdna Extended/Exploratory aNnotation Toolkit)
 a modular tool to help researchers to automatically annotate ssDNA contigs
 
+<div align="center">
+<img src="https://github.com/ricrocha82/cressent/figs/fig_cressent.jpg">
+</div>
+
+
 # Install
 ```bash
 conda env create -f ./ssDNA_tool/ssDNA_env.yaml
