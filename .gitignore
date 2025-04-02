@@ -11,6 +11,7 @@
 # Distribution / packaging
 .Python
 build/
+recipe/
 develop-eggs/
 dist/
 downloads/
@@ -42,3 +43,11 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+.ipynb_checkpoints/
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv
