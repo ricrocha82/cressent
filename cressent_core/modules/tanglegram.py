@@ -4,6 +4,8 @@ import argparse
 import subprocess
 import os
 import re
+from pathlib import Path
+
 
 def run_command(command, error_message):
     """
@@ -32,7 +34,9 @@ def generate_tanglegram(tree1, tree2, label1, label2, output_dir, name_tanglegra
         lab_cex (numeric): cex size of the labels.
     """
     # Path to the R script
-    r_script_path = "/fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/tanglegram.R"  # Update with the actual path
+    modules_dir = Path(__file__).resolve().parent  # Directory where the script is located
+    r_script_path = modules_dir / "tanglegram.R"  # Update with the actual path
+    #r_script_path = "/fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/tanglegram.R"  # Update with the actual path
 
     # Build the command
     cmd = [

@@ -54,8 +54,7 @@ def validate_fasta(filename, output_dir=None):
             fasta = SeqIO.parse(handle, "fasta")
             if any(fasta):
                 logging.info("FASTA format validated.")
-                if output_dir and not os.path.isabs(filename):
-                    return os.path.join(output_dir, filename)
+
                 return filename
             else:
                 logging.error(f"Error: Input file {filename} is not in the FASTA format.")
@@ -267,8 +266,6 @@ def main():
     
     # if not os.path.isabs(input_fasta):
     #     input_fasta = os.path.join(output_dir, input_fasta)
-    logging.info(f"Using input FASTA: {input_fasta}")
-    logging.info(f"Searching for motif with pattern: {args.pattern}")
 
     # Run motif finding using seqkit
     seq_table = find_pattern(input_fasta, args.pattern, output_dir, table_name=args.table_name, remove_gaps=args.remove_gaps)

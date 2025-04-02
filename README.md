@@ -225,7 +225,7 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
 
 
 ```bash
-# Use the teefile from IQ-TREE
+# Use the treefile from IQ-TREE
 python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
 			--outdir ./output/tree \
@@ -253,7 +253,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
 			--outdir ./output/tree \
-            --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
+         --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
 			--metadata_1 ./output/metadata.csv \
 			--metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
 			--layout rectangular --branch_length branch.length \

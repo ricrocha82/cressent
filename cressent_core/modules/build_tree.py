@@ -99,8 +99,14 @@ def main():
     
 
     args = parser.parse_args()
-    prefix = os.path.splitext(os.path.basename(args.input_fasta))[0]
     output_dir = args.directory
+
+    prefix = os.path.join(
+        output_dir,
+        os.path.splitext(
+            os.path.basename(args.input_fasta)
+            )[0]
+    )
     # Determine the input FASTA full path
     def validate_fasta(filename):
         with open(filename, "r") as handle:
@@ -115,8 +121,8 @@ def main():
     # check fasta
     input_fasta = validate_fasta(args.input_fasta)
     log_file = os.path.join(output_dir, "build_tree.log")
-    name_table_file = os.path.join(output_dir, f"{prefix}_sanitized_name_table.tsv")
-    sanitized_fasta = os.path.join(output_dir, f"{prefix}_sanitized_sequences.fasta")
+    name_table_file = f"{prefix}_sanitized_name_table.tsv"
+    sanitized_fasta = f"{prefix}_sanitized_sequences.fasta"
     bootstrap = args.bootstrap
     
     # Create nested directories
@@ -126,7 +132,7 @@ def main():
     except FileExistsError:
         print(f"directory '{output_dir}' already exist.")
     except PermissionError:
-        print(f"Permission denied: Unable to create '{nested_directory}'.")
+        print(f"Permission denied: Unable to create '{output_dir}'.")
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -155,9 +161,12 @@ def main():
     print(f"Phylogenetic tree analysis complete. Outputs saved in {output_dir}")
 
     # Log the chosen model
-    iqtree_log_file = os.path.join(output_dir, f"{prefix}.iqtree")
+    iqtree_log_file = f"{prefix}.log"
     # iqtree_log_file = output_dir / f"{prefix}.iqtree"
-    chosen_model = extract_chosen_model(iqtree_log_file)
+    if args.model == "MFP":
+        chosen_model = extract_chosen_model(iqtree_log_file)
+    else:
+        chosen_model = args.model
     logging.info(f"Chosen evolutionary model for {prefix}: {chosen_model}")
 
 
