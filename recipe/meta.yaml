@@ -7,7 +7,7 @@ package:
 
 source:
   # path: ..
-  git_url: https://github.com/ricrocha82/cressent/archive/refs/tags/v{{ version }}.tar.gz
+  git_url: https://github.com/ricrocha82/cressent/archive/v{{ version }}.tar.gz
 
 build:
   number: 0
