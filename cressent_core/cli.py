@@ -253,8 +253,8 @@ def gene_map(input, output, height, width, title):
 @click.option("--plot_tips", default=True, help="Include tip labels in the plot")
 @click.option("--plot_name", default="tree_plot.pdf", help="Name of the output plot file")
 def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layout, 
-             branch_length, open_angle, offset, tip_label, color, fig_width, 
-             fig_height, plot_tips, plot_name):
+                branch_length, open_angle, offset, tip_label, color, fig_width, 
+                fig_height, plot_tips, plot_name):
     """Plot phylogenetic trees using ggtree."""
     try:
         from cressent_core.modules.plot_tree import main as plot_tree_main

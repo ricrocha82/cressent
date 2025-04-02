@@ -10,7 +10,12 @@ authors = [
     {name = "Pavan R. & Tisza M.", email = "pavan.4@osu.edu"}
 ]
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 dependencies = [
     "biopython",
     "pandas",

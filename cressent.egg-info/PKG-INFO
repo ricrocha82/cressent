@@ -5,7 +5,10 @@ Summary: A comprehensive toolkit for ssDNA virus analysis
 Author-email: "Pavan R. & Tisza M." <pavan.4@osu.edu>
 Project-URL: Homepage, https://github.com/ricrocha82/cressent
 Project-URL: Repository, https://github.com/ricrocha82/cressent
-Requires-Python: >=3.6
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: biopython
