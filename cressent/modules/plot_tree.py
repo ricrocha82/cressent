@@ -121,9 +121,9 @@ if __name__ == "__main__":
 #     --plot_name my_custom_tree.pdf
 
 # cressent plot_tree \
-#     --tree /fs/project/PAS1117/ricardo/cressent/test_data/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-#     --outdir /fs/project/PAS1117/ricardo/cressent/test_data/output/tree \
-#     --metadata_1 /fs/project/PAS1117/ricardo/cressent/test_data/output/metadata.csv \
-#     --metadata_2 /fs/project/PAS1117/ricardo/cressent/test_data/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv\
+#     --tree /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
+#     --outdir /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/tree \
+#     --metadata_1 /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/metadata.csv \
+#     --metadata_2 /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv\
 #     --tip_label family --fig_width 8 --fig_height 8 \
-#     --plot_name my_custom_tree_cressent.pdf
+#     --plot_name my_custom_tree_cressent_conda.pdf

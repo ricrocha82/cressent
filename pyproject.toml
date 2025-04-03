@@ -19,21 +19,21 @@ dependencies = [
     "click"
 ]
 
-[project.urls]
-Homepage = "https://github.com/ricrocha82/cressent"
-Repository = "https://github.com/ricrocha82/cressent"
-
-[project.scripts]
-cressent = "cressent_core.cli:cli"
-
 [tool.setuptools]
-packages = ["cressent_core", 
-            "cressent_core.modules", 
-            "cressent_core.modules.openrdp", 
-            "cressent_core.modules.openrdp.scripts"]
+packages = ["cressent", 
+            "cressent.modules", 
+            "cressent.modules.openrdp", 
+            "cressent.modules.openrdp.scripts"]
 
 # Include non-Python files
 [tool.setuptools.package-data]
-"cressent_core.modules" = ["*.R"]
-"cressent_core.modules.openrdp" = ["bin/*", "bin/3Seq/*", "bin/GENECONV/*", "bin/source_code/*"]
-"cressent_core.modules.openrdp.scripts" = ["*.ini"]
+"cressent.modules" = ["*.R"]
+"cressent.modules.openrdp" = ["bin/*", "bin/3Seq/*", "bin/GENECONV/*", "bin/source_code/*"]
+"cressent.modules.openrdp.scripts" = ["*.ini"]
+
+[project.scripts]
+cressent = "cressent.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/ricrocha82/cressent"
+Repository = "https://github.com/ricrocha82/cressent"

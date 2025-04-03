@@ -16,7 +16,7 @@ build:
   script: 
     - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --no-cache-dir -vvv
   entry_points:
-    - cressent = cressent_core.cli:cli
+    - cressent = cressent.cli:cli
   noarch: python
 
 requirements:
@@ -59,7 +59,7 @@ requirements:
 
 test:
   imports:
-    - cressent_core
+    - cressent
   commands:
     - cressent --help
     - cressent build_tree --help
