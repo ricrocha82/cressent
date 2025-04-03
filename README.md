@@ -2,7 +2,7 @@
 a modular tool to help researchers to automatically annotate ssDNA contigs
 
 <div align="center">
-<img width = "40%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent_landscape_title.jpg">
+<img width = "40%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent_landscape_title.png">
 </div>
 
 
@@ -235,11 +235,7 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
 
 ```bash
 # Use the treefile from IQ-TREE
-<<<<<<< HEAD
 cressent plot_tree \
-=======
-python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
->>>>>>> c9ab9882ea566e99fcd00d7cfa73611974d3c0d0
 			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
 			--outdir ./output/tree \
 			--metadata_1 ./output/metadata.csv \
