@@ -530,7 +530,7 @@ Customized version of [CRUISE](https://journals.asm.org/doi/10.1128/mra.01123-22
 - **Customizable Parameters**: Accepts several command-line arguments to fine-tune the iteron search.
 
 ```bash 
-python run_cruise --inputFasta examples/test.fasta \
+cressent run_cruise --inputFasta examples/test.fasta \
                  --inputGFF examples/out.gff \
                  --outputGFF examples/finaloutput.gff \
                  --outputDir output/ \
@@ -576,19 +576,19 @@ The recombination module is designed to detect recombination events in nucleotid
 When run for the first time, recombination.py will if binary executables exist (3Seq and GENECONV), compile from source if not. Also, it will generate a new 500 × 500 × 500 P-value table. If you don't want to genearate a p-value table you can extract from [here](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/modules/openrdp/bin/source_code/myPvalueTable.tar.gz)
 
 ```bash
-python recombination -i <input_alignment> -o <output_file> [options]
+cressent recombination -i <input_alignment> -o <output_file> [options]
 
 # Run all methods
-python recombination -i aligned_sequences.fasta -o results.csv
+cressent recombination -i aligned_sequences.fasta -o results.csv
 
 # Specify output directory
-python recombination -i aligned_sequences.fasta -o results.csv -d output_dir
+cressent recombination -i aligned_sequences.fasta -o results.csv -d output_dir
 
 # Run specific methods
-python recombination -i aligned_sequences.fasta -o results.csv -rdp -maxchi -bootscan
+cressent recombination -i aligned_sequences.fasta -o results.csv -rdp -maxchi -bootscan
 
 # Use custom configuration
-python recombination -i aligned_sequences.fasta -o results.csv -c my_config.ini -all
+cressent recombination -i aligned_sequences.fasta -o results.csv -c my_config.ini -all
 ```
 ### Basic Options
 
@@ -671,10 +671,10 @@ Output is a heatmap with GC content. Rows as sequence names (left) and % of GC (
 
 ```bash
 cressent gc_patchiness \
-                                          -i ./test_fast.fa \
-                                        --output_dir ./output \
-                                          --output_name gc_heatmap.pdf \
-                                        --fig_width 10 --fig_height 20 
+            -i ./test_fast.fa \
+            --output_dir ./output \
+            --output_name gc_heatmap.pdf \
+            --fig_width 10 --fig_height 20 
 ```
 
 

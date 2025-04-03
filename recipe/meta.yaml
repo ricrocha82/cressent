@@ -9,7 +9,7 @@ source:
   # git_url: https://github.com/ricrocha82/cressent/archive/refs/tags/v{{ version }}.tar.gz
   url: file:///fs/project/PAS1117/ricardo/cressent/dist/cressent-0.1.0.tar.gz # test the source locally installed
   # path: /fs/project/PAS1117/ricardo/cressent/  # Path to your source directory 
-  sha256: ff626cd258d4e0960d26f41b7e3588c620d00356d4ea99e604239ccddd7c084f
+  # sha256: ff626cd258d4e0960d26f41b7e3588c620d00356d4ea99e604239ccddd7c084f
 
 build:
   number: 0
