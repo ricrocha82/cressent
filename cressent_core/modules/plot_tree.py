@@ -50,6 +50,9 @@ def main():
     r_script_path = modules_dir / "plot_tree.R"  # Update with the actual path
     
     # Set up logging with log file in the specified output directory.
+    if not os.path.isdir(args.outdir):
+        os.makedirs(args.outdir)
+
     setup_logging(args.outdir)
     logger = logging.getLogger("plot_tree.log")
 
