@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=64.0.0", "wheel"]
+requires = ["setuptools>=64.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -15,7 +15,8 @@ requires-python = ">=3.6"
 
 dependencies = [
     "biopython",
-    "pandas"
+    "pandas",
+    "click"
 ]
 
 [project.urls]

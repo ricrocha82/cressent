@@ -8,12 +8,12 @@ a modular tool to help researchers to automatically annotate ssDNA contigs
 
 # Install
 ```bash
-conda env create -f ./cressent/cressent_env.yaml
+mamba env create -f ./cressent/cressent_env.yaml
 
 # via bioconda (available soon)
-conda create -n cressent
-conda install -c bioconda -c conda-forge -c defaults cressent
-conda activate cressent
+mamba create -n cressent
+mamba install -c bioconda -c conda-forge -c defaults cressent
+mamba activate cressent
 # test installation
 cressent --help
 
