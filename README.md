@@ -487,23 +487,23 @@ From the command line, run the StemLoop-Finder module as follows:
 
 ```bash
 cressent sl_finder \
-     -i ./test.fasta \
-     --gff_in ./test.gff \
-     --output_dir ./sl_finder_output \
-     --out_gff test_out.gff \
-     --csv_out test.csv 
+   -i ./test.fasta \
+   --gff_in ./test.gff \
+   --output_dir ./sl_finder_output \
+   --out_gff test_out.gff \
+   --csv_out test.csv 
 ```
 
 Or, if you prefer to specify a motif and/or a family directly:
 ```bash
 cressent sl_finder \
-     -i ./test.fasta \
-     --gff_in ./test.gff \
-     --output_dir ./sl_finder_output \
-     --out_gff test_out.gff \ 
-     --motif nantantan \
-     --family geminiviridae \
-     --idealstemlen 11 --ideallooplen 11 --frame 15
+   -i ./test.fasta \
+   --gff_in ./test.gff \
+   --output_dir ./sl_finder_output \
+   --out_gff test_out.gff \ 
+   --motif nantantan \
+   --family geminiviridae \
+   --idealstemlen 11 --ideallooplen 11 --frame 15
 ```
 #### Output files
 ```pgsql
@@ -524,11 +524,12 @@ Customized version of [CRUISE](https://journals.asm.org/doi/10.1128/mra.01123-22
 - **Customizable Parameters**: Accepts several command-line arguments to fine-tune the iteron search.
 
 ```bash 
-cressent run_cruise --inputFasta examples/test.fasta \
-                 --inputGFF examples/out.gff \
-                 --outputGFF examples/finaloutput.gff \
-                 --outputDir output/ \
-                 --verbose
+cressent run_cruise \
+   --inputFasta examples/test.fasta \
+   --inputGFF examples/out.gff \
+   --outputGFF examples/finaloutput.gff \
+   --outputDir output/ \
+   --verbose
 ```
 
 #### Input Files
