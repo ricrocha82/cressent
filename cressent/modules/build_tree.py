@@ -22,7 +22,7 @@ def run_command(command, error_message):
         
 def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file):
     """
-    Replace spaces with underscores in sequence names, ensure unique IDs, 
+    Keep only the first word of sequence names, ensure unique IDs, 
     save the sanitized FASTA file, and create a table with original and sanitized sequence names.
     """
     name_table = []  # To store the old and new names
@@ -32,8 +32,9 @@ def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file):
     for record in SeqIO.parse(input_fasta, "fasta"):
         original_id = record.description
         # Replace non-alphanumeric characters with underscores
-        sanitized_id = re.sub(r'[^a-zA-Z0-9]', '_', original_id)
-        sanitized_id = re.sub('__', '_', sanitized_id)
+        # sanitized_id = re.sub(r'[^a-zA-Z0-9]', '_', original_id)
+        # sanitized_id = re.sub('__', '_', sanitized_id)
+        sanitized_id = original_id.split()[0] if ' ' in original_id else original_id
         
         # Handle duplicate sanitized IDs
         if sanitized_id in id_map:
@@ -116,7 +117,7 @@ def main():
                 input_fasta = filename
                 return input_fasta
             else:
-                sys.exit("Error: Input file is not in the FASTA format.\n")
+                sys.exit("Error: Input file is empty or is not in the FASTA format.\n")
                 logging.info(f"Using: {input_fasta} is not in the FASTA format")
     # check fasta
     input_fasta = validate_fasta(args.input_fasta)
@@ -193,9 +194,9 @@ if __name__ == "__main__":
 
 
 # /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
-#         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/sub_reps_aligned_trimmed_sequences.fasta \
+#         -i /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/align_test/sub_reps_aligned_sequences.fasta \
 #         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data
 
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
-#         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/align_test/metadata.csv\
-#         -d /fs/scratch/Sullivan_Lab/Ricardo/tree_test
+# /fs/project/PAS1117/ricardo/cressent/cressent/modules/build_tree.py \
+#         -i /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/sub_reps_aligned_sequences.fasta \
+#         -d /fs/project/PAS1117/ricardo/test_cressent/output/build_tree

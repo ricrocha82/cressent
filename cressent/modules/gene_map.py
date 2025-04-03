@@ -20,6 +20,8 @@ def main():
     
     # Parse arguments
     args = parser.parse_args()
+
+    os.makedirs(args.output, exist_ok=True)
     
     # Check if input file exists
     if not os.path.exists(args.input):

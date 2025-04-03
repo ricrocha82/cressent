@@ -124,6 +124,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     output_dir = args.output_dir
+    os.makedirs(output_dir, exist_ok=True)
     # Determine the input FASTA full path
     def validate_fasta(filename):
         with open(filename, "r") as handle:

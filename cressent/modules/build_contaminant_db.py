@@ -101,7 +101,7 @@ def load_accessions_from_csv(csv_file: str) -> List[Dict]:
         return []
 
 def build_contaminant_database(output_fasta: str, accessions: List[str], 
-                              max_sequences_per_batch: int = 10) -> List[SeqRecord]:
+                                max_sequences_per_batch: int = 10) -> List[SeqRecord]:
     """
     Build a comprehensive database of viral contaminants.
     Downloads sequences in batches for better reliability.
@@ -167,7 +167,8 @@ def parse_arguments():
                         help="Maximum number of sequences to download in each batch")
     return parser.parse_args()
 
-if __name__ == "__main__":
+def main():
+    """Main function to run the contaminant database builder (for CLI import)."""
     args = parse_arguments()
     
     # Create output directory if it doesn't exist
@@ -178,7 +179,8 @@ if __name__ == "__main__":
     output_metadata = os.path.join(args.output_dir, f"{args.output_name}_metadata.tsv")
     log_file = os.path.join(args.output_dir, f"{args.output_name}_build.log")
     
-    # Set up logging
+    # Set up global logger
+    global logger
     logger = setup_logging(log_file)
     logger.info(f"Starting contaminant database build process")
     logger.info(f"Output directory: {args.output_dir}")
@@ -191,7 +193,7 @@ if __name__ == "__main__":
     accessions = load_accessions_from_csv(args.accession_csv)
     if not accessions:
         logger.error("No accessions found in CSV file. Exiting.")
-        sys.exit(1)
+        return 1
     
     # Build the database
     sequences = build_contaminant_database(output_fasta, accessions, args.batch_size)
@@ -205,7 +207,11 @@ if __name__ == "__main__":
     logger.info(f"- FASTA database: {output_fasta}")
     logger.info(f"- Metadata file: {output_metadata}")
     logger.info(f"- Log file: {log_file}")
+    
+    return 0
 
+if __name__ == "__main__":
+    sys.exit(main())
 
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_contaminant_db.py \
 #             --accession-csv /fs/project/PAS1117/ricardo/ssDNA_tool/DB/decont_accesion_list.csv \
