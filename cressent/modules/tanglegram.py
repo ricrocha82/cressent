@@ -69,9 +69,12 @@ def main():
     parser.add_argument("--lab_cex", default = 1.5, type=float, help = "cex size of the labels.") 
 
     args = parser.parse_args()
+
+    output_dir = args.output
+    os.makedirs(output_dir, exist_ok=True)
     
     # run R script
-    generate_tanglegram(args.tree1, args.tree2, args.label1, args.label2, args.output, name_tanglegram=args.name_tanglegram, width=args.width, height=args.height, lab_cex=args.lab_cex)
+    generate_tanglegram(args.tree1, args.tree2, args.label1, args.label2, output_dir, name_tanglegram=args.name_tanglegram, width=args.width, height=args.height, lab_cex=args.lab_cex)
 
 
 if __name__ == "__main__":

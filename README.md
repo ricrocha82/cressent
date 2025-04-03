@@ -68,8 +68,8 @@ The `decont_accession_list.csv` file contains the accession numbers of sequences
 ```bash
 # to build the contaminant_db.fasta run, you can add additional sequences to the csv file or concatenate to the output fasta file later
 cressent build_contaminant_db \
-            --accession-csv ./ssDNA_tool/DB/decont_accesion_list.csv \
-            --output-dir ./ssDNA_tool/DB \    
+            --accession-csv DB/decont_accesion_list.csv \
+            --output-dir DB \    
             --email your_email@mail.com \
             --batch-size 10
 ```
