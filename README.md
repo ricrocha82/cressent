@@ -85,7 +85,7 @@ Running `detect_contamination` using the [contaminant_db](DB/contaminant/contami
 ```bash           
 # run decontamination
 cressent detect_contamination \
-                    --input my_sequences.fasta \
+                    -i my_sequences.fasta \
                     --db ./DB/contaminant/contaminant_db.fasta \
                     --output-dir results \
                     --output-name clean_sequences.fa \
