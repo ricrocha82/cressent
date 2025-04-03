@@ -45,7 +45,8 @@ If you want to cluster (dereplicate) the metagenomic sequences, run:
 ```bash
 cressent cluster \
      -i /path/to/my_sequence.fa \
-     -o ./output_clusters
+     -o ./output_clusters \
+     --keep_names # if not, spaces are replaced with underscores
 ```
 Outputs:
 ```pgsql
@@ -101,17 +102,7 @@ results/
 └── clean_sequences_decontamination.log  # Detailed log file
 ```
 
-## 2: Build a Phylogenetic Tree
-### a) Sequence Alignment
-You have three options for performing the alignment:
-
-##### Option 1: Use Only Your Sequences
-```bash
-cressent align  \
-      --threads 24 \
-      --input_fasta /path/to/my_sequence.fa \
-      -d path/to/output/directory
-```
+#### 1.3 Adjust seuqence by conserved sequence pattern
 
 Before the alignment, if you want to adjust the sequence to begin with determined conserved nonanucleotide sequence run:
 
@@ -122,11 +113,17 @@ cressent adjust_seq  \
          -m "ATCG..." # default: TAGTATTAC
 
 # If the pattern is found, the output is a fasta file with each sequence beginning with the sequence -m
+```
 
-# then, run the align module
-cressent  align \
+## 2: Build a Phylogenetic Tree
+### a) Sequence Alignment
+You have three options for performing the alignment:
+
+##### Option 1: Use Only Your Sequences
+```bash
+cressent align  \
       --threads 24 \
-      --input_fasta /path/to/my_sequence_motif_adj.fa \
+      --input_fasta /path/to/my_sequence.fa \
       -d path/to/output/directory
 ```
 
@@ -181,8 +178,8 @@ Use the (trimmed) alignment file to build the phylogenetic tree:
 ```bash
 cressent build_tree \
        -i ./output/my_sequences_aligned_trimmed_sequences.fasta \
-       -d path/to/output/directory/tree
-
+       -d path/to/output/directory/tree \
+       --keep_names # if not, spaces are replaced with underscores
 ```
 
 #### Tree Building Outputs
@@ -269,8 +266,7 @@ cressent plot_tree \
 			--open_angle 0 --offset 0.15 \
 			--tip_label family \
 			--fig_width 20 --fig_height 15 \
-			--plot_name my_custom_tree.pdf 
-            
+			--plot_name my_custom_tree.pdf          
 ```
 
 ### d) Plotting a Tanglegram (or “cophylo plot”) 
@@ -338,7 +334,6 @@ output/motif/.
 ├── ungapped_sequences.fasta
 ├── split_sequences_1.fasta
 └── split_sequences_2.fasta
-
 ```
 
 pattern_positions.txt 
@@ -383,7 +378,6 @@ cressent motif_disc \
             -nmotifs 5 -minw 6 -maxw 50 \
             --meme_extra -mod zoops -evt 0.05 \
             --scanprosite
-
 ```
 
 #### Outputs

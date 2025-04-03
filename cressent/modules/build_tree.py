@@ -20,10 +20,12 @@ def run_command(command, error_message):
         logging.error(f"{error_message}: {e}")
         exit(1)
         
-def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file):
+def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file, keep_names=False):
     """
-    Keep only the first word of sequence names, ensure unique IDs, 
-    save the sanitized FASTA file, and create a table with original and sanitized sequence names.
+    Process FASTA sequence names:
+    - If keep_names=True: Keep only the first word of sequence names
+    - If keep_names=False: Replace spaces with underscores
+    - In both cases: Ensure unique IDs and create a table with original and sanitized names
     """
     name_table = []  # To store the old and new names
     sanitized_records = []
@@ -31,10 +33,14 @@ def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file):
 
     for record in SeqIO.parse(input_fasta, "fasta"):
         original_id = record.description
-        # Replace non-alphanumeric characters with underscores
-        # sanitized_id = re.sub(r'[^a-zA-Z0-9]', '_', original_id)
-        # sanitized_id = re.sub('__', '_', sanitized_id)
-        sanitized_id = original_id.split()[0] if ' ' in original_id else original_id
+        
+        # Process ID based on parameters
+        if keep_names:
+            # Keep only the first word before a space
+            sanitized_id = original_id.split()[0] if ' ' in original_id else original_id
+        else:
+            # Replace spaces with underscores
+            sanitized_id = original_id.replace(" ", "_")
         
         # Handle duplicate sanitized IDs
         if sanitized_id in id_map:
@@ -97,6 +103,7 @@ def main():
     parser.add_argument("-T", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
     parser.add_argument("-m", "--model", default="MFP", help="Substitution models (default: MFP - ModelFinder)")
     parser.add_argument("--extra_args", default="", help="Extra arguments to pass directly to IQ-TREE")
+    parser.add_argument("--keep_names", action="store_true", help="Keep only first word of sequence IDs")
     
 
     args = parser.parse_args()
@@ -157,7 +164,13 @@ def main():
     logger.addHandler(ch)
 
     logging.info("Starting pipeline")
-    sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file)
+    # Process sequence names
+    sanitize_sequence_names(
+        input_fasta, 
+        sanitized_fasta, 
+        name_table_file,
+        keep_names=args.keep_names
+    )
     generate_phylogenetic_tree(sanitized_fasta, args.bootstrap, args.threads, prefix, args.extra_args, args.model)
     print(f"Phylogenetic tree analysis complete. Outputs saved in {output_dir}")
 
