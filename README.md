@@ -2,32 +2,39 @@
 a modular tool to help researchers to automatically annotate ssDNA contigs
 
 <div align="center">
-<img width = "33%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent.jpg">
+<img width = "40%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent_landscape_title.jpg">
 </div>
 
 
 # Install
 ```bash
-conda env create -f ./ssDNA_tool/ssDNA_env.yaml
+conda env create -f ./cressent/cressent_env.yaml
+
+# via bioconda (available soon)
+conda create -n cressent
+conda install -c bioconda -c conda-forge -c defaults cressent
+conda activate cressent
+# test installation
+cressent --help
+
 ```
 ---
 # CRESSENT Pipeline Example
 
-This pipeline demonstrates how to process metagenomic sequences and build phylogenetic trees using the ssDNA_annotator tool. The workflow includes sequence clustering (dereplication), alignment, tree building, and visualization.
+This pipeline demonstrates how to process metagenomic sequences and build phylogenetic trees using CRESSENT. The workflow includes sequence clustering (dereplication), alignment, tree building, and visualization.
 
+<div align="center">
+<img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig1_option2.jpg">
+</div>
 
-## Input Files
+# Database
 
-- **Metagenomic Sequences FASTA**  
-/path/to/my_sequence.fa
+The [database](DB) consists of the following:
+- CAPS (Capsid protein sequences grouped by family)
+- REPS (Replication-associated protein sequences grouped by family)
+- Contamination DB
+- tree_models.csv (table with the models computed by ModelFinder from IQ-TREE2 for each Rep and Cap DB grouped by family)
 
-- **Database for Phylogenetic Analysis**  
-path/to/database
-
-- here [build_db](https://github.com/ricrocha82/ssDNA_tool/tree/main/build_db) is the pipeline used to build the database
-- db path: `./ssDNA_tool/DB` (rep and caps)
-
----
 
 ## 1: Dereplication (Clustering) and/or Decontamination
 
@@ -36,7 +43,7 @@ path/to/database
 If you want to cluster (dereplicate) the metagenomic sequences, run:
 
 ```bash
-python ./ssDNA_tool/ssDNA_annotator/modules/cluster.py \
+cressent cluster \
      -i /path/to/my_sequence.fa \
      -o ./output_clusters
 ```
@@ -60,7 +67,7 @@ The `decont_accession_list.csv` file contains the accession numbers of sequences
 
 ```bash
 # to build the contaminant_db.fasta run, you can add additional sequences to the csv file or concatenate to the output fasta file later
-python ./ssDNA_tool/ssDNA_annotator/modules/build_contaminant_db.py \
+cressent build_contaminant_db \
             --accession-csv ./ssDNA_tool/DB/decont_accesion_list.csv \
             --output-dir ./ssDNA_tool/DB \    
             --email your_email@mail.com \
@@ -73,13 +80,13 @@ DB/
 ├── contaminant_db_metadata.tsv # Sequence metadata
 └── contaminant_build.log
 ```
-Running `detect_contamination.py` using the [contaminant_db](DB/contaminant/contaminant_db.fasta) you can search for potential contaminating viral sequences.
+Running `detect_contamination` using the [contaminant_db](DB/contaminant/contaminant_db.fasta) you can search for potential contaminating viral sequences.
 
 ```bash           
 # run decontamination
-python ./ssDNA_tool/ssDNA_annotator/modules/detect_contamination.py \
+cressent detect_contamination \
                     --input my_sequences.fasta \
-                    --db ./ssDNA_tool/DB/contaminant/contaminant_db.fasta \
+                    --db ./DB/contaminant/contaminant_db.fasta \
                     --output-dir results \
                     --output-name clean_sequences.fa \
                     --threads 4 \
@@ -100,47 +107,49 @@ You have three options for performing the alignment:
 
 ##### Option 1: Use Only Your Sequences
 ```bash
-python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
-                      --threads 24 \
-                      --input_fasta /path/to/my_sequence.fa \
-                      -d path/to/output/directory
+cressent align  \
+      --threads 24 \
+      --input_fasta /path/to/my_sequence.fa \
+      -d path/to/output/directory
 ```
 
 Before the alignment, if you want to adjust the sequence to begin with determined conserved nonanucleotide sequence run:
 
 ```bash
-python ./ssDNA_tool/ssDNA_annotator/modules/adjust_seq.py  \
-                      -i /path/to/my_sequence.fa \
-                      -o /path/to/output_directory # default is the current directory
-                      -m "ATCG..." # default: TAGTATTAC
+cressent adjust_seq  \
+         -i /path/to/my_sequence.fa \
+         -o /path/to/output_directory # default is the current directory
+         -m "ATCG..." # default: TAGTATTAC
 
 # If the pattern is found, the output is a fasta file with each sequence beginning with the sequence -m
 
 # then, run the align module
-python ./ssDNA_tool/ssDNA_annotator/modules/align.py  \
-                      --threads 24 \
-                      --input_fasta /path/to/my_sequence_motif_adj.fa \
-                      -d path/to/output/directory
+cressent  align \
+      --threads 24 \
+      --input_fasta /path/to/my_sequence_motif_adj.fa \
+      -d path/to/output/directory
 ```
 
 ##### Option 2: Use the Database that comes with the tool
 Select sequences by family (e.g., `Circoviridae`, `Microviridae`, etc.) or use `all` to include all families.
 
 If using the tool's DB the `path/to/database` should be:
-- `./ssDNA_tool/tree/main/DB/caps` for CAPs
-- `./ssDNA_tool/tree/main/DB/reps` for REPS
+- `DB/caps` for CAPs
+- `DB/reps` for REPS
+- `DB/tree_models.csv` if you want to avoid ModelFinder from IQ-TREE2
 
 ```bash
-python ./ssDNA_tool/ssDNA_annotator/modules/align.py  --threads 24 \
-                    --input_fasta /path/to/my_sequence.fa \
-                    --db_family [Circoviridae Microviridae ...] or [all] \
-                    --db_path path/to/database \
-                    -d path/to/output/directory
+cressent align  --threads 24 \
+            --input_fasta /path/to/my_sequence.fa \
+            --db_family [Circoviridae Microviridae ...] or [all] \
+            --db_path path/to/database \
+            -d path/to/output/directory
 ```
 ##### Option 3: Use Your Own Database
 Change the database directory and specify the database file name with `--db_family`.
 ```bash
-python ./ssDNA_tool/ssDNA_annotator/modules/align.py --threads 24 \
+cressent align \
+       --threads 24 \
        --input_fasta /path/to/my_sequence.fa \
        --db_family name_of_my_db.fa \
        --db_path path/to/my/own/database \
@@ -170,7 +179,7 @@ seq3,description_seq3,Family_A,scientific_name3,protein_name3,my_seqs
 Use the (trimmed) alignment file to build the phylogenetic tree:
 
 ```bash
-python ./ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
+cressent build_tree \
        -i ./output/my_sequences_aligned_trimmed_sequences.fasta \
        -d path/to/output/directory/tree
 
@@ -220,13 +229,13 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
  - branch_length: if `none` draw cladogram
  - open_angle only for `fan` layout
  - offset: tiplab offset, horizontal adjustment to nudge tip labels, defaults to 0.14
- - tip_label: name of the color group (default is `family` which is based on the [build_tree](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/modules/build_tree.py) module metadata)
+ - tip_label: name of the color group (default is `family` which is based on the [build_tree](https://github.com/ricrocha82/cressent/blob/main/cressent_core/modules/build_tree.py) module metadata)
  - fig_width and fig_height are based on [ggsave](https://ggplot2.tidyverse.org/reference/ggsave.html) function in R
 
 
 ```bash
-# Use the teefile from IQ-TREE
-python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
+# Use the treefile from IQ-TREE
+cressent plot_tree \
 			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
 			--outdir ./output/tree \
 			--metadata_1 ./output/metadata.csv \
@@ -238,7 +247,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--plot_name my_custom_tree.pdf
 
 # or use the distance table from IQ-TREE
-python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
+cressent plot_tree \
 			--dist_matrix my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
 			--outdir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
 			--metadata_1 ./output/metadata.csv \
@@ -250,7 +259,7 @@ python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
 			--plot_name my_custom_tree_dist.pdf
 
 # you can also use the align file to plot the tree with the alginmet
-python ./ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
+cressent plot_tree \
 			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
 			--outdir ./output/tree \
             --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
@@ -296,19 +305,19 @@ The additional --split flag instructs the module to:
 
 ```bash
 # 1. Basic motif finding:
-python ./ssDNA_annotator/modules/motif.py -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]"
+cressent motif -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]"
 
 # 2. Motif finding with sequence splitting:
-python ./ssDNA_annotator/modules/motif.py -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]" --split-sequences
+cressent motif -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]" --split-sequences
 
 # 3. Motif finding with sequence logo generation:
-python ./ssDNA_annotator/modules/motif.py \
+cressent motif \
         -i sequences.fasta -d /path/to/output \
         -p "[GA].{4}GK[TS]" \
         --generate-logo --logo-name motif_logo.pdf --plot-title "My Motif Logo"
 
 # 4. Complete workflow with splitting by group label:
-python ./ssDNA_annotator/modules/motif.py \
+cressent motif \
         -i sequences.fasta -d /path/to/output \
         -p "[GA].{4}GK[TS]" --split-sequences \
         --generate-logo --split-logo --metadata metadata.csv --ncol 2 --group-label family
@@ -358,22 +367,22 @@ It is optional to use [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/) t
 
 ```bash
 # basic
-python ./ssDNA_annotator/modules/motif_disc.py <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
+cressent motif_disc <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
 
 # only MEME
-python ./ssDNA_annotator/modules/motif_disc.py \
-                    -i ./seq_meme.fa \
-                    -o ./motif_disc \
-                    -nmotifs 5 -minw 6 -maxw 50 \
-                    --meme_extra -mod zoops -evt 0.05
+cressent motif_disc \
+            -i ./seq_meme.fa \
+            -o ./motif_disc \
+            -nmotifs 5 -minw 6 -maxw 50 \
+            --meme_extra -mod zoops -evt 0.05
 
 # MEME + ScanProsite
-python ./ssDNA_annotator/modules/motif_disc.py \
-                    -i ./seq_meme.fa \
-                    -o ./motif_disc \
-                    -nmotifs 5 -minw 6 -maxw 50 \
-                    --meme_extra -mod zoops -evt 0.05 \
-                    --scanprosite
+cressent motif_disc \
+            -i ./seq_meme.fa \
+            -o ./motif_disc \
+            -nmotifs 5 -minw 6 -maxw 50 \
+            --meme_extra -mod zoops -evt 0.05 \
+            --scanprosite
 
 ```
 
@@ -399,11 +408,11 @@ python ./ssDNA_annotator/modules/motif_disc.py \
 
 You can plot a gene map using the motif_table.csv as input
 ```bash
-python ./ssDNA_annotator/modules/gene_map.py \
-                    -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_disc/motif_table.csv \
-                    -o ./motif_disc/gene_map_motif.pdf \
-                    --height 10 --width 10 \
-                    -t "Motif Distribution in Genes"
+cressent gene_map \
+            -i ./motif_table.csv \
+            -o ./motif_disc/gene_map_motif.pdf \
+            --height 10 --width 10 \
+            -t "Motif Distribution in Genes"
 ```
 
 ## 4: make Sequence logo
@@ -419,13 +428,19 @@ This module generates sequence logos from FASTA files or motif detection tables.
 
 ```bash
 # Basic Sequence Logo Generation using the output of the MOTIF module
-python seq_logo.py -tb output/motif/pattern_positions.txt -o output/motif/ --output_name logo.pdf
+cressent seq_logo \
+      -tb output/motif/pattern_positions.txt \
+      -o output/motif/ \
+      --output_name logo.pdf
 
 # Generating Sequence Logo from a FASTA File
-python seq_logo.py -f my_sequences.fasta -o output/motif/ --output_name fasta_logo.pdf
+cressent seq_logo \
+      -f my_sequences.fasta \
+      -o output/motif/ \
+      --output_name fasta_logo.pdf
 
 # Splitting the Figure by Group Labels (Metadata)
-python seq_logo.py \
+cressent seq_logo \
     -tb output/motif/pattern_positions.txt 
     -o output/motif \
     --output_name logo_split.pdf \
@@ -477,7 +492,7 @@ The StemLoop-Finder module accepts several arguments to customize its behavior:
 From the command line, run the StemLoop-Finder module as follows:
 
 ```bash
-python ./ssDNA_annotator/modules/sl_finder.py \
+cressent sl_finder \
      -i ./test.fasta \
      --gff_in ./test.gff \
      --output_dir ./sl_finder_output \
@@ -487,7 +502,7 @@ python ./ssDNA_annotator/modules/sl_finder.py \
 
 Or, if you prefer to specify a motif and/or a family directly:
 ```bash
-python ./ssDNA_annotator/modules/sl_finder.py \
+cressent sl_finder \
      -i ./test.fasta \
      --gff_in ./test.gff \
      --output_dir ./sl_finder_output \
@@ -515,7 +530,7 @@ Customized version of [CRUISE](https://journals.asm.org/doi/10.1128/mra.01123-22
 - **Customizable Parameters**: Accepts several command-line arguments to fine-tune the iteron search.
 
 ```bash 
-python run_cruise.py --inputFasta examples/test.fasta \
+python run_cruise --inputFasta examples/test.fasta \
                  --inputGFF examples/out.gff \
                  --outputGFF examples/finaloutput.gff \
                  --outputDir output/ \
@@ -561,19 +576,19 @@ The recombination module is designed to detect recombination events in nucleotid
 When run for the first time, recombination.py will if binary executables exist (3Seq and GENECONV), compile from source if not. Also, it will generate a new 500 × 500 × 500 P-value table. If you don't want to genearate a p-value table you can extract from [here](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/modules/openrdp/bin/source_code/myPvalueTable.tar.gz)
 
 ```bash
-python recombination.py -i <input_alignment> -o <output_file> [options]
+python recombination -i <input_alignment> -o <output_file> [options]
 
 # Run all methods
-python recombination.py -i aligned_sequences.fasta -o results.csv
+python recombination -i aligned_sequences.fasta -o results.csv
 
 # Specify output directory
-python recombination.py -i aligned_sequences.fasta -o results.csv -d output_dir
+python recombination -i aligned_sequences.fasta -o results.csv -d output_dir
 
 # Run specific methods
-python recombination.py -i aligned_sequences.fasta -o results.csv -rdp -maxchi -bootscan
+python recombination -i aligned_sequences.fasta -o results.csv -rdp -maxchi -bootscan
 
 # Use custom configuration
-python recombination.py -i aligned_sequences.fasta -o results.csv -c my_config.ini -all
+python recombination -i aligned_sequences.fasta -o results.csv -c my_config.ini -all
 ```
 ### Basic Options
 
@@ -655,7 +670,7 @@ Calculates %G+C content using a sliding window approach.
 Output is a heatmap with GC content. Rows as sequence names (left) and % of GC (right).
 
 ```bash
-python ./ssDNA_annotator/modules/gc_patchiness.py \
+cressent gc_patchiness \
                                           -i ./test_fast.fa \
                                         --output_dir ./output \
                                           --output_name gc_heatmap.pdf \
