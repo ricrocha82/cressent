@@ -35,7 +35,7 @@ def cli():
 def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args):
     """Build phylogenetic tree using IQ-TREE."""
     try:
-        from cressent_core.modules.build_tree import main as build_tree_main
+        from cressent.modules.build_tree import main as build_tree_main
         sys.argv = [sys.argv[0]] + ['--input_fasta', input_fasta, 
                                     '--directory', directory,
                                     '--bootstrap', str(bootstrap),
@@ -61,7 +61,7 @@ def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args):
 def align(threads, input_fasta, directory, mafft_ep, gap_threshold, db_family, db_path, protein_type):
     """Pipeline for sequence alignment and trimming."""
     try:
-        from cressent_core.modules.align import main as align_main
+        from cressent.modules.align import main as align_main
         sys.argv = [sys.argv[0]]
         if threads:
             sys.argv.extend(['--threads', str(threads)])
@@ -96,7 +96,7 @@ def align(threads, input_fasta, directory, mafft_ep, gap_threshold, db_family, d
 def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov):
     """Sequence clustering using BLAST, anicalc, and aniclust."""
     try:
-        from cressent_core.modules.cluster import main as cluster_main
+        from cressent.modules.cluster import main as cluster_main
         sys.argv = [sys.argv[0]]
         if input_fasta:
             sys.argv.extend(['--input_fasta', input_fasta])
@@ -127,7 +127,7 @@ def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov):
 def motif_disc(fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite):
     """Discover de novo motifs using MEME."""
     try:
-        from cressent_core.modules.motif_disc import main as motif_disc_main
+        from cressent.modules.motif_disc import main as motif_disc_main
         sys.argv = [sys.argv[0]]
         if fasta:
             sys.argv.extend(['--fasta', fasta])
@@ -170,7 +170,7 @@ def motif(input_fasta, directory, pattern, table_name, remove_gaps, split_sequen
           metadata, ncol, group_label):
     """Combined module for motif finding and sequence logo generation."""
     try:
-        from cressent_core.modules.motif import main as motif_main
+        from cressent.modules.motif import main as motif_main
         sys.argv = [sys.argv[0]]
         if input_fasta:
             sys.argv.extend(['--input_fasta', input_fasta])
@@ -217,7 +217,7 @@ def motif(input_fasta, directory, pattern, table_name, remove_gaps, split_sequen
 def gene_map(input, output, height, width, title):
     """Generate gene arrow plots from motif data using R."""
     try:
-        from cressent_core.modules.gene_map import main as gene_map_main
+        from cressent.modules.gene_map import main as gene_map_main
         sys.argv = [sys.argv[0]]
         if input:
             sys.argv.extend(['--input', input])
@@ -257,7 +257,7 @@ def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layo
                 fig_height, plot_tips, plot_name):
     """Plot phylogenetic trees using ggtree."""
     try:
-        from cressent_core.modules.plot_tree import main as plot_tree_main
+        from cressent.modules.plot_tree import main as plot_tree_main
         sys.argv = [sys.argv[0]]
         if tree:
             sys.argv.extend(['--tree', tree])
@@ -310,7 +310,7 @@ def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layo
 def tanglegram(tree1, tree2, label1, label2, output, name_tanglegram, width, height, lab_cex):
     """Generate a tanglegram from two phylogenetic trees."""
     try:
-        from cressent_core.modules.tanglegram import main as tanglegram_main
+        from cressent.modules.tanglegram import main as tanglegram_main
         sys.argv = [sys.argv[0]]
         if tree1:
             sys.argv.extend(['--tree1', tree1])
@@ -353,7 +353,7 @@ def sl_finder(fasta_in, gff_in, out_gff, output_dir, csv_out, motif, family,
               idealstemlen, ideallooplen, frame):
     """A module for putative stem-loop annotation."""
     try:
-        from cressent_core.modules.sl_finder import main as sl_finder_main
+        from cressent.modules.sl_finder import main as sl_finder_main
         sys.argv = [sys.argv[0]]
         if fasta_in:
             sys.argv.extend(['-i', fasta_in])
@@ -394,7 +394,7 @@ def sl_finder(fasta_in, gff_in, out_gff, output_dir, csv_out, motif, family,
 def gc_patchiness(fasta_file, output_dir, window_size, step_size, xticklabels, fig_width, fig_height, output_name):
     """Generate a GC content heatmap from a FASTA file."""
     try:
-        from cressent_core.modules.gc_patchiness import main as gc_patchiness_main
+        from cressent.modules.gc_patchiness import main as gc_patchiness_main
         sys.argv = [sys.argv[0]]
         if fasta_file:
             sys.argv.extend(['--fasta_file', fasta_file])
@@ -438,7 +438,7 @@ def recombination(input, output, outdir, config, rdp, threeseq, geneconv, maxchi
                   chimaera, bootscan, siscan, all, quiet, verbose):
     """Detect recombination events in ssDNA virus sequences."""
     try:
-        from cressent_core.modules.recombination import main as recombination_main
+        from cressent.modules.recombination import main as recombination_main
         sys.argv = [sys.argv[0]]
         if input:
             sys.argv.extend(['-i', input])
@@ -498,7 +498,7 @@ def run_cruise(outputdir, inputfasta, inputgff, outputgff, outputannotations,
               wiggle, goodlength, dostemloop, doknowniterons, maxdist, bestdist, scorerange):
     """Search for iterons around CRESS stem-loops in GFF files."""
     try:
-        from cressent_core.modules.run_cruise import main as run_cruise_main
+        from cressent.modules.run_cruise import main as run_cruise_main
         sys.argv = [sys.argv[0]]
         if outputdir:
             sys.argv.extend(['--outputDir', outputdir])
@@ -556,7 +556,7 @@ def detect_contamination(input_fasta, db, output_dir, output_name, evalue, ident
                         coverage, threads, keep_temp):
     """Filter viral contaminants from sequence data."""
     try:
-        from cressent_core.modules.detect_contamination import main as detect_contamination_main
+        from cressent.modules.detect_contamination import main as detect_contamination_main
         sys.argv = [sys.argv[0]]
         if input_fasta:
             sys.argv.extend(['-i', input_fasta])
@@ -589,7 +589,7 @@ def detect_contamination(input_fasta, db, output_dir, output_name, evalue, ident
 def adjust_seq(input_fasta, output_fasta, motif):
     """Adjust sequences in a FASTA file to start with a specified motif."""
     try:
-        from cressent_core.modules.adjust_seq import main as adjust_seq_main
+        from cressent.modules.adjust_seq import main as adjust_seq_main
         sys.argv = [sys.argv[0]]
         if input_fasta:
             sys.argv.extend(['-i', input_fasta])
@@ -612,7 +612,7 @@ def adjust_seq(input_fasta, output_fasta, motif):
 def build_contaminant_db(accession_csv, output_dir, output_name, email, batch_size):
     """Build a viral contaminant database for decontamination pipelines."""
     try:
-        from cressent_core.modules.build_contaminant_db import parse_arguments, main as build_contaminant_db_main
+        from cressent.modules.build_contaminant_db import parse_arguments, main as build_contaminant_db_main
         sys.argv = [sys.argv[0]]
         if accession_csv:
             sys.argv.extend(['--accession-csv', accession_csv])
