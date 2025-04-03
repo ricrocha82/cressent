@@ -24,6 +24,9 @@ from typing import Dict, List, Tuple, Set, Optional
 import pandas as pd
 from Bio import SeqIO
 
+# Create a global logger object
+logger = logging.getLogger('viral_decontamination')
+
 def setup_logging(log_file: str) -> logging.Logger:
     """
     Configure logging to both file and console.
@@ -34,8 +37,13 @@ def setup_logging(log_file: str) -> logging.Logger:
     Returns:
         Configured logger object
     """
-    # Create logger
-    logger = logging.getLogger('viral_decontamination')
+    global logger
+    
+    # Reset logger if it already has handlers
+    if logger.handlers:
+        for handler in logger.handlers[:]:
+            logger.removeHandler(handler)
+    
     logger.setLevel(logging.INFO)
     
     # Create formatter
@@ -68,6 +76,21 @@ def check_dependencies() -> bool:
     except (subprocess.SubprocessError, FileNotFoundError):
         logger.error("BLAST+ tools not found. Please install BLAST+ and ensure it's in your PATH.")
         return False
+
+def validate_fasta(filename):
+    """Validate that the input file is in FASTA format."""
+    try:
+        with open(filename, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            if any(fasta):
+                logger.info(f"FASTA file validated: {filename}")
+                return filename
+            else:
+                logger.error(f"Error: Input file is not in the FASTA format: {filename}")
+                raise ValueError("Input file is not in the FASTA format")
+    except Exception as e:
+        logger.error(f"Error validating FASTA file: {e}")
+        raise
 
 def run_blast(query_file: str, db_file: str, output_file: str, 
               evalue: float = 1e-10, 
@@ -292,7 +315,8 @@ def parse_arguments():
     
     return parser.parse_args()
 
-if __name__ == "__main__":
+def main():
+    """Main function to run the contamination detection pipeline (for CLI import)."""
     args = parse_arguments()
     
     # Create output directory if it doesn't exist
@@ -300,17 +324,6 @@ if __name__ == "__main__":
     os.makedirs(output_dir, exist_ok=True)
 
     # Determine the input FASTA full path
-    def validate_fasta(filename):
-        with open(filename, "r") as handle:
-            fasta = SeqIO.parse(handle, "fasta")
-            if any(fasta):
-                print("FASTA checked.")
-                input_fasta = filename
-                return input_fasta
-            else:
-                sys.exit("Error: Input file is not in the FASTA format.\n")
-                logging.info(f"Using: {input_fasta} is not in the FASTA format")
-    # check fasta
     input_fasta = validate_fasta(args.input_fasta)
     
     # Set up file paths
@@ -319,7 +332,8 @@ if __name__ == "__main__":
     blast_output_file = os.path.join(output_dir, f"{args.output_name}_blast.tsv")
     log_file = os.path.join(output_dir, f"{args.output_name}_decontamination.log")
     
-    # Set up logging
+    # Set up logging - make logger global
+    global logger
     logger = setup_logging(log_file)
     logger.info(f"Starting viral decontamination process")
     logger.info(f"Input file: {input_fasta}")
@@ -329,7 +343,7 @@ if __name__ == "__main__":
     # Check dependencies
     if not check_dependencies():
         logger.error("Required dependencies not found. Exiting.")
-        sys.exit(1)
+        return 1
     
     # Create temporary directory for processing
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -360,8 +374,11 @@ if __name__ == "__main__":
     if args.keep_temp:
         logger.info(f"- BLAST results: {blast_output_file}")
     logger.info(f"- Log file: {log_file}")
+    
+    return 0
 
-
+if __name__ == "__main__":
+    sys.exit(main())
 
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/detect_contamination.py \
 #                     --input_fasta /fs/project/PAS1117/ricardo/CONGO/metaG/3.assembly/SRR6743910_spades_contigs.fasta \
