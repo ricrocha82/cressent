@@ -233,40 +233,40 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
 ```bash
 # Use the treefile from IQ-TREE
 cressent plot_tree \
-			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-			--outdir ./output/tree \
-			--metadata_1 ./output/metadata.csv \
-			--metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-			--layout rectangular --branch_length branch.length \
-			--open_angle 0 --offset 0.15 \
-			--tip_label family \
-			--fig_width 20 --fig_height 15 \
-			--plot_name my_custom_tree.pdf
+   --tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
+   --outdir ./output/tree \
+   --metadata_1 ./output/metadata.csv \
+   --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
+   --layout rectangular --branch_length branch.length \
+   --open_angle 0 --offset 0.15 \
+   --tip_label family \
+   --fig_width 20 --fig_height 15 \
+   --plot_name my_custom_tree.pdf
 
 # or use the distance table from IQ-TREE
 cressent plot_tree \
-			--dist_matrix my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
-			--outdir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
-			--metadata_1 ./output/metadata.csv \
-			--metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-			--layout rectangular --branch_length branch.length \
-			--open_angle 0 --offset 0.15 \
-			--tip_label family \
-			--fig_width 20 --fig_height 15 \
-			--plot_name my_custom_tree_dist.pdf
+   --dist_matrix my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
+   --outdir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
+   --metadata_1 ./output/metadata.csv \
+   --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
+   --layout rectangular --branch_length branch.length \
+   --open_angle 0 --offset 0.15 \
+   --tip_label family \
+   --fig_width 20 --fig_height 15 \
+   --plot_name my_custom_tree_dist.pdf
 
 # you can also use the align file to plot the tree with the alginmet
 cressent plot_tree \
-			--tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-			--outdir ./output/tree \
-         --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
-			--metadata_1 ./output/metadata.csv \
-			--metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-			--layout rectangular --branch_length branch.length \
-			--open_angle 0 --offset 0.15 \
-			--tip_label family \
-			--fig_width 20 --fig_height 15 \
-			--plot_name my_custom_tree.pdf          
+   --tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
+   --outdir ./output/tree \
+   --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
+   --metadata_1 ./output/metadata.csv \
+   --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
+   --layout rectangular --branch_length branch.length \
+   --open_angle 0 --offset 0.15 \
+   --tip_label family \
+   --fig_width 20 --fig_height 15 \
+   --plot_name my_custom_tree.pdf          
 ```
 
 ### d) Plotting a Tanglegram (or “cophylo plot”) 
@@ -274,7 +274,7 @@ cressent plot_tree \
 The module calculates the [Robinson-Foulds distance](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-07011-0) (RF score)
 
 ```bash
-/fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/tanglegram.py \
+cressent tanglegram \
     --tree1 tree1.treefile \
     --tree2 tree2.treefile \
     --label1 my_tree1 \
