@@ -2,7 +2,7 @@
 a modular tool to help researchers to automatically annotate ssDNA contigs
 
 <div align="center">
-<img width = "40%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent_new.jpg">
+<img width = "50%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent_new.jpg">
 </div>
 
 
