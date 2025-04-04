@@ -55,7 +55,7 @@ def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args):
 @click.option("-d", "--directory", default=".", help="Directory for saving outputs")
 @click.option("--mafft_ep", type=float, default=0.123, help="Alignment length for MAFFT (default: 0.123)")
 @click.option("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
-@click.option("--db_family", multiple=True, help="List of family names or 'all' to use multiple database sequences")
+@click.option("--db_family", help="List of family names or 'all' to use multiple database sequences")
 @click.option("--db_path", default="./db", help="Path to the database FASTA files")
 @click.option("--protein_type", type=click.Choice(['reps', 'caps', 'orf']), help="Specify protein type (Rep or Cap) for database files")
 def align(threads, input_fasta, directory, mafft_ep, gap_threshold, db_family, db_path, protein_type):
@@ -74,8 +74,11 @@ def align(threads, input_fasta, directory, mafft_ep, gap_threshold, db_family, d
         if gap_threshold:
             sys.argv.extend(['--gap_threshold', str(gap_threshold)])
         if db_family:
-            for family in db_family:
-                sys.argv.extend(['--db_family', family])
+            # Split by whitespace
+            families = db_family.split()
+            if families:
+                sys.argv.append('--db_family')
+                sys.argv.extend(families)
         if db_path:
             sys.argv.extend(['--db_path', db_path])
         if protein_type:

@@ -1,4 +1,4 @@
-# CRESSENT (CRESSdna Extended/Exploratory aNnotation Toolkit)
+# CRESSENT (CRESSdna Extended aNnotation Toolkit)
 a modular tool to help researchers to automatically annotate ssDNA contigs
 
 <div align="center">
@@ -89,7 +89,7 @@ cressent detect_contamination \
                     -i my_sequences.fasta \
                     --db ./DB/contaminant/contaminant_db.fasta \
                     --output-dir results \
-                    --output-name clean_sequences.fa \
+                    --output-name clean_sequences \
                     --threads 4 \
                     --keep-temp
 ```
@@ -136,11 +136,13 @@ If using the tool's DB the `path/to/database` should be:
 - `DB/tree_models.csv` if you want to avoid ModelFinder from IQ-TREE2
 
 ```bash
-cressent align  --threads 24 \
-            --input_fasta /path/to/my_sequence.fa \
-            --db_family [Circoviridae Microviridae ...] or [all] \
-            --db_path path/to/database \
-            -d path/to/output/directory
+cressent align  \
+        --threads 24 \
+        --input_fasta /fs/project/PAS1117/ricardo/test_cressent/output/contamination/clean_sequences.fa.fasta \
+        --db_family "Alphapleolipovirus Amesuviridae" or all \
+        --protein_type reps \
+        --db_path /fs/project/PAS1117/ricardo/cressent/DB \
+        -d /fs/project/PAS1117/ricardo/test_cressent/output/align_family
 ```
 ##### Option 3: Use Your Own Database
 Change the database directory and specify the database file name with `--db_family`.

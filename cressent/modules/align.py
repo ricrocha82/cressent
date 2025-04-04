@@ -35,9 +35,40 @@ def run_command(command: str, error_message: str) -> None:
 def get_database_files(db_path: str, families: List[str], protein_type: Optional[str] = None) -> List[str]:
     """Get relevant database files based on family names and protein type."""
     db_files = []
+
+    logging.info(f"Database path: {db_path}")
+    logging.info(f"Requested families: {families}")
+    logging.info(f"Protein type: {protein_type}")
+
+    try:
+        all_files = os.listdir(db_path)
+        logging.info(f"Files in directory: {all_files}")
+    except Exception as e:
+        logging.error(f"Error listing directory {db_path}: {str(e)}")
+        return db_files
     
-    if "all" in families:  
-        families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
+    # if "all" in families:  
+    #     families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
+
+    if "all" in families:
+        if protein_type:
+            # Check if protein_type subdirectory exists
+            protein_dir = os.path.join(db_path, protein_type)
+            if os.path.exists(protein_dir) and os.path.isdir(protein_dir):
+                logging.info(f"Using protein subdirectory: {protein_dir}")
+                try:
+                    families = [f.split(".")[0] for f in os.listdir(protein_dir) if f.endswith(".fa")]
+                    logging.info(f"Found families in protein dir: {families}")
+                except Exception as e:
+                    logging.error(f"Error listing protein directory {protein_dir}: {str(e)}")
+            else:
+                logging.warning(f"Protein directory not found: {protein_dir}")
+                # Fall back to regular pattern with protein type in path
+                families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
+                logging.info(f"Using base directory families: {families}")
+        else:
+            families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
+            logging.info(f"Using base directory families (no protein type): {families}")
 
     for family in families:
         if protein_type:
@@ -194,7 +225,7 @@ def main():
     parser.add_argument("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
     parser.add_argument("--db_family", nargs='+', help="List of family names or 'all' to use multiple database sequences")
     parser.add_argument("--db_path", default="./db", help="Path to the database FASTA files")
-    parser.add_argument("--protein_type", choices=['reps', 'caps', 'orf'], help="Specify protein type (Rep or Cap) for database files")
+    parser.add_argument("--protein_type", choices=['reps', 'caps'], help="Specify protein type (Rep or Cap) for database files")
     
     args = parser.parse_args()
     
