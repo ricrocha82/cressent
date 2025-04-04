@@ -45,6 +45,7 @@ requirements:
     - r-dplyr
     - r-tidyr
     - r-rlang
+    - r-gggenes >=0.5
     - r-RColorBrewer >=1.0
     - bioconductor-treeio >=1.0
     - bioconductor-ggtree >=3.10

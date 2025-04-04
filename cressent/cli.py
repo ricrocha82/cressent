@@ -226,11 +226,13 @@ def motif(input_fasta, directory, pattern, table_name, remove_gaps, split_sequen
 # Gene map module
 @cli.command(name="gene_map")
 @click.option('-i', '--input', required=True, help='Input file path for the motif table CSV')
-@click.option('-o', '--output', default='gene_motif.pdf', help='Output file path for the generated plot (default: gene_motif.pdf)')
+@click.option('-o', '--output', default='./', help='Output directory where the plot will be saved')
+@click.option('--filename', default='gene_motif.pdf', help='Output filename for the generated plot (default: gene_motif.pdf)')
 @click.option('--height', type=float, default=10, help='Height of the output plot in inches (default: 10)')
 @click.option('--width', type=float, default=10, help='Width of the output plot in inches (default: 10)')
 @click.option('-t', '--title', help='Title for the plot (optional)')
-def gene_map(input, output, height, width, title):
+
+def gene_map(input, output, filename, height, width, title):
     """Generate gene arrow plots from motif data using R."""
     try:
         from cressent.modules.gene_map import main as gene_map_main
@@ -239,6 +241,8 @@ def gene_map(input, output, height, width, title):
             sys.argv.extend(['--input', input])
         if output:
             sys.argv.extend(['--output', output])
+        if filename:
+            sys.argv.extend(['--filename', str(filename)])
         if height:
             sys.argv.extend(['--height', str(height)])
         if width:

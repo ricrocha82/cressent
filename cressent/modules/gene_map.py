@@ -5,23 +5,36 @@ import subprocess
 import os
 import sys
 
+# Set up argument parser
+parser = argparse.ArgumentParser(description='Generate gene arrow plots from motif data using R')
+
+# Required arguments
+parser.add_argument('-i', '--input', required=True, help='Input file path for the motif table CSV')
+
+# Optional arguments
+parser.add_argument('-o', '--output', default='./', help='Output directory where the plot will be saved')
+parser.add_argument('--filename', default='gene_motif.pdf', help='Name of the output file (default: gene_motif.pdf)')
+parser.add_argument('--height', type=float, default=10, help='Height of the output plot in inches (default: 10)')
+parser.add_argument('--width', type=float, default=10, help='Width of the output plot in inches (default: 10)')
+parser.add_argument('-t', '--title', help='Title for the plot (optional)')
+
 def main():
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Generate gene arrow plots from motif data using R')
-    
-    # Required arguments
-    parser.add_argument('-i', '--input', required=True, help='Input file path for the motif table CSV')
-    
-    # Optional arguments
-    parser.add_argument('-o', '--output', default='gene_motif.pdf', help='Output file path for the generated plot (default: gene_motif.pdf)')
-    parser.add_argument('--height', type=float, default=10, help='Height of the output plot in inches (default: 10)')
-    parser.add_argument('--width', type=float, default=10, help='Width of the output plot in inches (default: 10)')
-    parser.add_argument('-t', '--title', help='Title for the plot (optional)')
-    
     # Parse arguments
     args = parser.parse_args()
-
-    os.makedirs(args.output, exist_ok=True)
+    
+    # Ensure filename has a proper extension
+    if not os.path.splitext(args.filename)[1]:
+        args.filename = args.filename + '.pdf'
+        print(f"No file extension detected in filename, using: {args.filename}")
+    
+    # Create the output directory if it doesn't exist
+    if not os.path.exists(args.output):
+        print(f"Creating output directory: {args.output}")
+        os.makedirs(args.output, exist_ok=True)
+    
+    # Combine output directory and filename
+    output_file_path = os.path.join(args.output, args.filename)
+    print(f"Output will be saved to: {output_file_path}")
     
     # Check if input file exists
     if not os.path.exists(args.input):
@@ -36,7 +49,7 @@ def main():
         sys.exit(1)
     
     # Prepare command
-    cmd = ["Rscript", r_script_path, args.input, args.output, str(args.height), str(args.width)]
+    cmd = ["Rscript", r_script_path, args.input, output_file_path, str(args.height), str(args.width)]
     
     # Add title if provided
     if args.title:
@@ -58,11 +71,11 @@ def main():
         # Check if process was successful
         if process.returncode != 0:
             print("Error: R script execution failed")
-            for line in process.stderr:
-                print(line.strip())
+            stderr_output = process.stderr.read()
+            print(stderr_output)
             sys.exit(process.returncode)
         
-        print(f"Successfully created plot: {args.output}")
+        print(f"Successfully created plot: {output_file_path}")
         
     except Exception as e:
         print(f"Error executing R script: {e}")
@@ -70,10 +83,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/gene_map.py \
-#                     -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_disc/motif_table.csv \
-#                     -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_disc/gene_map_motif_py.pdf \
-#                     --height 10 --width 10 \
-#                     -t "Motif Distribution in Genes"

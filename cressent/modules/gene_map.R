@@ -32,7 +32,7 @@ if (length(args) == 0 || "--help" %in% args || "-h" %in% args) {
 
 # Set default values
 input_file <- NULL
-output_file <- "gene_map_motif.pdf"
+output_file <- "gene_map_motif"
 height <- 10
 width <- 10
 plot_title <- NULL
@@ -50,11 +50,18 @@ if (is.null(input_file)) {
   usage()
 }
 
-# Check if input file exists
-if (!file.exists(input_file)) {
-  cat(paste("Error: Input file does not exist:", input_file, "\n\n"))
-  usage()
+
+# Check if the output directory exists, create it if it doesn't
+output_dir <- dirname(output_file)
+if (!dir.exists(output_dir) && output_dir != ".") {
+  cat(paste("Creating output directory:", output_dir, "\n"))
+  dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+  if (!dir.exists(output_dir)) {
+    cat(paste("Error: Failed to create output directory:", output_dir, "\n"))
+    quit(status = 1)
+  }
 }
+
 
 # Read and process the data
 cat(paste("Reading data from:", input_file, "\n"))
@@ -65,14 +72,14 @@ if (inherits(df_genes, "try-error")) {
 }
 
 # Count rows for legend
-n_rows <- length(unique(df_genes$motif_name))
+n_rows <- length(unique(df_genes$matched))
 cat(paste("Found", n_rows, "unique motifs\n"))
 
 # Create the plot
 cat("Generating plot...\n")
-plot_gene <- ggplot(df_genes, aes(xmin = start, xmax = end, y = sequence_name, fill = motif_name)) +
+plot_gene <- ggplot(df_genes, aes(xmin = start, xmax = end, y = seqID, fill = matched)) +
                 geom_gene_arrow() +
-                facet_wrap(~ sequence_name, scales = "free", ncol = 1) +
+                facet_wrap(~ seqID, scales = "free", ncol = 1) +
                 scale_fill_brewer(palette = "Set3") +
                 guides(fill=guide_legend(nrow=n_rows, byrow=TRUE)) +
                 labs(y = "Sequence name", fill = "Motifs") +
@@ -88,7 +95,7 @@ if (!is.null(plot_title)) {
 
 # Save the plot
 cat(paste("Saving plot to:", output_file, "\n"))
-ggsave(plot_gene, filename = output_file, height = height, width = width)
+ggsave(plot_gene, filename = file.path(output_file), height = height, width = width)
 cat("Done!\n")
 
 # Rscript /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/gene_map.R \
