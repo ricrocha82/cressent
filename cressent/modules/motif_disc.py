@@ -137,6 +137,8 @@ def create_motif_table(motifs, output_dir):
             cols.insert(start_idx + 1, 'end')
             df = df[cols]
 
+    df = df.rename(columns={'motif_name': 'matched'})
+    df = df.rename(columns={'sequence_name': 'seqID'})
     motif_table_path = os.path.join(output_dir, "motif_table.csv")
     df.to_csv(motif_table_path, sep='\t', index=False)
 
@@ -199,7 +201,7 @@ def run_scanprosite(fasta_file, seq_type):
                 # Build a DataFrame from the scan results.
                 df = pd.DataFrame(scan_results)
                 # Add columns to track which sequence produced the results.
-                df["sequence_id"] = record.id
+                df["record_id"] = record.id
                 df["sequence_name"] = record.description
                 all_dfs.append(df)
             except Exception as e:
@@ -306,7 +308,7 @@ def main():
     
     # Use extra arguments if provided, otherwise use defaults
     if args.meme_extra:
-        meme_args = args.meme_extra
+        meme_args = default_args + args.meme_extra
         logging.info(f"Using provided MEME arguments: {meme_args}")
     else:
         meme_args = default_args
