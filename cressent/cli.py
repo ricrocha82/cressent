@@ -31,8 +31,9 @@ def cli():
 @click.option("-B", "--bootstrap", default=1000, type=int, help="Number of bootstrap iterations (default: 1000)")
 @click.option("-T", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
 @click.option("-m", "--model", default="MFP", help="Substitution models (default: MFP - ModelFinder)")
-@click.option("--extra_args", default="", help="Extra arguments to pass directly to IQ-TREE")
-def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args):
+@click.option("--keep_names", is_flag=True, help="Keep only first word of sequence IDs")
+@click.option("--extra_args", multiple=True, help="Extra arguments to pass directly to IQ-TREE (can be specified multiple times)")
+def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args, keep_names):
     """Build phylogenetic tree using IQ-TREE."""
     try:
         from cressent.modules.build_tree import main as build_tree_main
@@ -41,8 +42,17 @@ def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args):
                                     '--bootstrap', str(bootstrap),
                                     '--threads', str(threads),
                                     '--model', model]
+        # if extra_args:
+        #     sys.argv.extend(['--extra_args', extra_args])
         if extra_args:
-            sys.argv.extend(['--extra_args', extra_args])
+            # First add the flag
+            sys.argv.append('--extra_args')
+            # Then add each argument as a separate item
+            sys.argv.extend(extra_args)
+        
+        if keep_names:
+            sys.argv.append('--keep_names')
+
         build_tree_main()
     except Exception as e:
         click.echo(f"Error running build_tree module: {e}", err=True)
@@ -143,7 +153,10 @@ def motif_disc(fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite):
         if maxw:
             sys.argv.extend(['-maxw', str(maxw)])
         if meme_extra:
-            sys.argv.extend(['--meme_extra'] + list(meme_extra))
+            # First add the flag
+            sys.argv.append('--meme_extra')
+            # Then add each argument as a separate item
+            sys.argv.extend(meme_extra)
         if scanprosite:
             sys.argv.append('--scanprosite')
         motif_disc_main()
@@ -253,7 +266,7 @@ def gene_map(input, output, height, width, title):
 @click.option("--color", default=True, help="Color tree by group (requires metadata)")
 @click.option("--fig_width", type=float, default=7, help="Figure width (ggsave)")
 @click.option("--fig_height", type=float, default=7, help="Figure height (ggsave)")
-@click.option("--plot_tips", default=True, help="Include tip labels in the plot")
+@click.option("--plot_tips",  type=click.BOOL, default=True, help="Include tip labels in the plot")
 @click.option("--plot_name", default="tree_plot.pdf", help="Name of the output plot file")
 def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layout, 
                 branch_length, open_angle, offset, tip_label, color, fig_width, 
@@ -284,14 +297,18 @@ def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layo
             sys.argv.extend(['--offset', str(offset)])
         if tip_label:
             sys.argv.extend(['--tip_label', tip_label])
-        if color:
-            sys.argv.extend(['--color', str(color).upper()])
+        if color is False:
+            sys.argv.extend(['--color', 'FALSE'])
+        else:
+            sys.argv.extend(['--color', 'TRUE'])
         if fig_width:
             sys.argv.extend(['--fig_width', str(fig_width)])
         if fig_height:
             sys.argv.extend(['--fig_height', str(fig_height)])
-        if plot_tips:
-            sys.argv.extend(['--plot_tips', str(plot_tips).upper()])
+        if plot_tips is False:  # Explicitly check for False
+            sys.argv.extend(['--plot_tips', 'FALSE'])
+        else:
+            sys.argv.extend(['--plot_tips', 'TRUE'])
         if plot_name:
             sys.argv.extend(['--plot_name', plot_name])
         plot_tree_main()

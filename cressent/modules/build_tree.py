@@ -80,7 +80,14 @@ def generate_phylogenetic_tree(input_fasta, bootstrap, threads, output_prefix, e
     Step 2: generate tree using bootstrap support generated for 1,000 iterations
     """
 
-    cmd = f"iqtree2 -s {input_fasta} -m {model} -B {bootstrap} -T {threads} --prefix {output_prefix} {extra_args}"
+    if extra_args:
+        # Simply join all arguments with a space
+        extra_args_str = " ".join(extra_args)
+    else:
+        extra_args_str = ""
+
+    
+    cmd = f"iqtree2 -s {input_fasta} -m {model} -B {bootstrap} -T {threads} --prefix {output_prefix} {extra_args_str}"
 
     logging.info(f"Running phylogenetic tree generation with command: {cmd}")
     run_command(cmd, "Error building Phylogenetic tree")
@@ -102,7 +109,7 @@ def main():
     parser.add_argument("-B", "--bootstrap", default=1000, type=int, help="Number of bootstrap iterations (default: 1000)")
     parser.add_argument("-T", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
     parser.add_argument("-m", "--model", default="MFP", help="Substitution models (default: MFP - ModelFinder)")
-    parser.add_argument("--extra_args", default="", help="Extra arguments to pass directly to IQ-TREE")
+    parser.add_argument("--extra_args", nargs="+", help="Extra arguments to pass directly to IQ-TREE (e.g. --extra_args '-cmax 15')")
     parser.add_argument("--keep_names", action="store_true", help="Keep only first word of sequence IDs")
     
 

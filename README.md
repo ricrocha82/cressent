@@ -135,14 +135,25 @@ If using the tool's DB the `path/to/database` should be:
 - `DB/reps` for REPS
 - `DB/tree_models.csv` if you want to avoid ModelFinder from IQ-TREE2
 
+you can choose specific families (e.g, Rep proteins from Alphapleolipovirus, Amesuviridae, and Circoviridae families)
 ```bash
 cressent align  \
         --threads 24 \
-        --input_fasta /fs/project/PAS1117/ricardo/test_cressent/output/contamination/clean_sequences.fa.fasta \
-        --db_family "Alphapleolipovirus Amesuviridae" or all \
+        --input_fasta my_sequences.fa \
+        --db_family "Alphapleolipovirus Amesuviridae Circoviridae" \
         --protein_type reps \
-        --db_path /fs/project/PAS1117/ricardo/cressent/DB \
-        -d /fs/project/PAS1117/ricardo/test_cressent/output/align_family
+        --db_path ./DB \
+        -d output/align_family
+```
+or all the database (e.g., all the Rep proteins)
+```bash
+cressent align  \
+        --threads 24 \
+        --input_fasta my_sequence.fa \
+        --db_family all \
+        --protein_type reps \
+        --db_path ./DB \
+        -d output/align_family
 ```
 ##### Option 3: Use Your Own Database
 Change the database directory and specify the database file name with `--db_family`.
@@ -239,7 +250,7 @@ cressent plot_tree \
    --outdir ./output/tree \
    --metadata_1 ./output/metadata.csv \
    --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-   --layout rectangular --branch_length branch.length \
+   --layout rectangular \
    --open_angle 0 --offset 0.15 \
    --tip_label family \
    --fig_width 20 --fig_height 15 \
@@ -249,9 +260,9 @@ cressent plot_tree \
 cressent plot_tree \
    --dist_matrix my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
    --outdir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
-   --metadata_1 ./output/metadata.csv \
-   --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-   --layout rectangular --branch_length branch.length \
+   --metadata_1 ./output/metadata.csv \ # aligment metadata
+   --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \ # build_tree metadata
+   --layout rectangular \
    --open_angle 0 --offset 0.15 \
    --tip_label family \
    --fig_width 20 --fig_height 15 \
@@ -264,7 +275,7 @@ cressent plot_tree \
    --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
    --metadata_1 ./output/metadata.csv \
    --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
-   --layout rectangular --branch_length branch.length \
+   --layout rectangular \
    --open_angle 0 --offset 0.15 \
    --tip_label family \
    --fig_width 20 --fig_height 15 \
@@ -371,14 +382,14 @@ cressent motif_disc \
             -i ./seq_meme.fa \
             -o ./motif_disc \
             -nmotifs 5 -minw 6 -maxw 50 \
-            --meme_extra -mod zoops -evt 0.05
+            --meme_extra "-mod zoops -evt 0.05"
 
 # MEME + ScanProsite
 cressent motif_disc \
             -i ./seq_meme.fa \
             -o ./motif_disc \
             -nmotifs 5 -minw 6 -maxw 50 \
-            --meme_extra -mod zoops -evt 0.05 \
+            --meme_extra "-mod zoops -evt 0.05" \
             --scanprosite
 ```
 

@@ -33,10 +33,12 @@ def main():
     parser.add_argument("--open_angle", default=0, type=float, help="Open angle for circular/unrooted layouts")
     parser.add_argument("--offset", default=0.14, type=float, help="Tip label offset")
     parser.add_argument("--tip_label", default="family", help="Column name to use as the tip label")
-    parser.add_argument("--color", default=True, type=lambda s: s.lower() in ['true', '1', 'yes'], help="Color tree by group (requires metadata)")
+    parser.add_argument("--color", default=True, type=lambda s: s.lower() not in ['false', '0', 'no'], 
+                            help="Color tree by group (requires metadata)")
     parser.add_argument("--fig_width", type=float, default=7, help="Figure width (ggsave)")
     parser.add_argument("--fig_height", type=float, default=7, help="Figure height (ggsave)")
-    parser.add_argument("--plot_tips", default=True, type=lambda s: s.lower() in ['true', '1', 'yes'], help="Include tip labels in the plot")
+    parser.add_argument("--plot_tips", default=True, type=lambda s: s.lower() not in ['false', '0', 'no'], 
+                            help="Include tip labels in the plot")
     parser.add_argument("--plot_name", default="tree_plot.pdf", help="Name of the output plot file")
     args = parser.parse_args()
     

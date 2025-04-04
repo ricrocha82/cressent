@@ -43,22 +43,22 @@ def run_meme(fasta_file, output_dir, seq_type, meme_args):
     - fasta_file: path to input FASTA file.
     - output_dir: directory where MEME output and additional files will be stored.
     - seq_type: either 'dna' or 'protein'; used to set the proper MEME flag.
-    - meme_args: dictionary of MEME arguments (e.g. {'-nmotifs': 5, '-minw': 6, '-maxw': 50}).
+    - meme_args: list of additional arguments to pass to MEME.
     """
+    # Build the base command
     cmd = ["meme", fasta_file, "-oc", output_dir]
     
-    # Append user-specified arguments.
-    for key, value in meme_args.items():
-        cmd.append(key)
-        cmd.append(str(value))
-    
-    # Add the sequence type flag.
+    # Add the sequence type flag
     if seq_type == "dna":
         cmd.append("-dna")
     else:
         cmd.append("-protein")
     
-    # Convert list command into a string for shell execution.
+    # Add any additional arguments if provided
+    if meme_args:
+        cmd.extend(meme_args)
+    
+    # Convert list command into a string for shell execution
     command_str = " ".join(cmd)
     logging.info(f"Running command: {command_str}")
     run_command(command_str, "MEME command failed")
@@ -277,7 +277,7 @@ def main():
     parser.add_argument("-nmotifs", type=int, default=3, help="Number of motifs to find")
     parser.add_argument("-minw", type=int, default=6, help="Minimum motif width")
     parser.add_argument("-maxw", type=int, default=50, help="Maximum motif width")
-    parser.add_argument("--meme_extra", nargs="+", help="Additional MEME arguments (list format)", default=[])
+    parser.add_argument("--meme_extra", nargs="+", help="Additional MEME arguments (list format)")
     parser.add_argument("--scanprosite", action='store_true', help='Run ScanProsite')
     
     args = parser.parse_args()
@@ -301,18 +301,16 @@ def main():
     seq_type = determine_seq_type(args.fasta)
     logging.info(f"Detected sequence type: {seq_type}")
     
-    meme_args = {
-        "-nmotifs": args.nmotifs,
-        "-minw": args.minw,
-        "-maxw": args.maxw
-    }
+    # Set default MEME arguments
+    default_args = ["-nmotifs", str(args.nmotifs), "-minw", str(args.minw), "-maxw", str(args.maxw)]
     
-    extra = args.meme_extra
-    if extra:
-        if len(extra) % 2 != 0:
-            parser.error("Extra MEME arguments should be provided in key-value pairs.")
-        for i in range(0, len(extra), 2):
-            meme_args[extra[i]] = extra[i+1]
+    # Use extra arguments if provided, otherwise use defaults
+    if args.meme_extra:
+        meme_args = args.meme_extra
+        logging.info(f"Using provided MEME arguments: {meme_args}")
+    else:
+        meme_args = default_args
+        logging.info(f"Using default MEME arguments: {meme_args}")
     
     run_meme(args.fasta, args.output, seq_type, meme_args)
     
