@@ -584,16 +584,16 @@ The recombination module is designed to detect recombination events in nucleotid
 When run for the first time, recombination.py will if binary executables exist (3Seq and GENECONV), compile from source if not. Also, it will generate a new 500 × 500 × 500 P-value table. If you don't want to genearate a p-value table you can extract from [here](https://github.com/ricrocha82/ssDNA_tool/blob/main/ssDNA_annotator/modules/openrdp/bin/source_code/myPvalueTable.tar.gz)
 
 ```bash
-cressent recombination -i <input_alignment> -o <output_file> [options]
+cressent recombination -i <input_alignment> -f <output_file> -o <output_directory>[options]
 
 # Run all methods
-cressent recombination -i aligned_sequences.fasta -o results.csv
+cressent recombination -i aligned_sequences.fasta -f results.csv
 
 # Specify output directory
-cressent recombination -i aligned_sequences.fasta -o results.csv -d output_dir
+cressent recombination -i aligned_sequences.fasta -f results.csv -o output_dir
 
 # Run specific methods
-cressent recombination -i aligned_sequences.fasta -o results.csv -rdp -maxchi -bootscan
+cressent recombination -i aligned_sequences.fasta -f results.csv -rdp -maxchi -bootscan
 
 # Use custom configuration
 cressent recombination -i aligned_sequences.fasta -o results.csv -c my_config.ini -all
@@ -678,7 +678,7 @@ Calculates %G+C content using a sliding window approach.
 Output is a heatmap with GC content. Rows as sequence names (left) and % of GC (right).
 
 ```bash
-cressent gc_patchiness \
+cressent gc_ht \
             -i ./test_fast.fa \
             --output_dir ./output \
             --output_name gc_heatmap.pdf \
