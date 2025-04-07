@@ -36,10 +36,29 @@ from datetime import datetime
 from pathlib import Path
 from Bio import SeqIO
 import sys
+import importlib.util
 
 # Get the absolute path to the module directory
+# Get the absolute path to the module directory
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
-OPENRDP_DIR = os.path.join(MODULE_DIR, "openrdp")
+
+# Check if we're in the expected directory structure
+if "modules" in MODULE_DIR and os.path.exists(os.path.join(MODULE_DIR, "openrdp")):
+    OPENRDP_DIR = os.path.join(MODULE_DIR, "openrdp")
+elif os.path.exists(os.path.join(MODULE_DIR, "modules", "openrdp")):
+    OPENRDP_DIR = os.path.join(MODULE_DIR, "modules", "openrdp")
+else:
+    # Try to find openrdp directory
+    OPENRDP_DIR = None
+    for root, dirs, files in os.walk(MODULE_DIR):
+        if "openrdp" in dirs:
+            OPENRDP_DIR = os.path.join(root, "openrdp")
+            break
+    
+    # If still not found, use default
+    if OPENRDP_DIR is None:
+        OPENRDP_DIR = os.path.join(MODULE_DIR, "openrdp")
+        os.makedirs(OPENRDP_DIR, exist_ok=True)
 
 def setup_logger(output_dir, log_level=logging.INFO, quiet=False):
     """
@@ -483,8 +502,8 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description="Detect recombination events in ssDNA virus sequences using OpenRDP")
     
     parser.add_argument('-i', '--input', required=True, help='Input alignment file in FASTA format')
-    parser.add_argument('-o', '--output', required=True, help='Output file for results (CSV format)')
-    parser.add_argument('-d', '--outdir', default='.', help='Output directory for all files (default: current directory)')
+    parser.add_argument('-o', '--outdir', default='.', help='Output directory for all files (default: current directory)')
+    parser.add_argument('-f', '--output_file', required=True, help='Output file for results (CSV format)')
     parser.add_argument('-c', '--config', help='Configuration file in INI format for OpenRDP parameters')
     
     # Method options
@@ -551,11 +570,68 @@ def detect_recombination(input_file, output_file, output_dir='.', config_file=No
         run_geneconv = False
     
     # Import OpenRDP's main function
-    sys.path.append(OPENRDP_DIR)
     logger.info("Importing OpenRDP modules...")
     
     try:
-        from openrdp.main import openrdp
+        # Ensure all parent directories are in the Python path
+        module_parent_dir = os.path.dirname(MODULE_DIR)
+        if module_parent_dir not in sys.path:
+            sys.path.insert(0, module_parent_dir)
+        
+        if MODULE_DIR not in sys.path:
+            sys.path.insert(0, MODULE_DIR)
+            
+        if OPENRDP_DIR not in sys.path:
+            sys.path.insert(0, OPENRDP_DIR)
+        
+        # Ensure the scripts directory has an __init__.py file
+        scripts_dir = os.path.join(OPENRDP_DIR, "scripts")
+        os.makedirs(scripts_dir, exist_ok=True)
+        init_file = os.path.join(scripts_dir, "__init__.py")
+        if not os.path.exists(init_file):
+            with open(init_file, "w") as f:
+                pass  # Create an empty file
+        
+        # Create __init__.py for OPENRDP_DIR if it doesn't exist
+        init_file = os.path.join(OPENRDP_DIR, "__init__.py")
+        if not os.path.exists(init_file):
+            with open(init_file, "w") as f:
+                pass
+        
+        # First, try to import from an installed package
+        try:
+            # Try importing main directly
+            from openrdp.main import openrdp
+            logger.info("Successfully imported OpenRDP main function from installed package")
+        except ImportError:
+            # Try relative import within the package
+            try:
+                sys.path.append(os.path.join(OPENRDP_DIR))
+                from main import openrdp
+                logger.info("Successfully imported OpenRDP main function using direct import")
+            except ImportError:
+                # If relative import fails, try loading the module directly
+                logger.info("Direct import failed, trying to load module directly")
+                
+                main_path = os.path.join(OPENRDP_DIR, "main.py")
+                if not os.path.exists(main_path):
+                    logger.error(f"Main module file not found at {main_path}")
+                    # Look for main.py in other locations
+                    for root, dirs, files in os.walk(OPENRDP_DIR):
+                        if "main.py" in files:
+                            main_path = os.path.join(root, "main.py")
+                            logger.info(f"Found main.py at: {main_path}")
+                            break
+                
+                if os.path.exists(main_path):
+                    import importlib.util
+                    spec = importlib.util.spec_from_file_location("openrdp.main", main_path)
+                    main_module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(main_module)
+                    openrdp = main_module.openrdp
+                    logger.info("Successfully imported OpenRDP main function using spec loader")
+                else:
+                    raise ImportError(f"Cannot find main.py in OpenRDP directory: {OPENRDP_DIR}")
         
         # Log analysis parameters
         logger.info(f"Starting recombination analysis on {input_file}")
@@ -668,7 +744,7 @@ def main(args=None):
         run_chimaera = True
         run_bootscan = True
 
-    output_dir = parsed_args.output
+    output_dir = parsed_args.outdir
     # Determine the input FASTA full path
     def validate_fasta(filename):
         with open(filename, "r") as handle:
@@ -686,7 +762,7 @@ def main(args=None):
     # Run recombination detection
     success = detect_recombination(
         input_fasta,
-        parsed_args.output,
+        parsed_args.output_file,
         parsed_args.outdir,
         parsed_args.config,
         run_geneconv,

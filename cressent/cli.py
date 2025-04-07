@@ -359,6 +359,51 @@ def tanglegram(tree1, tree2, label1, label2, output, name_tanglegram, width, hei
         click.echo(f"Error running tanglegram module: {e}", err=True)
         sys.exit(1)
 
+# Sequence Logo module
+@cli.command(name="seq_logo")
+@click.option("-f", "--fasta", help="Path to the fasta file.")
+@click.option("-tb", "--seq_df", help="Path to the table produced by seqkit.")
+@click.option("-o", "--output_dir", default="./", help="Directory where the sequence logo will be saved.")
+@click.option("-n", "--output_name", default="sequence_logo.pdf", help="Name of the sequence logo PDF file.")
+@click.option("--plot_title", default="sequence_logo", help="Title of the Sequence Logo.")
+@click.option("--width", default=10, type=float, help="Width of the sequence logo PDF file.")
+@click.option("--height", default=10, type=float, help="Height of the sequence logo PDF file.")
+@click.option("--split", is_flag=True, help="If set, the sequence logo will be split by group label.")
+@click.option("--metadata", help="Path to metadata file containing group labels.")
+@click.option("--ncol", type=int, help="Number of columns when splitting the sequence logo.")
+@click.option("--group_label", help="Column name in metadata for grouping sequences.")
+def seq_logo(fasta, seq_df, output_dir, output_name, plot_title, width, height, split, metadata, ncol, group_label):
+    """Generate a sequence logo from a FASTA file or sequence table."""
+    try:
+        from cressent.modules.seq_logo import main as seq_logo_main
+        sys.argv = [sys.argv[0]]
+        if fasta:
+            sys.argv.extend(['-f', fasta])
+        if seq_df:
+            sys.argv.extend(['-tb', seq_df])
+        if output_dir:
+            sys.argv.extend(['-o', output_dir])
+        if output_name:
+            sys.argv.extend(['-n', output_name])
+        if plot_title:
+            sys.argv.extend(['--plot_title', plot_title])
+        if width:
+            sys.argv.extend(['--width', str(width)])
+        if height:
+            sys.argv.extend(['--height', str(height)])
+        if split:
+            sys.argv.append('--split')
+        if metadata:
+            sys.argv.extend(['--metadata', metadata])
+        if ncol:
+            sys.argv.extend(['--ncol', str(ncol)])
+        if group_label:
+            sys.argv.extend(['--group_label', group_label])
+        seq_logo_main()
+    except Exception as e:
+        click.echo(f"Error running seq_logo module: {e}", err=True)
+        sys.exit(1)
+
 # Stem-loop finder module
 @cli.command(name="sl_finder")
 @click.option("-i", "--fasta_in", required=True, help="Input FASTA file")
@@ -405,8 +450,8 @@ def sl_finder(fasta_in, gff_in, out_gff, output_dir, csv_out, motif, family,
         click.echo(f"Error running sl_finder module: {e}", err=True)
         sys.exit(1)
 
-# GC Patchiness module
-@cli.command(name="gc_patchiness")
+# GC Patchiness module (heatmap)
+@cli.command(name="gc_ht")
 @click.option("-i", "--fasta_file", required=True, help="Input FASTA file containing sequences.")
 @click.option("--output_dir", default=".", help="Directory to save the output image (default: current directory).")
 @click.option("--window_size", type=int, default=30, help="Sliding window size for GC content calculation (default: 30).")
@@ -415,10 +460,10 @@ def sl_finder(fasta_in, gff_in, out_gff, output_dir, csv_out, motif, family,
 @click.option("--fig_width", type=int, default=12, help="Figure width in inches (default: 12).")
 @click.option("--fig_height", type=int, default=6, help="Figure height in inches (default: 6).")
 @click.option("--output_name", default="gc_heatmap.pdf", help="Name of output image file with extension (default: gc_heatmap.png).")
-def gc_patchiness(fasta_file, output_dir, window_size, step_size, xticklabels, fig_width, fig_height, output_name):
+def gc_ht(fasta_file, output_dir, window_size, step_size, xticklabels, fig_width, fig_height, output_name):
     """Generate a GC content heatmap from a FASTA file."""
     try:
-        from cressent.modules.gc_patchiness import main as gc_patchiness_main
+        from cressent.modules.gc_ht import main as gc_ht_main
         sys.argv = [sys.argv[0]]
         if fasta_file:
             sys.argv.extend(['--fasta_file', fasta_file])
@@ -437,16 +482,16 @@ def gc_patchiness(fasta_file, output_dir, window_size, step_size, xticklabels, f
         if output_name:
             sys.argv.extend(['--output_name', output_name])
         # Call the main function
-        gc_patchiness_main()
+        gc_ht_main()
     except Exception as e:
-        click.echo(f"Error running gc_patchiness module: {e}", err=True)
+        click.echo(f"Error running gc_ht module: {e}", err=True)
         sys.exit(1)
 
 # Recombination module
 @cli.command(name="recombination")
 @click.option('-i', '--input', required=True, help='Input alignment file in FASTA format')
-@click.option('-o', '--output', required=True, help='Output file for results (CSV format)')
-@click.option('-d', '--outdir', default='.', help='Output directory for all files (default: current directory)')
+@click.option('-o', '--outdir', default='.', help='Output directory for all files (default: current directory)')
+@click.option('-f', '--output_file', required=True, help='Output file for results (CSV format)')
 @click.option('-c', '--config', help='Configuration file in INI format for OpenRDP parameters')
 @click.option('-rdp', is_flag=True, help='Run RDP method')
 @click.option('-threeseq', is_flag=True, help='Run 3Seq method')
@@ -458,7 +503,7 @@ def gc_patchiness(fasta_file, output_dir, window_size, step_size, xticklabels, f
 @click.option('-all', is_flag=True, help='Run all methods')
 @click.option('-quiet', is_flag=True, help='Suppress console output')
 @click.option('-verbose', is_flag=True, help='Enable verbose logging')
-def recombination(input, output, outdir, config, rdp, threeseq, geneconv, maxchi, 
+def recombination(input, outdir, output_file, config, rdp, threeseq, geneconv, maxchi, 
                   chimaera, bootscan, siscan, all, quiet, verbose):
     """Detect recombination events in ssDNA virus sequences."""
     try:
@@ -466,10 +511,10 @@ def recombination(input, output, outdir, config, rdp, threeseq, geneconv, maxchi
         sys.argv = [sys.argv[0]]
         if input:
             sys.argv.extend(['-i', input])
-        if output:
-            sys.argv.extend(['-o', output])
         if outdir:
-            sys.argv.extend(['-d', outdir])
+            sys.argv.extend(['-o', outdir])
+        if output_file:
+            sys.argv.extend(['-f', output_file])
         if config:
             sys.argv.extend(['-c', config])
         if rdp:

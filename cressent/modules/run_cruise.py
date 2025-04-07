@@ -12,8 +12,9 @@ import logging
 from pathlib import Path
 import shutil
 
-import cruise
-import args
+# Import from local module files
+from . import cruise
+from . import args
 
 from Bio import SeqIO
 import sys

@@ -109,7 +109,7 @@ def plot_gc_heatmap(fasta_file, output_dir=".", window_size=30, step_size=5,
     # Close plot to prevent display issues in CLI
     plt.close()
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Generate a GC content heatmap from a FASTA file.")
 
     parser.add_argument("-i","--fasta_file", help="Input FASTA file containing sequences.")
@@ -137,13 +137,14 @@ if __name__ == "__main__":
                 sys.exit("Error: Input file is not in the FASTA format.\n")
                 logging.info(f"Using: {input_fasta} is not in the FASTA format")
     # check fasta
-    input_fasta = validate_fasta(args.input_fasta)
+    input_fasta = validate_fasta(args.fasta_file)
 
     # run the script
     plot_gc_heatmap(input_fasta, output_dir, args.window_size, args.step_size,
                     args.xticklabels, args.fig_width, args.fig_height, args.output_name)
 
-
+if __name__ == "__main__":
+    main()
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/gc_patchiness.py \
 #                                           -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_fast.fa \
 #                                         --output_dir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output \

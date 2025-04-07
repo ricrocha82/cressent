@@ -267,7 +267,8 @@ def run_sl_finder(fasta_file, gff_file, out_gff, output_dir, out_csv=None, **kwa
         logger.error(f"Error in run_sl_finder: {str(e)}")
         raise
 
-if __name__ == "__main__":
+def main():
+    """Main entry point for the sl_finder module when called via cli.py."""
     parser = argparse.ArgumentParser(description="A module for putative stem-loop annotation")
     parser.add_argument("-i", "--fasta_in", required=True, help="Input FASTA file")
     parser.add_argument("--gff_in", required=True, help="Input GFF/GTF file")
@@ -291,18 +292,16 @@ if __name__ == "__main__":
     output_dir = args.output_dir
     os.makedirs(output_dir, exist_ok=True)
 
-    # Determine the input FASTA full path
+    # Validate FASTA file
     def validate_fasta(filename):
         with open(filename, "r") as handle:
             fasta = SeqIO.parse(handle, "fasta")
             if any(fasta):
                 print("FASTA checked.")
-                input_fasta = filename
-                return input_fasta
+                return filename
             else:
                 sys.exit("Error: Input file is not in the FASTA format.\n")
 
-    # check fasta
     input_fasta = validate_fasta(args.fasta_in)
     
     try:
@@ -318,10 +317,13 @@ if __name__ == "__main__":
             ideallooplen=args.ideallooplen,
             frame=args.frame
         )
+        return 0
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
+if __name__ == "__main__":
+    sys.exit(main())
 
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/sl_finder.py \
 #     -i /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/test.fasta \

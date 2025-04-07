@@ -20,6 +20,20 @@ def setup_logging(output_dir):
         ]
     )
 
+# Determine the input FASTA full path
+def validate_fasta(filename):
+    """Validate that a file is in FASTA format if provided."""
+    if filename is None:
+        return None
+        
+    with open(filename, "r") as handle:
+        fasta = SeqIO.parse(handle, "fasta")
+        if any(fasta):
+            print("FASTA checked.")
+            return filename
+        else:
+            sys.exit("Error: Input file is not in the FASTA format.\n")
+
 def run_command(command, error_message):
     """Run a shell command and handle errors."""
     try:
@@ -97,28 +111,19 @@ def main():
     output_dir = args.output_dir
     os.makedirs(output_dir, exist_ok=True)
 
-    # Determine the input FASTA full path
-    def validate_fasta(filename):
-        with open(filename, "r") as handle:
-            fasta = SeqIO.parse(handle, "fasta")
-            if any(fasta):
-                print("FASTA checked.")
-                input_fasta = filename
-                return input_fasta
-            else:
-                sys.exit("Error: Input file is not in the FASTA format.\n")
-
-    # check fasta
-    input_fasta = validate_fasta(args.fasta)
+    # Only validate FASTA if it was provided
+    input_fasta = None
+    if args.fasta:
+        input_fasta = validate_fasta(args.fasta)
 
     # Set up logging
     setup_logging(output_dir)
     logging.info("Starting sequence logo generation.")
 
     # Validate inputs
-    if input_fasta and args.seq_df:
-        logging.error("you need to put in either a table -tb or a fasta -f.")
-        parser.error("you need to put in either a table -tb or a fasta -f.")
+    # if input_fasta and args.seq_df:
+    #     logging.error("you need to put in either a table -tb or a fasta -f.")
+    #     parser.error("you need to put in either a table -tb or a fasta -f.")
 
     if input_fasta is None and args.seq_df is None:
         logging.error("Either --fasta or --seq_df must be provided.")
