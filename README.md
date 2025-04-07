@@ -596,7 +596,7 @@ cressent recombination -i aligned_sequences.fasta -f results.csv -o output_dir
 cressent recombination -i aligned_sequences.fasta -f results.csv -rdp -maxchi -bootscan
 
 # Use custom configuration
-cressent recombination -i aligned_sequences.fasta -o results.csv -c my_config.ini -all
+cressent recombination -i aligned_sequences.fasta -f results.csv -c my_config.ini -all
 ```
 ### Basic Options
 
