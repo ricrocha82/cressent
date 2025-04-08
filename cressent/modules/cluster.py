@@ -162,7 +162,7 @@ def cluster_sequences(input_fasta, output_dir, threads=32, min_ani=95.0, min_tco
         logging.info("Starting sequence clustering pipeline")
         
         # Define file paths
-        cleaned_fasta = output_dir / f"cleaned_{Path(input_fasta).name}"
+        cleaned_fasta = output_dir / f"renamed_{Path(input_fasta).name}"
         db_path = temp_dir / "blast_db"
         blast_output = output_dir / "blast_results.tsv"
         ani_output = output_dir / "ani_results.tsv"

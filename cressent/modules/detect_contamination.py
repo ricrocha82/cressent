@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-CRESS DNA Virus Decontamination Pipeline
+CRESS DNA/Protein Virus Decontamination Pipeline
 
 This script screens sequence data against a database of known viral contaminants
-and filters out potential contamination.
+and filters out potential contamination. It can handle both nucleotide and protein sequences.
 
 Usage:
     python decontaminate.py --input_fasta sequences.fasta --db viralContaminants.fasta --output-dir results
@@ -68,7 +68,14 @@ def setup_logging(log_file: str) -> logging.Logger:
 def check_dependencies() -> bool:
     """Check if required external dependencies are installed."""
     try:
+        # Check for blastn
         subprocess.run(["blastn", "-version"], 
+                      stdout=subprocess.PIPE, 
+                      stderr=subprocess.PIPE, 
+                      check=True)
+        
+        # Check for blastp
+        subprocess.run(["blastp", "-version"], 
                       stdout=subprocess.PIPE, 
                       stderr=subprocess.PIPE, 
                       check=True)
@@ -92,17 +99,65 @@ def validate_fasta(filename):
         logger.error(f"Error validating FASTA file: {e}")
         raise
 
+def detect_sequence_type(fasta_file: str) -> str:
+    """
+    Detect whether the input FASTA file contains nucleotide or protein sequences.
+    
+    Args:
+        fasta_file: Path to the FASTA file
+        
+    Returns:
+        'nucl' or 'prot' based on detection
+    """
+    # Read first few sequences to determine type
+    nuc_chars = set('ATGCNatgcn')
+    prot_chars = set('EFILPQefilpq')  # Amino acids not in nucleotide alphabet
+    
+    try:
+        sequences = []
+        with open(fasta_file, "r") as handle:
+            for record in SeqIO.parse(handle, "fasta"):
+                sequences.append(str(record.seq))
+                if len(sequences) >= 5:  # Check up to 5 sequences
+                    break
+        
+        # If we couldn't get any sequences, default to nucleotide
+        if not sequences:
+            logger.warning("Couldn't detect sequence type. Defaulting to nucleotide.")
+            return 'nucl'
+        
+        # Check each sequence for protein-specific amino acids
+        is_protein = False
+        for seq in sequences:
+            seq_chars = set(seq.upper())
+            if seq_chars.intersection(prot_chars):
+                is_protein = True
+                break
+        
+        if is_protein:
+            logger.info("Detected protein sequences")
+            return 'prot'
+        else:
+            logger.info("Detected nucleotide sequences")
+            return 'nucl'
+            
+    except Exception as e:
+        logger.warning(f"Error detecting sequence type: {e}. Defaulting to nucleotide.")
+        return 'nucl'
+
 def run_blast(query_file: str, db_file: str, output_file: str, 
+              seq_type: str = 'nucl',
               evalue: float = 1e-10, 
               identity: float = 90.0,
               threads: int = 1) -> bool:
     """
-    Run BLASTN to identify potential contaminants.
+    Run BLASTN or BLASTP to identify potential contaminants.
     
     Args:
         query_file: Path to the input FASTA file
         db_file: Path to the contaminant database FASTA file
         output_file: Path to save BLAST results
+        seq_type: Type of sequences ('nucl' or 'prot')
         evalue: E-value threshold (default: 1e-10)
         identity: Percent identity threshold (default: 90.0)
         threads: Number of CPU threads to use
@@ -110,16 +165,17 @@ def run_blast(query_file: str, db_file: str, output_file: str,
     Returns:
         True if BLAST ran successfully, False otherwise
     """
-    logger.info(f"Running BLASTN against contaminant database...")
+    blast_program = "blastn" if seq_type == 'nucl' else "blastp"
+    logger.info(f"Running {blast_program} against contaminant database...")
     
     # Create a temporary BLAST database if needed
     db_path = os.path.splitext(db_file)[0]
-    if not os.path.exists(f"{db_path}.nhr"):
+    if not os.path.exists(f"{db_path}.{('nhr' if seq_type == 'nucl' else 'phr')}"):
         logger.info(f"Creating BLAST database from {db_file}")
         cmd_makedb = [
             "makeblastdb", 
             "-in", db_file,
-            "-dbtype", "nucl",
+            "-dbtype", seq_type,
             "-out", db_path
         ]
         try:
@@ -130,20 +186,24 @@ def run_blast(query_file: str, db_file: str, output_file: str,
             logger.error(f"Failed to create BLAST database: {e}")
             return False
     
-    # Run BLASTN
-    cmd_blastn = [
-        "blastn",
+    # Run BLAST
+    outfmt = "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs"
+    cmd_blast = [
+        blast_program,
         "-query", query_file,
         "-db", db_path,
         "-out", output_file,
-        "-outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs",
+        "-outfmt", outfmt,
         "-evalue", str(evalue),
-        "-perc_identity", str(identity),
         "-num_threads", str(threads)
     ]
     
+    # Add percent identity only for blastn (blastp uses different parameters)
+    if seq_type == 'nucl':
+        cmd_blast.extend(["-perc_identity", str(identity)])
+    
     try:
-        subprocess.run(cmd_blastn, check=True, 
+        subprocess.run(cmd_blast, check=True, 
                       stdout=subprocess.PIPE, 
                       stderr=subprocess.PIPE)
         logger.info(f"BLAST search completed, results in {output_file}")
@@ -247,6 +307,7 @@ def filter_sequences(input_file: str,
 def decontaminate(input_file: str, 
                   db_file: str, 
                   output_file: str,
+                  seq_type: str = None,
                   evalue: float = 1e-10,
                   identity: float = 90.0, 
                   coverage: float = 50.0,
@@ -261,6 +322,7 @@ def decontaminate(input_file: str,
         input_file: Path to the input FASTA file
         db_file: Path to the contaminant database
         output_file: Path to save filtered sequences
+        seq_type: Type of sequences ('nucl' or 'prot', auto-detect if None)
         evalue: BLAST E-value threshold (default: 1e-10)
         identity: Percent identity threshold (default: 90.0)
         coverage: Query coverage threshold (default: 50.0)
@@ -271,8 +333,12 @@ def decontaminate(input_file: str,
     """
     logger.info(f"Starting decontamination of {input_file}")
     
+    # Auto-detect sequence type if not specified
+    if seq_type is None:
+        seq_type = detect_sequence_type(input_file)
+    
     # Run BLAST to identify contaminants
-    if not run_blast(input_file, db_file, blast_output, evalue, identity, threads):
+    if not run_blast(input_file, db_file, blast_output, seq_type, evalue, identity, threads):
         logger.error("BLAST search failed. Exiting.")
         sys.exit(1)
     
@@ -302,6 +368,8 @@ def parse_arguments():
     parser.add_argument("-o","--output-dir", required=True, help="Output directory for results")
     parser.add_argument("--output-name", default="clean_sequences", 
                         help="Base name for output files (default: clean_sequences)")
+    parser.add_argument("--seq-type", choices=['nucl', 'prot'], 
+                        help="Sequence type (auto-detect if not specified)")
     parser.add_argument("--evalue", type=float, default=1e-10, 
                         help="BLAST E-value threshold (default: 1e-10)")
     parser.add_argument("--identity", type=float, default=90.0, 
@@ -358,6 +426,7 @@ def main():
             input_fasta, 
             args.db, 
             output_fasta,
+            args.seq_type,
             args.evalue,
             args.identity,
             args.coverage,

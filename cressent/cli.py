@@ -616,14 +616,15 @@ def run_cruise(outputdir, inputfasta, inputgff, outputgff, outputannotations,
 @click.option("--db", required=True, help="Contaminant database FASTA file")
 @click.option("-o", "--output-dir", required=True, help="Output directory for results")
 @click.option("--output-name", default="clean_sequences", help="Base name for output files (default: clean_sequences)")
+@click.option("--seq-type", type=click.Choice(['nucl', 'prot']), help="Sequence type (auto-detect if not specified)")
 @click.option("--evalue", type=float, default=1e-10, help="BLAST E-value threshold (default: 1e-10)")
 @click.option("--identity", type=float, default=90.0, help="Minimum percent identity to consider a match (default: 90.0)")
 @click.option("--coverage", type=float, default=50.0, help="Minimum query coverage to consider a match (default: 50.0)")
 @click.option("--threads", type=int, default=1, help="Number of CPU threads for BLAST (default: 1)")
 @click.option("--keep-temp", is_flag=True, help="Keep temporary BLAST output files")
-def detect_contamination(input_fasta, db, output_dir, output_name, evalue, identity, 
+def detect_contamination(input_fasta, db, output_dir, output_name, seq_type, evalue, identity, 
                         coverage, threads, keep_temp):
-    """Filter viral contaminants from sequence data."""
+    """Filter viral contaminants from sequence data (nucleotide or protein)."""
     try:
         from cressent.modules.detect_contamination import main as detect_contamination_main
         sys.argv = [sys.argv[0]]
@@ -635,6 +636,8 @@ def detect_contamination(input_fasta, db, output_dir, output_name, evalue, ident
             sys.argv.extend(['-o', output_dir])
         if output_name:
             sys.argv.extend(['--output-name', output_name])
+        if seq_type:
+            sys.argv.extend(['--seq-type', seq_type])
         if evalue:
             sys.argv.extend(['--evalue', str(evalue)])
         if identity:
@@ -681,7 +684,7 @@ def adjust_seq(input_fasta, output_fasta, motif):
 def build_contaminant_db(accession_csv, output_dir, output_name, email, batch_size):
     """Build a viral contaminant database for decontamination pipelines."""
     try:
-        from cressent.modules.build_contaminant_db import parse_arguments, main as build_contaminant_db_main
+        from cressent.modules.build_contaminant_db import main as build_contaminant_db_main
         sys.argv = [sys.argv[0]]
         if accession_csv:
             sys.argv.extend(['--accession-csv', accession_csv])
@@ -693,9 +696,7 @@ def build_contaminant_db(accession_csv, output_dir, output_name, email, batch_si
             sys.argv.extend(['--email', email])
         if batch_size:
             sys.argv.extend(['--batch-size', str(batch_size)])
-        # Since there's no main() function in build_contaminant_db.py, we need to call parse_arguments directly
-        args = parse_arguments()
-        # You'd also need to implement main() in build_contaminant_db.py
+        build_contaminant_db_main()  # Actually call the main function
     except Exception as e:
         click.echo(f"Error running build_contaminant_db module: {e}", err=True)
         sys.exit(1)

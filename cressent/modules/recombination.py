@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 """
-Recombination detection module for ssDNA_annotator.
+Recombination detection module for CRESSENT.
 
-This module integrates OpenRDP for detecting recombination events in ssDNA virus sequences.
+This module integrates OpenRDP (https://github.com/aglucaci/OpenRDP) for detecting recombination events in ssDNA virus sequences.
 
-Copyright (C) 2025 ssDNA_annotator developers
+Copyright (C) 2025 CRESSENT developers
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -782,7 +782,7 @@ if __name__ == "__main__":
     sys.exit(main())
 
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/recombination.py \
-#     -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/recombination_test/recomb2.fa \
+# python /fs/project/PAS1117/ricardo/cressent/cressent/modules/recombination.py \
+#     -i /fs/project/PAS1117/ricardo/cressent/test_data/recombination_test/recomb2.fa \
 #     -o test_2.csv \
-#     -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/recombination_test
+#     -d /fs/project/PAS1117/ricardo/cressent/test_data/recombination_test

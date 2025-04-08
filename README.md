@@ -45,17 +45,20 @@ If you want to cluster (dereplicate) the metagenomic sequences, run:
 ```bash
 cressent cluster \
      -i /path/to/my_sequence.fa \
-     -o ./output_clusters \
+     -o ./output/cluster \
      --keep_names # if not, spaces are replaced with underscores
 ```
 Outputs:
 ```pgsql
-output_clusters/.
-├── clusters.tsv           # File with the first column as the cluster representative
-├── cluster_sequences.fa     # Clustered FASTA file
-├── ani_results.tsv          # Pairwise ANI (average identity) results
-├── blast_results.tsv        # BLAST (n/p) results
-└── clustering.log           # Module log file
+.
+└── cluster
+    ├── ani_results.tsv       # Pairwise ANI (average identity) results
+    ├── blast_results.tsv     # BLAST (n/p) results
+    ├── clustering.log        # Module log file
+    ├── cluster_sequences.fa  # Clustered FASTA file
+    ├── clusters.tsv          # File with the first column as the cluster representative
+    ├── renamed_sub_reps.fa      # (if --keep_names) fasta file with the names adjusted
+    └── sub_reps_name_table.tsv  # (if --keep_names) metadata with the names adjusted and the they corresponding name
 ```
 
 #### 1.2 Detecting contamination
@@ -66,8 +69,13 @@ It's good practice for researchers to sequence negative or blank samples that ha
 
 The `decont_accession_list.csv` file contains the accession numbers of sequences considered potential contaminants according to [Naccache et al 2013](https://journals.asm.org/doi/10.1128/jvi.02323-13), [Asplund et al 2019](https://doi.org/10.1016/j.cmi.2019.04.028), [Porter et al 2021](https://www.mdpi.com/1999-4915/13/11/2122), [Keeler et al 2021](https://doi.org/10.1128/MRA.00273-21), and [Duan et al 2024](https://journals.asm.org/doi/full/10.1128/mra.01261-23). It is used to build the contaminant screening database (`contaminant_db.fasta`)
 
+The `build_contaminant_db` module will buid two fasta files:
+
+- a nucleotide database
+- a protein database
+
+You can add additional sequences to the csv file or concatenate to the output fasta file later
 ```bash
-# to build the contaminant_db.fasta run, you can add additional sequences to the csv file or concatenate to the output fasta file later
 cressent build_contaminant_db \
             --accession-csv DB/decont_accesion_list.csv \
             --output-dir DB \    
@@ -77,20 +85,38 @@ cressent build_contaminant_db \
 Database:
 ```pgsql
 DB/
-├── contaminant.fasta       # Main database FASTA file
-├── contaminant_db_metadata.tsv # Sequence metadata
-└── contaminant_build.log
+├── contaminant_db.fasta                # nucleotide Sequences
+├── contaminant_db_metadata.tsv         # Sequence metadata
+├── contaminant_db_protein.fasta        # protein Sequences 
+├── contaminant_db_protein_metadata.tsv # protein metadata
+└── contaminant_build.log               # log file
 ```
 Running `detect_contamination` using the [contaminant_db](DB/contaminant/contaminant_db.fasta) you can search for potential contaminating viral sequences.
 
+`--seq-type` is optional. the sequnces type will be detected automatically
+
+- if `--seq-type` = nucl, it will run `blastn`
+- if `--seq-type` = prot, it will run `blastp`
+
 ```bash           
-# run decontamination
+# run decontamination with nucleotide sequences
 cressent detect_contamination \
-                    -i my_sequences.fasta \
-                    --db ./DB/contaminant/contaminant_db.fasta \
-                    --output-dir results \
+                    -i my_sequences.fa \
+                    --db ./DB/contaminant_db.fasta \
+                    --output-dir /output/contamination \
                     --output-name clean_sequences \
-                    --threads 4 \
+                    --seq-type nucl \ 
+                    --threads 32 \
+                    --keep-temp
+
+# run decontamination with protein sequences
+cressent detect_contamination \
+                    -i my_sequences.fa \
+                    --db ./DB/contaminant_db_proteins.fasta \
+                    --output-dir /output/contamination \
+                    --output-name clean_sequences \
+                    --seq-type prot \ 
+                    --threads 32 \
                     --keep-temp
 ```
 Outputs:
