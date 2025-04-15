@@ -8,6 +8,8 @@ from scipy.spatial.distance import pdist, squareform
 
 from .common import jc_distance
 
+import math
+np.math = math
 
 class Bootscan:
     def __init__(self, alignment, win_size=200, step_size=20, use_distances=True, num_replicates=100,

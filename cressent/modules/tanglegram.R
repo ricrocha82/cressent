@@ -96,9 +96,9 @@ dl %>%
             main = paste("RF score:", RF_score),
             highlight_distinct_edges = TRUE,
             highlight_branches_col = TRUE,
-            common_subtrees_color_branches = FALSE,
+            common_subtrees_color_branches = TRUE,
             highlight_branches_lwd=TRUE,
-            margin_inner = margin_inner,
+            # margin_inner = margin_inner,
             lwd = 2,
             lab.cex=lab.cex)
 # dev.copy(pdf, file.path(output_dir, output_name))

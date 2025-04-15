@@ -8,6 +8,7 @@ from pathlib import Path
 import pandas as pd
 from Bio import SeqIO
 import sys
+import re
 
 # Set up logging
 def setup_logging(log_file):
@@ -64,7 +65,11 @@ def preprocess_fasta(input_fasta, output_fasta, keep_names=False):
             sanitized_id = original_id.split()[0] if ' ' in original_id else original_id
         else:
             # Replace spaces with underscores
-            sanitized_id = original_id.replace(" ", "_")
+            # sanitized_id = original_id.replace(" ", "_")
+            # First replace all non-alphanumeric characters with underscores
+            temp_string = re.sub(r'[^a-zA-Z0-9_]', '_', original_id)
+            # Then replace multiple consecutive underscores with a single underscore
+            sanitized_id = re.sub(r'_+', '_', temp_string)
         
         # Handle duplicate IDs
         if sanitized_id in id_map:

@@ -71,6 +71,8 @@ if (!is.null(fasta_file) && file.exists(fasta_file)) {
   seq_type <- detect_sequence_type(as.character(seqs))
 } else if (!is.null(seq_df) && file.exists(seq_df)) {
   df_loc <- read.delim(seq_df, sep = "\t")
+  # Convert all lowercase letters to uppercase in the matched column
+  df_loc$matched <- toupper(df_loc$matched)
   seq_type <- detect_sequence_type(df_loc$matched)
   
   if (seq_type == "protein") {

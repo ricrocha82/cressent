@@ -227,8 +227,8 @@ def run_sl_finder(fasta_file, gff_file, out_gff, output_dir, out_csv=None, **kwa
                         
                         # Add to CSV data
                         csv_rows.append({
-                            'record_id': record.id,
-                            'motif': pos_loop.motif,
+                            'seqID': record.id,
+                            'matched': pos_loop.motif,
                             'motif_start': pos_loop.motif_start,
                             'stem_start': pos_loop.stem_start,
                             'stem_end': pos_loop.stem_end,
@@ -253,7 +253,7 @@ def run_sl_finder(fasta_file, gff_file, out_gff, output_dir, out_csv=None, **kwa
         if out_csv:
             out_csv_path = os.path.join(output_dir, out_csv)
             with open(out_csv_path, 'w', newline='') as csv_f:
-                fieldnames = ['record_id', 'motif', 'motif_start', 'stem_start', 
+                fieldnames = ['seqID', 'matched', 'motif_start', 'stem_start', 
                             'stem_end', 'score', 'folded_structure']
                 writer = csv.DictWriter(csv_f, fieldnames=fieldnames, delimiter='\t')
                 writer.writeheader()

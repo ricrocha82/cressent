@@ -395,7 +395,7 @@ def main():
     input_fasta = validate_fasta(args.input_fasta)
     
     # Set up file paths
-    output_fasta = os.path.join(output_dir, f"{args.output_name}.fasta")
+    output_fasta = os.path.join(output_dir, f"{args.output_name}")
     stats_file = os.path.join(output_dir, f"{args.output_name}_stats.txt")
     blast_output_file = os.path.join(output_dir, f"{args.output_name}_blast.tsv")
     log_file = os.path.join(output_dir, f"{args.output_name}_decontamination.log")

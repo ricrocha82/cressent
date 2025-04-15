@@ -40,7 +40,11 @@ def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file, keep_
             sanitized_id = original_id.split()[0] if ' ' in original_id else original_id
         else:
             # Replace spaces with underscores
-            sanitized_id = original_id.replace(" ", "_")
+            # sanitized_id = original_id.replace(" ", "_")
+            # First replace all non-alphanumeric characters with underscores
+            temp_string = re.sub(r'[^a-zA-Z0-9_]', '_', original_id)
+            # Then replace multiple consecutive underscores with a single underscore
+            sanitized_id = re.sub(r'_+', '_', temp_string)
         
         # Handle duplicate sanitized IDs
         if sanitized_id in id_map:
