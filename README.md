@@ -78,8 +78,8 @@ You can add additional sequences to the csv file or concatenate to the output fa
 ```bash
 cressent build_contaminant_db \
             --accession-csv DB/decont_accesion_list.csv \
-            --output-dir DB \    
-            --email your_email@mail.com \
+            -o DB \    
+            --email your_email@mail.com \ # not required
             --batch-size 10
 ```
 Database:
@@ -103,7 +103,7 @@ Running `detect_contamination` using the [contaminant_db](DB/contaminant/contami
 cressent detect_contamination \
                     -i my_sequences.fa \
                     --db ./DB/contaminant_db.fasta \
-                    --output-dir /output/contamination \
+                    -o /output/contamination \
                     --output-name clean_sequences \
                     --seq-type nucl \ 
                     --threads 32 \
@@ -113,7 +113,7 @@ cressent detect_contamination \
 cressent detect_contamination \
                     -i my_sequences.fa \
                     --db ./DB/contaminant_db_proteins.fasta \
-                    --output-dir /output/contamination \
+                    -o /output/contamination \
                     --output-name clean_sequences \
                     --seq-type prot \ 
                     --threads 32 \
@@ -149,8 +149,8 @@ You have three options for performing the alignment:
 ```bash
 cressent align  \
       --threads 24 \
-      --input_fasta /path/to/my_sequence.fa \
-      -d path/to/output/directory
+      -i /path/to/my_sequence.fa \
+      -o path/to/output/directory
 ```
 
 ##### Option 2: Use the Database that comes with the tool
@@ -165,31 +165,31 @@ you can choose specific families (e.g, Rep proteins from Alphapleolipovirus, Ame
 ```bash
 cressent align  \
         --threads 24 \
-        --input_fasta my_sequences.fa \
+        -i my_sequences.fa \
         --db_family "Alphapleolipovirus Amesuviridae Circoviridae" \
         --protein_type reps \
         --db_path ./DB \
-        -d output/align_family
+        -o output/align_family
 ```
 or all the database (e.g., all the Rep proteins)
 ```bash
 cressent align  \
         --threads 24 \
-        --input_fasta my_sequence.fa \
+        -i my_sequence.fa \
         --db_family all \
         --protein_type reps \
         --db_path ./DB \
-        -d output/align_family
+        -o output/align_family
 ```
 ##### Option 3: Use Your Own Database
 Change the database directory and specify the database file name with `--db_family`.
 ```bash
 cressent align \
        --threads 24 \
-       --input_fasta /path/to/my_sequence.fa \
+       -i /path/to/my_sequence.fa \
        --db_family name_of_my_db.fa \
        --db_path path/to/my/own/database \
-       -d path/to/output/directory
+       -o path/to/output/directory
 ```
 
 ##### Alignment Outputs
@@ -217,7 +217,7 @@ Use the (trimmed) alignment file to build the phylogenetic tree:
 ```bash
 cressent build_tree \
        -i ./output/my_sequences_aligned_trimmed_sequences.fasta \
-       -d path/to/output/directory/tree \
+       -o path/to/output/directory/tree \
        --keep_names # if not, spaces are replaced with underscores
 ```
 
@@ -261,7 +261,7 @@ Bat associated cyclovirus 11|Circoviridae	Bat_associated_cyclovirus_11_Circoviri
 ### c) Plotting the Tree
 A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is available to visualize the tree. Note that the script provides automated plotting with some limitations regarding annotation and coloring. For more detailed tree customization, consider using tools like FigTree or iTOL.
 
- - layout can be one of `'rectangular', 'dendrogram', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'`
+ - layout can be one of `'rectangular (default)', 'dendrogram', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'`
  - branch_length: if `none` draw cladogram
  - open_angle only for `fan` layout
  - offset: tiplab offset, horizontal adjustment to nudge tip labels, defaults to 0.14
@@ -273,7 +273,7 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
 # Use the treefile from IQ-TREE
 cressent plot_tree \
    --tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-   --outdir ./output/tree \
+   -o ./output/tree \
    --metadata_1 ./output/metadata.csv \
    --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
    --layout rectangular \
@@ -285,7 +285,7 @@ cressent plot_tree \
 # or use the distance table from IQ-TREE
 cressent plot_tree \
    --dist_matrix my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.mldist \
-   --outdir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
+   -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/tree \
    --metadata_1 ./output/metadata.csv \ # aligment metadata
    --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \ # build_tree metadata
    --layout rectangular \
@@ -297,7 +297,7 @@ cressent plot_tree \
 # you can also use the align file to plot the tree with the alginmet
 cressent plot_tree \
    --tree my_sequences_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-   --outdir ./output/tree \
+   -o ./output/tree \
    --alignment ./output/my_sequences_aligned_trimmed_sequences.fasta \
    --metadata_1 ./output/metadata.csv \
    --metadata_2 ./output/tree/my_sequences_aligned_trimmed_sequences_sanitized_name_table.tsv \
@@ -318,7 +318,7 @@ cressent tanglegram \
     --tree2 tree2.treefile \
     --label1 my_tree1 \
     --label2 my_tree2 \
-    --output .path/to/output/ \
+    -o .path/to/output/ \
     --name_tanglegram "my_tanglegram.pdf" \
     --height 11 \
     --width 20 \
@@ -340,22 +340,29 @@ The additional --split flag instructs the module to:
 
 ```bash
 # 1. Basic motif finding:
-cressent motif -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]"
+cressent motif -i sequences.fasta -o /path/to/output -p "[GA].{4}GK[TS]"
 
 # 2. Motif finding with sequence splitting:
-cressent motif -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]" --split-sequences
+cressent motif -i sequences.fasta -o /path/to/output -p "[GA].{4}GK[TS]" --split-sequences
 
 # 3. Motif finding with sequence logo generation:
 cressent motif \
-        -i sequences.fasta -d /path/to/output \
+        -i sequences.fasta \
+        -o /path/to/output \
         -p "[GA].{4}GK[TS]" \
-        --generate-logo --logo-name motif_logo.pdf --plot-title "My Motif Logo"
+        --generate-logo \
+        --logo-name motif_logo.pdf \
+        --plot-title "My Motif Logo"
 
 # 4. Complete workflow with splitting by group label:
 cressent motif \
-        -i sequences.fasta -d /path/to/output \
-        -p "[GA].{4}GK[TS]" --split-sequences \
-        --generate-logo --split-logo --metadata metadata.csv --ncol 2 --group-label family
+        -i sequences.fasta \
+        -o /path/to/output \
+        -p "[GA].{4}GK[TS]" \
+        --split-sequences --generate-logo --split-logo \
+        --metadata metadata.csv \
+        --ncol 2 \
+        --group-label family
 ```
 
 The tree output directory (`output/motif/`) will contain:
@@ -391,7 +398,7 @@ It is optional to use [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/) t
 
 ### Basic Options
 
-- `-i`, `--fasta`:The input FASTA file containing the sequences to be analyzed (required). 
+- `-i`, `--input_fasta`:The input FASTA file containing the sequences to be analyzed (required). 
 - `-o`, `--output`: output directory (optional; default: current directory).
 - `-nmotifs`: The number of motifs to discover using MEME. (optional; default: 5).
 - `-minw`: The minimum motif width that MEME should conside (optional; default: 6).
@@ -401,7 +408,7 @@ It is optional to use [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/) t
 
 ```bash
 # basic
-cressent motif_disc <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
+cressent motif_disc -i <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
 
 # only MEME
 cressent motif_disc \
@@ -463,13 +470,13 @@ This module generates sequence logos from FASTA files or motif detection tables.
 # Basic Sequence Logo Generation using the output of the MOTIF module
 cressent seq_logo \
       -tb output/motif/pattern_positions.txt \
-      -o output/motif/ \
+      -o output/motif \
       --output_name logo.pdf
 
 # Generating Sequence Logo from a FASTA File
 cressent seq_logo \
       -f my_sequences.fasta \
-      -o output/motif/ \
+      -o output/motif \
       --output_name fasta_logo.pdf
 
 # Splitting the Figure by Group Labels (Metadata)
@@ -513,7 +520,7 @@ The StemLoop-Finder module accepts several arguments to customize its behavior:
 - `--gff_in`: Path to the input GFF file.  
 - `--out_gff`: Path for the output GFF file containing annotated stem-loops.  
 - `--motif`: Conserved nonanucleotide motif to search within candidate regions (allows ambiguous bases). Default:`nantantan`
-- `--output_dir`: Path to the output directory
+- `-o`: Path to the output directory
 - `--family`: Specify a CRESS DNA virus family (e.g., geminiviridae, circoviridae, etc.) to use a family-specific motif.
 - `--idealstemlen` or `-s`: Ideal stem length to score candidate stem-loops. Default:`11`
 - `--ideallooplen` or `-l`: Ideal loop length to score candidate stem-loops. Default:`11`
@@ -528,7 +535,7 @@ From the command line, run the StemLoop-Finder module as follows:
 cressent sl_finder \
    -i ./test.fasta \
    --gff_in ./test.gff \
-   --output_dir ./sl_finder_output \
+   -o ./sl_finder_output \
    --out_gff test_out.gff \
    --csv_out test.csv 
 ```
@@ -538,7 +545,7 @@ Or, if you prefer to specify a motif and/or a family directly:
 cressent sl_finder \
    -i ./test.fasta \
    --gff_in ./test.gff \
-   --output_dir ./sl_finder_output \
+   -o ./sl_finder_output \
    --out_gff test_out.gff \ 
    --motif nantantan \
    --family geminiviridae \
@@ -564,10 +571,10 @@ Customized version of [CRUISE](https://journals.asm.org/doi/10.1128/mra.01123-22
 
 ```bash 
 cressent run_cruise \
-   --inputFasta examples/test.fasta \
+   -i examples/test.fasta \
    --inputGFF examples/out.gff \
    --outputGFF examples/finaloutput.gff \
-   --outputDir output/ \
+   -o ./output \
    --verbose
 ```
 
@@ -578,7 +585,7 @@ cressent run_cruise \
 #### Arguments
 The module accepts the following arguments:
 
-- `--inputFasta`: Path for input FASTA file with all sequences.
+- `--input_fasta`or `-i`: Path for input FASTA file with all sequences.
 - `--inputGFF`: Path for associated input GFF file.
 - `--outputGFF`: Path for the output GFF file (with iteron annotations).
 - `--minLength`: Minimum iteron length (in nucleotides). Default: 5
@@ -594,7 +601,7 @@ The module accepts the following arguments:
 - `--maxDist`: Maximum allowed distance between iteron occurrences. Default: 20
 - `--bestDist`: Optimal maximum distance between iterons. Default: 10
 - `--scoreRange`: Score range between output candidates (used for filtering ranked iterons). Default: 50
-- `--outputDir`: Directory to save all output files (GFF, log, etc.). Default: "." (current directory)
+- `--output`or `-o`: Directory to save all output files (GFF, log, etc.). Default: "." (current directory)
 - `--verbose`: Enable verbose output (prints progress to the console).
 
 #### Output files
@@ -616,7 +623,7 @@ cressent recombination -i <input_alignment> -f <output_file> -o <output_director
 cressent recombination -i aligned_sequences.fasta -f results.csv
 
 # Specify output directory
-cressent recombination -i aligned_sequences.fasta -f results.csv -o output_dir
+cressent recombination -i aligned_sequences.fasta -f results.csv -o ./output
 
 # Run specific methods
 cressent recombination -i aligned_sequences.fasta -f results.csv -rdp -maxchi -bootscan
@@ -706,7 +713,7 @@ Output is a heatmap with GC content. Rows as sequence names (left) and % of GC (
 ```bash
 cressent gc_ht \
             -i ./test_fast.fa \
-            --output_dir ./output \
+            -o ./output \
             --output_name gc_heatmap.pdf \
             --fig_width 10 --fig_height 20 
 ```
