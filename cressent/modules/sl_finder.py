@@ -270,26 +270,26 @@ def run_sl_finder(fasta_file, gff_file, out_gff, output_dir, out_csv=None, **kwa
 def main():
     """Main entry point for the sl_finder module when called via cli.py."""
     parser = argparse.ArgumentParser(description="A module for putative stem-loop annotation")
-    parser.add_argument("-i", "--fasta_in", required=True, help="Input FASTA file")
+    parser.add_argument("-i", "--input_fasta", required=True, help="Input FASTA file")
     parser.add_argument("--gff_in", required=True, help="Input GFF/GTF file")
     parser.add_argument("--out_gff", required=True, help="Output GFF filename")
-    parser.add_argument("--output_dir", help="Directory to save output files", default=".")
+    parser.add_argument("--output", help="Path to the output directory (Default: working directory)", default=".")
     parser.add_argument("--csv_out", help="Output CSV filename", default=None)
-    parser.add_argument("--motif", help="Conserved motif", default="nantantan")
+    parser.add_argument("--motif", help="Conserved motif (default = nantantan)", default="nantantan")
     parser.add_argument("--family", help="CRESS viral family", 
                        choices=['geminiviridae', 'genomoviridae', 'smacoviridae', 
                                'cycloviridae', 'circoviridae', 'general'])
-    parser.add_argument("--idealstemlen", "-s", help="Ideal stem length", 
+    parser.add_argument("--idealstemlen", "-s", help="Ideal stem length (default = 11)", 
                        type=int, default=11)
-    parser.add_argument("--ideallooplen", "-l", help="Ideal loop length", 
+    parser.add_argument("--ideallooplen", "-l", help="Ideal loop length (default = 11)" 
                        type=int, default=11)
-    parser.add_argument("--frame", "-f", help="Bases around motif for folding", 
+    parser.add_argument("--frame", "-f", help="Bases around motif for folding (default = 15)", 
                        type=int, default=15)
     
     args = parser.parse_args()
 
     # Create output directory
-    output_dir = args.output_dir
+    output_dir = args.output
     os.makedirs(output_dir, exist_ok=True)
 
     # Validate FASTA file
@@ -302,7 +302,7 @@ def main():
             else:
                 sys.exit("Error: Input file is not in the FASTA format.\n")
 
-    input_fasta = validate_fasta(args.fasta_in)
+    input_fasta = validate_fasta(args.input_fasta)
     
     try:
         run_sl_finder(

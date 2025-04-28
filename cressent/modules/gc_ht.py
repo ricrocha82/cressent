@@ -41,13 +41,13 @@ def pad_sequences(matrix, fill_value=np.nan):
     max_length = max(len(row) for row in matrix)
     return np.array([row + [fill_value] * (max_length - len(row)) for row in matrix])
 
-def plot_gc_heatmap(fasta_file, output_dir=".", window_size=30, step_size=5,
+def plot_gc_heatmap(input_fasta, output_dir=".", window_size=30, step_size=5,
                     xticklabels=10, fig_width=12, fig_height=6, output_name="gc_heatmap.png"):
     """
     Reads a FASTA file and generates a heatmap of %G+C content.
     
     Parameters:
-        fasta_file (str): Path to the FASTA file.
+        input_fasta (str): Path to the FASTA file.
         output_dir (str): Directory to save the output file.
         window_size (int): Size of the sliding window.
         step_size (int): Step size for the sliding window.
@@ -62,7 +62,7 @@ def plot_gc_heatmap(fasta_file, output_dir=".", window_size=30, step_size=5,
     avg_gc_content = []
 
     # Read sequences from FASTA
-    for record in SeqIO.parse(fasta_file, "fasta"):
+    for record in SeqIO.parse(input_fasta, "fasta"):
         seq_name = record.id
 
         # Handle duplicate names by appending description
@@ -112,8 +112,8 @@ def plot_gc_heatmap(fasta_file, output_dir=".", window_size=30, step_size=5,
 def main():
     parser = argparse.ArgumentParser(description="Generate a GC content heatmap from a FASTA file.")
 
-    parser.add_argument("-i","--fasta_file", help="Input FASTA file containing sequences.")
-    parser.add_argument("--output_dir", default=".", help="Directory to save the output image (default: current directory).")
+    parser.add_argument("-i","--input_fasta", help="Input FASTA file containing sequences.")
+    parser.add_argument("-o","--output", default=".", help="Path to the output directory (Default: working directory)")
     parser.add_argument("--window_size", type=int, default=30, help="Sliding window size for GC content calculation (default: 30).")
     parser.add_argument("--step_size", type=int, default=5, help="Step size for GC calculation (default: 5).")
     parser.add_argument("--xticklabels", type=int, default=10, help="Interval for x-axis tick labels (default: None).")
@@ -123,7 +123,7 @@ def main():
 
     args = parser.parse_args()
 
-    output_dir = args.output_dir
+    output_dir = args.output
     os.makedirs(output_dir, exist_ok=True)
     # Determine the input FASTA full path
     def validate_fasta(filename):
@@ -137,7 +137,7 @@ def main():
                 sys.exit("Error: Input file is not in the FASTA format.\n")
                 logging.info(f"Using: {input_fasta} is not in the FASTA format")
     # check fasta
-    input_fasta = validate_fasta(args.fasta_file)
+    input_fasta = validate_fasta(args.input_fasta)
 
     # run the script
     plot_gc_heatmap(input_fasta, output_dir, args.window_size, args.step_size,
@@ -147,6 +147,6 @@ if __name__ == "__main__":
     main()
 # python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/gc_patchiness.py \
 #                                           -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_fast.fa \
-#                                         --output_dir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output \
+#                                         --output /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output \
 #                                           --output_name gc_heatmap.pdf \
 #                                         --fig_width 14 --fig_height 8 

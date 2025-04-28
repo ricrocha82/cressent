@@ -502,7 +502,7 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description="Detect recombination events in ssDNA virus sequences using OpenRDP")
     
     parser.add_argument('-i', '--input', required=True, help='Input alignment file in FASTA format')
-    parser.add_argument('-o', '--outdir', default='.', help='Output directory for all files (default: current directory)')
+    parser.add_argument('-o', '--output', default='.', help='Path to the output directory (Default: working directory)')
     parser.add_argument('-f', '--output_file', required=True, help='Output file for results (CSV format)')
     parser.add_argument('-c', '--config', help='Configuration file in INI format for OpenRDP parameters')
     
@@ -712,7 +712,7 @@ def main(args=None):
         return 1
     
     # Create output directory if it doesn't exist
-    os.makedirs(parsed_args.outdir, exist_ok=True)
+    os.makedirs(parsed_args.output, exist_ok=True)
     
     # Determine methods to run
     run_geneconv = parsed_args.geneconv
@@ -744,7 +744,7 @@ def main(args=None):
         run_chimaera = True
         run_bootscan = True
 
-    output_dir = parsed_args.outdir
+    output_dir = parsed_args.output
     # Determine the input FASTA full path
     def validate_fasta(filename):
         with open(filename, "r") as handle:
@@ -763,7 +763,7 @@ def main(args=None):
     success = detect_recombination(
         input_fasta,
         parsed_args.output_file,
-        parsed_args.outdir,
+        parsed_args.output,
         parsed_args.config,
         run_geneconv,
         run_three_seq,

@@ -274,11 +274,11 @@ def add_annotation_to_scanprosite_results(df, output_dir):
 
 def main():
     parser = argparse.ArgumentParser(description="motif_discovery: Discover de novo motifs using MEME")
-    parser.add_argument("-i","--fasta", help="Input FASTA file", required=True)
-    parser.add_argument("-o", "--output", default=".", help="Output directory (used for MEME and generated files)")
-    parser.add_argument("-nmotifs", type=int, default=3, help="Number of motifs to find")
-    parser.add_argument("-minw", type=int, default=6, help="Minimum motif width")
-    parser.add_argument("-maxw", type=int, default=50, help="Maximum motif width")
+    parser.add_argument("-i","--input_fasta", help="Input FASTA file", required=True)
+    parser.add_argument("-o", "--output", default=".", help="Path to the output directory (Default: working directory) (used for MEME and generated files)")
+    parser.add_argument("-nmotifs", type=int, default=3, help="Number of motifs to find (Default = 3)")
+    parser.add_argument("-minw", type=int, default=5, help="Minimum motif width (Default = 5)")
+    parser.add_argument("-maxw", type=int, default=10, help="Maximum motif width (Default = 10)")
     parser.add_argument("--meme_extra", nargs="+", help="Additional MEME arguments (list format)")
     parser.add_argument("--scanprosite", action='store_true', help='Run ScanProsite')
     
@@ -300,7 +300,7 @@ def main():
     
     logging.info("Starting motif_discovery module.")
     
-    seq_type = determine_seq_type(args.fasta)
+    seq_type = determine_seq_type(args.input_fasta)
     logging.info(f"Detected sequence type: {seq_type}")
     
     # Set default MEME arguments
@@ -314,7 +314,7 @@ def main():
         meme_args = default_args
         logging.info(f"Using default MEME arguments: {meme_args}")
     
-    run_meme(args.fasta, args.output, seq_type, meme_args)
+    run_meme(args.input_fasta, args.output, seq_type, meme_args)
     
     # Parse MEME output (assumes MEME XML output is stored in <output>/meme.xml).
     motifs = parse_meme_output(args.output)
@@ -329,7 +329,7 @@ def main():
     if scanprosite:
         logging.info("ScanProsite selected.")
         # Run ScanProsite and get the combined DataFrame.
-        scan_df = run_scanprosite(args.fasta, seq_type)
+        scan_df = run_scanprosite(args.input_fasta, seq_type)
         # Add the annotation column.
         add_annotation_to_scanprosite_results(scan_df, args.output)
 

@@ -159,6 +159,7 @@ def cleanup_internal_dirs(internal_dir):
 def main():
     """Main execution function"""
     # Parse arguments
+    # args are in ./cressent/modules/args.py
     args_ns = args.parser.parse_args()
     
     # Create output directory if it doesn't exist

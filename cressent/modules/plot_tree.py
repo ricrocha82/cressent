@@ -24,21 +24,21 @@ def main():
     )
     parser.add_argument("-t", "--tree", help="Input tree file (Newick format)")
     parser.add_argument("--dist_matrix", help="Use distance matrix method for tree construction")
-    parser.add_argument("-o", "--outdir", required=True, help="Output directory to save the figure")
+    parser.add_argument("-o", "--output", required=True, default=".",help="Path to the output directory (Default: working directory)")
     parser.add_argument("--metadata_1", help="Optional CSV metadata file")
     parser.add_argument("--metadata_2", help="Optional TSV name table file")
     parser.add_argument("--alignment", help="Optional alignment file (FASTA) to include in the plot")
-    parser.add_argument("--layout", default="rectangular", help="Tree layout (e.g., rectangular, circular, unrooted)")
-    parser.add_argument("--branch_length", default="branch.length", help="Branch length parameter for ggtree")
-    parser.add_argument("--open_angle", default=0, type=float, help="Open angle for circular/unrooted layouts")
-    parser.add_argument("--offset", default=0.14, type=float, help="Tip label offset")
-    parser.add_argument("--tip_label", default="family", help="Column name to use as the tip label")
+    parser.add_argument("--layout", default="rectangular",  help="Tree layout (e.g., rectangular, circular, unrooted) Default: rectangular")
+    parser.add_argument("--branch_length", default="branch.length", help="Branch length parameter for ggtree (Default: branch.length)")
+    parser.add_argument("--open_angle", default=0, type=float, help="Open angle for circular/unrooted layouts (default = 0)")
+    parser.add_argument("--offset", default=0.14, type=float, help="Tip label offset (default = 0)")
+    parser.add_argument("--tip_label", default="family", help="Column name to use as the tip label (default = family)")
     parser.add_argument("--color", default=True, type=lambda s: s.lower() not in ['false', '0', 'no'], 
-                            help="Color tree by group (requires metadata)")
-    parser.add_argument("--fig_width", type=float, default=7, help="Figure width (ggsave)")
-    parser.add_argument("--fig_height", type=float, default=7, help="Figure height (ggsave)")
+                            help="Color tree by group (requires metadata) (default = True)")
+    parser.add_argument("--fig_width", type=float, default=7, help="Figure width (default = 7)")
+    parser.add_argument("--fig_height", type=float, default=7, help="Figure height (default = 7)")
     parser.add_argument("--plot_tips", default=True, type=lambda s: s.lower() not in ['false', '0', 'no'], 
-                            help="Include tip labels in the plot")
+                            help="Include tip labels in the plot (default = True)")
     parser.add_argument("--plot_name", default="tree_plot.pdf", help="Name of the output plot file")
     args = parser.parse_args()
     
@@ -52,10 +52,10 @@ def main():
     r_script_path = modules_dir / "plot_tree.R"  # Update with the actual path
     
     # Set up logging with log file in the specified output directory.
-    if not os.path.isdir(args.outdir):
-        os.makedirs(args.outdir)
+    if not os.path.isdir(args.output):
+        os.makedirs(args.output)
 
-    setup_logging(args.outdir)
+    setup_logging(args.output)
     logger = logging.getLogger("plot_tree.log")
 
     if not os.path.isfile(r_script_path):
@@ -68,7 +68,7 @@ def main():
         r_args.append(f"--tree={args.tree}")
     if args.dist_matrix is not None:
         r_args.append(f"--dist_matrix={args.dist_matrix}")
-    r_args.append(f"--outdir={args.outdir}")
+    r_args.append(f"--outdir={args.output}")
     r_args.append(f"--layout={args.layout}")
     r_args.append(f"--branch_length={args.branch_length}")
     r_args.append(f"--open_angle={args.open_angle}")

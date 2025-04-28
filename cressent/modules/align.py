@@ -220,19 +220,19 @@ def main():
     parser = argparse.ArgumentParser(description="Pipeline for sequence alignment and trimming.")
     parser.add_argument("-t", "--threads", type=int, default=1, help="Number of threads")
     parser.add_argument("-i", "--input_fasta", required=True, help="Input FASTA file with sequences")
-    parser.add_argument("-d", "--directory", default=".", help="Directory for saving outputs")
+    parser.add_argument("-o", "--output", required=True, default = ".",help="Path to the output directory (Default: working directory)")
     parser.add_argument("--mafft_ep", type=float, default=0.123, help="Alignment length for MAFFT (default: 0.123)")
     parser.add_argument("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
-    parser.add_argument("--db_family", nargs='+', help="List of family names or 'all' to use multiple database sequences")
-    parser.add_argument("--db_path", default="./db", help="Path to the database FASTA files")
+    parser.add_argument("--db_family", nargs='+', help="List of family names for specific families or 'all' to use all the database.")
+    parser.add_argument("--db_path", default="./db", help="Path to the database FASTA files (Default: ./db)")
     parser.add_argument("--protein_type", choices=['reps', 'caps'], help="Specify protein type (Rep or Cap) for database files")
     
     args = parser.parse_args()
     
     # Create output directory
-    os.makedirs(args.directory, exist_ok=True)
-    setup_logging(args.directory)
-    logging.info(f"Output directory set to {args.directory}")
+    os.makedirs(args.output, exist_ok=True)
+    setup_logging(args.output)
+    logging.info(f"Output directory set to {args.output}")
 
     # validate dependencies
     if not check_dependency("mafft") or not check_dependency("trimal"):
@@ -245,7 +245,7 @@ def main():
     input_fasta = args.input_fasta
 
     # Generate metadata only for the input file first
-    save_metadata(args.input_fasta, [], args.directory)  # No database sequences yet
+    save_metadata(args.input_fasta, [], args.output)  # No database sequences yet
     
      # Handle database integration if requested
     db_files = []
@@ -254,19 +254,19 @@ def main():
         db_files = get_database_files(args.db_path, args.db_family, args.protein_type)
         
         # Generate metadata for database sequences separately
-        save_metadata(args.input_fasta, db_files, args.directory)
+        save_metadata(args.input_fasta, db_files, args.output)
         
         # Merge input and database sequences
-        merged_fasta = os.path.join(args.directory, f"{prefix}_merged.fasta")
+        merged_fasta = os.path.join(args.output, f"{prefix}_merged.fasta")
         merge_fasta_files(args.input_fasta, db_files, merged_fasta)
         input_fasta = merged_fasta  # Use merged file for alignment
     else:
         input_fasta = args.input_fasta  # No database, just use input
 
     # Run alignment and trimming after save the metada
-    aligned_fasta = align_sequences(input_fasta, args.directory, prefix, 
+    aligned_fasta = align_sequences(input_fasta, args.output, prefix, 
                                         mafft_ep=args.mafft_ep, threads=args.threads)
-    trim_alignment(aligned_fasta, args.directory, prefix, 
+    trim_alignment(aligned_fasta, args.output, prefix, 
                     gap_threshold=args.gap_threshold)
 
 if __name__ == "__main__":

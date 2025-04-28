@@ -27,18 +27,18 @@ def cli():
 # Build tree module
 @cli.command(name="build_tree")
 @click.option("-i", "--input_fasta", required=True, help="Input FASTA file with sequences.")
-@click.option("-d", "--directory", required=True, help="Directory for saving outputs.")
+@click.option("-o", "--output", required=True, default = ".",help="Path to the output directory (Default: working directory)")
 @click.option("-B", "--bootstrap", default=1000, type=int, help="Number of bootstrap iterations (default: 1000)")
-@click.option("-T", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
+@click.option("-t", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
 @click.option("-m", "--model", default="MFP", help="Substitution models (default: MFP - ModelFinder)")
 @click.option("--keep_names", is_flag=True, help="Keep only first word of sequence IDs")
 @click.option("--extra_args", multiple=True, help="Extra arguments to pass directly to IQ-TREE (can be specified multiple times)")
-def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args, keep_names):
+def build_tree(input_fasta, output, bootstrap, threads, model, extra_args, keep_names):
     """Build phylogenetic tree using IQ-TREE."""
     try:
         from cressent.modules.build_tree import main as build_tree_main
         sys.argv = [sys.argv[0]] + ['--input_fasta', input_fasta, 
-                                    '--directory', directory,
+                                    '--output', output,
                                     '--bootstrap', str(bootstrap),
                                     '--threads', str(threads),
                                     '--model', model]
@@ -62,13 +62,13 @@ def build_tree(input_fasta, directory, bootstrap, threads, model, extra_args, ke
 @cli.command(name="align")
 @click.option("-t", "--threads", type=int, default=1, help="Number of threads")
 @click.option("-i", "--input_fasta", required=True, help="Input FASTA file with sequences")
-@click.option("-d", "--directory", default=".", help="Directory for saving outputs")
+@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory)")
 @click.option("--mafft_ep", type=float, default=0.123, help="Alignment length for MAFFT (default: 0.123)")
 @click.option("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
-@click.option("--db_family", help="List of family names or 'all' to use multiple database sequences")
-@click.option("--db_path", default="./db", help="Path to the database FASTA files")
-@click.option("--protein_type", type=click.Choice(['reps', 'caps', 'orf']), help="Specify protein type (Rep or Cap) for database files")
-def align(threads, input_fasta, directory, mafft_ep, gap_threshold, db_family, db_path, protein_type):
+@click.option("--db_family", help="List of family names for specific families or 'all' to use all the database")
+@click.option("--db_path", default="./db", help="Path to the database FASTA files (Default: ./db)")
+@click.option("--protein_type", type=click.Choice(['reps', 'caps']), help="Specify protein type (Rep or Cap) for database files")
+def align(threads, input_fasta, output, mafft_ep, gap_threshold, db_family, db_path, protein_type):
     """Pipeline for sequence alignment and trimming."""
     try:
         from cressent.modules.align import main as align_main
@@ -77,8 +77,8 @@ def align(threads, input_fasta, directory, mafft_ep, gap_threshold, db_family, d
             sys.argv.extend(['--threads', str(threads)])
         if input_fasta:
             sys.argv.extend(['--input_fasta', input_fasta])
-        if directory:
-            sys.argv.extend(['--directory', directory])
+        if output:
+            sys.argv.extend(['--output', output])
         if mafft_ep:
             sys.argv.extend(['--mafft_ep', str(mafft_ep)])
         if gap_threshold:
@@ -101,11 +101,11 @@ def align(threads, input_fasta, directory, mafft_ep, gap_threshold, db_family, d
 # Cluster module
 @cli.command(name="cluster")
 @click.option("-i", "--input_fasta", required=True, help="Path to input FASTA file")
-@click.option("-o", "--output", default=".", help="Directory to save output")
-@click.option("-t", "--threads", type=int, default=32, help="Number of threads for BLAST")
-@click.option("--min_ani", type=float, default=95.0, help="Minimum average identity for clustering")
-@click.option("--min_tcov", type=float, default=85.0, help="Minimum target coverage")
-@click.option("--min_qcov", type=float, default=0.0, help="Minimum query coverage")
+@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory)")
+@click.option("-t", "--threads", type=int, default=1, help="Number of threads for BLAST (Default = 1)")
+@click.option("--min_ani", type=float, default=95.0, help="Minimum average identity for clustering (Default = 95.0)")
+@click.option("--min_tcov", type=float, default=85.0, help="Minimum target coverage (Default = 85.0)")
+@click.option("--min_qcov", type=float, default=0.0, help="Minimum query coverage (Default = 0.0)")
 def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov):
     """Sequence clustering using BLAST, anicalc, and aniclust."""
     try:
@@ -130,20 +130,20 @@ def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov):
 
 # Motif discovery module
 @cli.command(name="motif_disc")
-@click.option("-i", "--fasta", required=True, help="Input FASTA file")
-@click.option("-o", "--output", default=".", help="Output directory (used for MEME and generated files)")
-@click.option("-nmotifs", type=int, default=3, help="Number of motifs to find")
-@click.option("-minw", type=int, default=6, help="Minimum motif width")
-@click.option("-maxw", type=int, default=50, help="Maximum motif width")
+@click.option("-i", "--input_fasta", required=True, help="Input FASTA file")
+@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory) (used for MEME and generated files)")
+@click.option("-nmotifs", type=int, default=3, help="Number of motifs to find (Default = 3)")
+@click.option("-minw", type=int, default=5, help="Minimum motif width (Default = 5)")
+@click.option("-maxw", type=int, default=10, help="Maximum motif width (Default = 10)")
 @click.option("--meme_extra", multiple=True, help="Additional MEME arguments (list format)")
 @click.option("--scanprosite", is_flag=True, help='Run ScanProsite')
-def motif_disc(fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite):
+def motif_disc(input_fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite):
     """Discover de novo motifs using MEME."""
     try:
         from cressent.modules.motif_disc import main as motif_disc_main
         sys.argv = [sys.argv[0]]
         if fasta:
-            sys.argv.extend(['--fasta', fasta])
+            sys.argv.extend(['--input_fasta', fasta])
         if output:
             sys.argv.extend(['--output', output])
         if nmotifs:
@@ -167,21 +167,21 @@ def motif_disc(fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite):
 # Motif module
 @cli.command(name="motif")
 @click.option("-i", "--input_fasta", required=True, help="Input FASTA file with sequences.")
-@click.option("-d", "--directory", default=".", help="Directory for saving outputs and log files.")
+@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory)")
 @click.option("-p", "--pattern", required=True, help="Sequence pattern (regex) for motif searching.")
-@click.option("-n", "--table_name", default="pattern_positions.txt", help="Name of the file that will store motif positions.")
+@click.option("-n", "--table_name", default="pattern_positions.txt", help="Name of the file that will store motif positions (Default: pattern_positions.txt)")
 @click.option("--remove-gaps", is_flag=True, help="If set, removes gaps ('-') before searching for motifs.")
 @click.option("--split-sequences", is_flag=True, help="If set, the sequences will be split at the motif position.")
 @click.option("--generate-logo", is_flag=True, help="If set, generate a sequence logo from the motif results.")
-@click.option("--logo-name", default="sequence_logo.pdf", help="Name of the sequence logo PDF file.")
-@click.option("--plot-title", default="sequence_logo", help="Title of the Sequence Logo.")
-@click.option("--width", default=10, type=float, help="Width of the sequence logo PDF file.")
-@click.option("--height", default=10, type=float, help="Height of the sequence logo PDF file.")
+@click.option("--logo-name", default="sequence_logo.pdf", help="Name of the sequence logo PDF file (Default: sequence_logo.pdf)")
+@click.option("--plot-title", default="sequence_logo", help="Title of the Sequence Logo (Default: sequence_logo)")
+@click.option("--width", default=10, type=float, help="Width of the sequence logo PDF file (Default = 10)")
+@click.option("--height", default=10, type=float, help="Height of the sequence logo PDF file (Default = 10)")
 @click.option("--split-logo", is_flag=True, help="If set, the sequence logo will be split by group label.")
 @click.option("--metadata", help="Path to metadata file containing group labels.")
 @click.option("--ncol", type=int, help="Number of columns when splitting the sequence logo.")
 @click.option("--group-label", help="Column name in metadata for grouping sequences.")
-def motif(input_fasta, directory, pattern, table_name, remove_gaps, split_sequences, 
+def motif(input_fasta, output, pattern, table_name, remove_gaps, split_sequences, 
           generate_logo, logo_name, plot_title, width, height, split_logo, 
           metadata, ncol, group_label):
     """Combined module for motif finding and sequence logo generation."""
@@ -190,8 +190,8 @@ def motif(input_fasta, directory, pattern, table_name, remove_gaps, split_sequen
         sys.argv = [sys.argv[0]]
         if input_fasta:
             sys.argv.extend(['--input_fasta', input_fasta])
-        if directory:
-            sys.argv.extend(['--directory', directory])
+        if output:
+            sys.argv.extend(['--output', output])
         if pattern:
             sys.argv.extend(['--pattern', pattern])
         if table_name:
@@ -226,7 +226,7 @@ def motif(input_fasta, directory, pattern, table_name, remove_gaps, split_sequen
 # Gene map module
 @cli.command(name="gene_map")
 @click.option('-i', '--input', required=True, help='Input file path for the motif table CSV')
-@click.option('-o', '--output', default='./', help='Output directory where the plot will be saved')
+@click.option('-o', '--output', default='./', help="Path to the output directory (Default: working directory)")
 @click.option('--filename', default='gene_motif.pdf', help='Output filename for the generated plot (default: gene_motif.pdf)')
 @click.option('--height', type=float, default=10, help='Height of the output plot in inches (default: 10)')
 @click.option('--width', type=float, default=10, help='Width of the output plot in inches (default: 10)')
@@ -258,21 +258,21 @@ def gene_map(input, output, filename, height, width, title):
 @cli.command(name="plot_tree")
 @click.option("-t", "--tree", help="Input tree file (Newick format)")
 @click.option("--dist_matrix", help="Use distance matrix method for tree construction")
-@click.option("-o", "--outdir", required=True, help="Output directory to save the figure")
+@click.option("-o", "--output", required=True, default=".",help="Path to the output directory (Default: working directory)")
 @click.option("--metadata_1", help="Optional CSV metadata file")
 @click.option("--metadata_2", help="Optional TSV name table file")
 @click.option("--alignment", help="Optional alignment file (FASTA) to include in the plot")
-@click.option("--layout", default="rectangular", help="Tree layout (e.g., rectangular, circular, unrooted)")
-@click.option("--branch_length", default="branch.length", help="Branch length parameter for ggtree")
-@click.option("--open_angle", default=0, type=float, help="Open angle for circular/unrooted layouts")
-@click.option("--offset", default=0.14, type=float, help="Tip label offset")
-@click.option("--tip_label", default="family", help="Column name to use as the tip label")
-@click.option("--color", default=True, help="Color tree by group (requires metadata)")
-@click.option("--fig_width", type=float, default=7, help="Figure width (ggsave)")
-@click.option("--fig_height", type=float, default=7, help="Figure height (ggsave)")
-@click.option("--plot_tips",  type=click.BOOL, default=True, help="Include tip labels in the plot")
-@click.option("--plot_name", default="tree_plot.pdf", help="Name of the output plot file")
-def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layout, 
+@click.option("--layout", default="rectangular", help="Tree layout (e.g., rectangular, circular, unrooted) Default: rectangular")
+@click.option("--branch_length", default="branch.length", help="Branch length parameter for ggtree (Default: branch.length)")
+@click.option("--open_angle", default=0, type=float, help="Open angle for circular/unrooted layouts (default = 0)")
+@click.option("--offset", default=0.14, type=float, help="Tip label offset (default = 0)")
+@click.option("--tip_label", default="family", help="Column name to use as the tip label (default = family)")
+@click.option("--color", default=True, help="Color tree by group (requires metadata) (default = True)")
+@click.option("--fig_width", type=float, default=7, help="Figure width (ggsave) (default = 7)")
+@click.option("--fig_height", type=float, default=7, help="Figure height (ggsave) (default = 7)")
+@click.option("--plot_tips",  type=click.BOOL, default=True, help="Include tip labels in the plot (default = True)")
+@click.option("--plot_name", default="tree_plot.pdf", help="Name of the output plot file (default: tree_plot.pdf)")
+def plot_tree(tree, dist_matrix, output, metadata_1, metadata_2, alignment, layout, 
                 branch_length, open_angle, offset, tip_label, color, fig_width, 
                 fig_height, plot_tips, plot_name):
     """Plot phylogenetic trees using ggtree."""
@@ -283,8 +283,8 @@ def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layo
             sys.argv.extend(['--tree', tree])
         if dist_matrix:
             sys.argv.extend(['--dist_matrix', dist_matrix])
-        if outdir:
-            sys.argv.extend(['--outdir', outdir])
+        if output:
+            sys.argv.extend(['--output', output])
         if metadata_1:
             sys.argv.extend(['--metadata_1', metadata_1])
         if metadata_2:
@@ -326,11 +326,11 @@ def plot_tree(tree, dist_matrix, outdir, metadata_1, metadata_2, alignment, layo
 @click.option("--tree2", required=True, help="Path to the second tree file.")
 @click.option("--label1", required=True, help="Label for the first tree in the tanglegram.")
 @click.option("--label2", required=True, help="Label for the second tree in the tanglegram.")
-@click.option("--output", required=True, help="Directory where the tanglegram will be saved.")
-@click.option("--name_tanglegram", default="tanglegram.pdf", help="Name of the tanglegram PDF file.")
-@click.option("--width", default=20, type=float, help="Width of the tanglegram PDF file.")
-@click.option("--height", default=11, type=float, help="Height of the tanglegram PDF file.")
-@click.option("--lab_cex", default=1.5, type=float, help="cex size of the labels.")
+@click.option("-o", "--output", required=True, default=".",help="Path to the output directory (Default: working directory)")
+@click.option("--name_tanglegram", default="tanglegram.pdf", help="Name of the tanglegram PDF file (default: tanglegram.pdf)")
+@click.option("--width", default=20, type=float, help="Width of the tanglegram (default = 20)")
+@click.option("--height", default=11, type=float, help="Height of the tanglegram (default = 11)")
+@click.option("--lab_cex", default=1.5, type=float, help="cex size of the labels (default = 1.5)")
 def tanglegram(tree1, tree2, label1, label2, output, name_tanglegram, width, height, lab_cex):
     """Generate a tanglegram from two phylogenetic trees."""
     try:
@@ -361,28 +361,28 @@ def tanglegram(tree1, tree2, label1, label2, output, name_tanglegram, width, hei
 
 # Sequence Logo module
 @cli.command(name="seq_logo")
-@click.option("-f", "--fasta", help="Path to the fasta file.")
+@click.option("-i", "--input_fasta", help="Path to the fasta file.")
 @click.option("-tb", "--seq_df", help="Path to the table produced by seqkit.")
-@click.option("-o", "--output_dir", default="./", help="Directory where the sequence logo will be saved.")
-@click.option("-n", "--output_name", default="sequence_logo.pdf", help="Name of the sequence logo PDF file.")
-@click.option("--plot_title", default="sequence_logo", help="Title of the Sequence Logo.")
-@click.option("--width", default=10, type=float, help="Width of the sequence logo PDF file.")
-@click.option("--height", default=10, type=float, help="Height of the sequence logo PDF file.")
-@click.option("--split", is_flag=True, help="If set, the sequence logo will be split by group label.")
+@click.option("-o", "--output", default="./", help="Path to the output directory (Default: working directory)")
+@click.option("-n", "--output_name", default="sequence_logo.pdf", help="Name of the sequence logo (default: sequence_logo.pdf)")
+@click.option("--plot_title", default="sequence_logo", help="Title of the Sequence Logo (default: sequence_logo)")
+@click.option("--width", default=10, type=float, help="Width of the sequence logo (default = 10)")
+@click.option("--height", default=10, type=float, help="Height of the sequence logo (default = 10)")
+@click.option("--split", is_flag=True, help="If set, the sequence logo will be split by group label (default = True)")
 @click.option("--metadata", help="Path to metadata file containing group labels.")
 @click.option("--ncol", type=int, help="Number of columns when splitting the sequence logo.")
 @click.option("--group_label", help="Column name in metadata for grouping sequences.")
-def seq_logo(fasta, seq_df, output_dir, output_name, plot_title, width, height, split, metadata, ncol, group_label):
+def seq_logo(input_fasta, seq_df, output, output_name, plot_title, width, height, split, metadata, ncol, group_label):
     """Generate a sequence logo from a FASTA file or sequence table."""
     try:
         from cressent.modules.seq_logo import main as seq_logo_main
         sys.argv = [sys.argv[0]]
-        if fasta:
-            sys.argv.extend(['-f', fasta])
+        if input_fasta:
+            sys.argv.extend(['-i', fasta])
         if seq_df:
             sys.argv.extend(['-tb', seq_df])
-        if output_dir:
-            sys.argv.extend(['-o', output_dir])
+        if output:
+            sys.argv.extend(['-o', output])
         if output_name:
             sys.argv.extend(['-n', output_name])
         if plot_title:
@@ -406,32 +406,32 @@ def seq_logo(fasta, seq_df, output_dir, output_name, plot_title, width, height, 
 
 # Stem-loop finder module
 @cli.command(name="sl_finder")
-@click.option("-i", "--fasta_in", required=True, help="Input FASTA file")
+@click.option("-i", "--input_fasta", required=True, help="Input FASTA file")
 @click.option("--gff_in", required=True, help="Input GFF/GTF file")
 @click.option("--out_gff", required=True, help="Output GFF filename")
-@click.option("--output_dir", default=".", help="Directory to save output files")
+@click.option("-o","--output", default=".", help="Path to the output directory (Default: working directory)")
 @click.option("--csv_out", help="Output CSV filename")
-@click.option("--motif", default="nantantan", help="Conserved motif")
+@click.option("--motif", default="nantantan", help="Conserved motif (default = nantantan)")
 @click.option("--family", type=click.Choice(['geminiviridae', 'genomoviridae', 'smacoviridae', 
                                             'cycloviridae', 'circoviridae', 'general']), 
              help="CRESS viral family")
-@click.option("--idealstemlen", "-s", type=int, default=11, help="Ideal stem length")
-@click.option("--ideallooplen", "-l", type=int, default=11, help="Ideal loop length")
-@click.option("--frame", "-f", type=int, default=15, help="Bases around motif for folding")
-def sl_finder(fasta_in, gff_in, out_gff, output_dir, csv_out, motif, family, 
+@click.option("--idealstemlen", "-s", type=int, default=11, help="Ideal stem length (default = 11)")
+@click.option("--ideallooplen", "-l", type=int, default=11, help="Ideal loop length (default = 11)")
+@click.option("--frame", "-f", type=int, default=15, help="Bases around motif for folding (default = 15)")
+def sl_finder(input_fasta, gff_in, out_gff, output, csv_out, motif, family, 
               idealstemlen, ideallooplen, frame):
     """A module for putative stem-loop annotation."""
     try:
         from cressent.modules.sl_finder import main as sl_finder_main
         sys.argv = [sys.argv[0]]
-        if fasta_in:
-            sys.argv.extend(['-i', fasta_in])
+        if input_fasta:
+            sys.argv.extend(['-i', input_fasta])
         if gff_in:
             sys.argv.extend(['--gff_in', gff_in])
         if out_gff:
             sys.argv.extend(['--out_gff', out_gff])
-        if output_dir:
-            sys.argv.extend(['--output_dir', output_dir])
+        if output:
+            sys.argv.extend(['--output', output])
         if csv_out:
             sys.argv.extend(['--csv_out', csv_out])
         if motif:
@@ -452,23 +452,23 @@ def sl_finder(fasta_in, gff_in, out_gff, output_dir, csv_out, motif, family,
 
 # GC Patchiness module (heatmap)
 @cli.command(name="gc_ht")
-@click.option("-i", "--fasta_file", required=True, help="Input FASTA file containing sequences.")
-@click.option("--output_dir", default=".", help="Directory to save the output image (default: current directory).")
+@click.option("-i", "--input_fasta", required=True, help="Input FASTA file containing sequences.")
+@click.option("-o","--output", default=".", help="Path to the output directory (Default: working directory)")
 @click.option("--window_size", type=int, default=30, help="Sliding window size for GC content calculation (default: 30).")
 @click.option("--step_size", type=int, default=5, help="Step size for GC calculation (default: 5).")
 @click.option("--xticklabels", type=int, default=10, help="Interval for x-axis tick labels (default: None).")
 @click.option("--fig_width", type=int, default=12, help="Figure width in inches (default: 12).")
 @click.option("--fig_height", type=int, default=6, help="Figure height in inches (default: 6).")
 @click.option("--output_name", default="gc_heatmap.pdf", help="Name of output image file with extension (default: gc_heatmap.png).")
-def gc_ht(fasta_file, output_dir, window_size, step_size, xticklabels, fig_width, fig_height, output_name):
+def gc_ht(input_fasta, output, window_size, step_size, xticklabels, fig_width, fig_height, output_name):
     """Generate a GC content heatmap from a FASTA file."""
     try:
         from cressent.modules.gc_ht import main as gc_ht_main
         sys.argv = [sys.argv[0]]
-        if fasta_file:
-            sys.argv.extend(['--fasta_file', fasta_file])
-        if output_dir:
-            sys.argv.extend(['--output_dir', output_dir])
+        if input_fasta:
+            sys.argv.extend(['--input_fasta', input_fasta])
+        if output:
+            sys.argv.extend(['--output', output])
         if window_size:
             sys.argv.extend(['--window_size', str(window_size)])
         if step_size:
@@ -489,8 +489,8 @@ def gc_ht(fasta_file, output_dir, window_size, step_size, xticklabels, fig_width
 
 # Recombination module
 @cli.command(name="recombination")
-@click.option('-i', '--input', required=True, help='Input alignment file in FASTA format')
-@click.option('-o', '--outdir', default='.', help='Output directory for all files (default: current directory)')
+@click.option('-i', '--input_fasta', required=True, help='Input alignment file in FASTA format')
+@click.option('-o', '--output', default='.', help='Path to the output directory (Default: working directory)')
 @click.option('-f', '--output_file', required=True, help='Output file for results (CSV format)')
 @click.option('-c', '--config', help='Configuration file in INI format for OpenRDP parameters')
 @click.option('-rdp', is_flag=True, help='Run RDP method')
@@ -503,16 +503,16 @@ def gc_ht(fasta_file, output_dir, window_size, step_size, xticklabels, fig_width
 @click.option('-all', is_flag=True, help='Run all methods')
 @click.option('-quiet', is_flag=True, help='Suppress console output')
 @click.option('-verbose', is_flag=True, help='Enable verbose logging')
-def recombination(input, outdir, output_file, config, rdp, threeseq, geneconv, maxchi, 
+def recombination(input_fasta, output, output_file, config, rdp, threeseq, geneconv, maxchi, 
                   chimaera, bootscan, siscan, all, quiet, verbose):
     """Detect recombination events in ssDNA virus sequences."""
     try:
         from cressent.modules.recombination import main as recombination_main
         sys.argv = [sys.argv[0]]
-        if input:
-            sys.argv.extend(['-i', input])
-        if outdir:
-            sys.argv.extend(['-o', outdir])
+        if input_fasta:
+            sys.argv.extend(['-i', input_fasta])
+        if output:
+            sys.argv.extend(['-o', output])
         if output_file:
             sys.argv.extend(['-f', output_file])
         if config:
@@ -544,35 +544,35 @@ def recombination(input, outdir, output_file, config, rdp, threeseq, geneconv, m
 
 # Run CRUISE module
 @cli.command(name="run_cruise")
-@click.option("--outputDir", default=".", help="Directory for output files (default: current directory)")
-@click.option("--inputFasta", required=True, help="Path to input FASTA file with all sequences")
+@click.option("-o","--output", default=".", help="Path to the output directory (Default: working directory)")
+@click.option("-i","--input_fasta", required=True, help="Path to input FASTA file with all sequences")
 @click.option("--inputGFF", required=True, help="Path to associated input GFF file")
-@click.option("--outputGFF", required=True, help="Path for output GFF file")
-@click.option("--outputAnnotations", default="2 CRUISE", help="Identifiers to selectively preserve annotations")
-@click.option("--minLength", type=int, default=5, help="Minimum iteron length")
-@click.option("--maxLength", type=int, default=12, help="Maximum iteron length")
-@click.option("--range", type=int, default=65, help="Number of base pairs around nona to search")
-@click.option("--rank", type=bool, default=True, help="Use ranking system")
-@click.option("--numberTopIterons", type=int, default=5, help="The number of iterons returned in rank order")
-@click.option("--maxScore", type=int, default=40, help="Maximum score allowed for iterons if rank = False")
-@click.option("--wiggle", type=int, default=5, help="Max difference between iteron length and distance")
-@click.option("--goodLength", type=int, default=11, help="The highest favorable iteron length")
-@click.option("--doStemLoop", type=bool, default=True, help="Whether to annotate stem-loop repeats")
-@click.option("--doKnownIterons", type=bool, default=True, help="Whether to annotate known iterons")
-@click.option("--maxDist", type=int, default=20, help="Maximum allowed distance between iterons")
-@click.option("--bestDist", type=int, default=10, help="Optimal maximum distance between iterons")
-@click.option("--scoreRange", type=int, default=50, help="Score range between outputted candidates")
-def run_cruise(outputdir, inputfasta, inputgff, outputgff, outputannotations,
+@click.option("--outputGFF", required=True, default="finaloutput.gff",help="Path for output GFF file (default: finaloutput.gff)")
+@click.option("--outputAnnotations", default="2 CRUISE", help="Identifiers to selectively preserve annotations (default: 2 CRUISE)")
+@click.option("--minLength", type=int, default=5, help="Minimum iteron length (default = 5)")
+@click.option("--maxLength", type=int, default=12, help="Maximum iteron length (default = 12)")
+@click.option("--range", type=int, default=65, help="Number of base pairs around nona to search (default = 65)")
+@click.option("--rank", type=bool, default=True, help="Use ranking system (default = True)")
+@click.option("--numberTopIterons", type=int, default=5, help="The number of iterons returned in rank order (default = 5)")
+@click.option("--maxScore", type=int, default=40, help="Maximum score allowed for iterons if rank = False (default = 40)")
+@click.option("--wiggle", type=int, default=5, help="Max difference between iteron length and distance (default = 5)")
+@click.option("--goodLength", type=int, default=11, help="The highest favorable iteron length (default = 11)")
+@click.option("--doStemLoop", type=bool, default=True, help="Whether to annotate stem-loop repeats (default = True)")
+@click.option("--doKnownIterons", type=bool, default=True, help="Whether to annotate known iterons (default = True)")
+@click.option("--maxDist", type=int, default=20, help="Maximum allowed distance between iterons (default = 20)")
+@click.option("--bestDist", type=int, default=10, help="Optimal maximum distance between iterons (default = 10)")
+@click.option("--scoreRange", type=int, default=50, help="Score range between outputted candidates (default = 50)")
+def run_cruise(output, input_fasta, inputgff, outputgff, outputannotations,
               minlength, maxlength, range, rank, numbertopiterons, maxscore,
               wiggle, goodlength, dostemloop, doknowniterons, maxdist, bestdist, scorerange):
     """Search for iterons around CRESS stem-loops in GFF files."""
     try:
         from cressent.modules.run_cruise import main as run_cruise_main
         sys.argv = [sys.argv[0]]
-        if outputdir:
-            sys.argv.extend(['--outputDir', outputdir])
-        if inputfasta:
-            sys.argv.extend(['--inputFasta', inputfasta])
+        if output:
+            sys.argv.extend(['--output', outputdir])
+        if input_fasta:
+            sys.argv.extend(['--input_fasta', input_fasta])
         if inputgff:
             sys.argv.extend(['--inputGFF', inputgff])
         if outputgff:
@@ -614,15 +614,15 @@ def run_cruise(outputdir, inputfasta, inputgff, outputgff, outputannotations,
 @cli.command(name="detect_contamination")
 @click.option("-i", "--input_fasta", required=True, help="Input FASTA file")
 @click.option("--db", required=True, help="Contaminant database FASTA file")
-@click.option("-o", "--output-dir", required=True, help="Output directory for results")
+@click.option("-o", "--output", required=True, help="Path to the output directory (Default: working directory)")
 @click.option("--output-name", default="clean_sequences", help="Base name for output files (default: clean_sequences)")
 @click.option("--seq-type", type=click.Choice(['nucl', 'prot']), help="Sequence type (auto-detect if not specified)")
 @click.option("--evalue", type=float, default=1e-10, help="BLAST E-value threshold (default: 1e-10)")
 @click.option("--identity", type=float, default=90.0, help="Minimum percent identity to consider a match (default: 90.0)")
 @click.option("--coverage", type=float, default=50.0, help="Minimum query coverage to consider a match (default: 50.0)")
-@click.option("--threads", type=int, default=1, help="Number of CPU threads for BLAST (default: 1)")
+@click.option("-t","--threads", type=int, default=1, help="Number of CPU threads for BLAST (default: 1)")
 @click.option("--keep-temp", is_flag=True, help="Keep temporary BLAST output files")
-def detect_contamination(input_fasta, db, output_dir, output_name, seq_type, evalue, identity, 
+def detect_contamination(input_fasta, db, output, output_name, seq_type, evalue, identity, 
                         coverage, threads, keep_temp):
     """Filter viral contaminants from sequence data (nucleotide or protein)."""
     try:
@@ -632,8 +632,8 @@ def detect_contamination(input_fasta, db, output_dir, output_name, seq_type, eva
             sys.argv.extend(['-i', input_fasta])
         if db:
             sys.argv.extend(['--db', db])
-        if output_dir:
-            sys.argv.extend(['-o', output_dir])
+        if output:
+            sys.argv.extend(['-o', output])
         if output_name:
             sys.argv.extend(['--output-name', output_name])
         if seq_type:
@@ -645,7 +645,7 @@ def detect_contamination(input_fasta, db, output_dir, output_name, seq_type, eva
         if coverage:
             sys.argv.extend(['--coverage', str(coverage)])
         if threads:
-            sys.argv.extend(['--threads', str(threads)])
+            sys.argv.extend(['-t', str(threads)])
         if keep_temp:
             sys.argv.append('--keep-temp')
         detect_contamination_main()
@@ -656,17 +656,17 @@ def detect_contamination(input_fasta, db, output_dir, output_name, seq_type, eva
 # Adjust sequence start position module
 @cli.command(name="adjust_seq")
 @click.option("-i", "--input_fasta", required=True, help="Path to the input FASTA file.")
-@click.option("-o", "--output_fasta", default=".", help="Path to the output directory.")
+@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory)")
 @click.option("-m", "--motif", default="TAGTATTAC", help="Motif to adjust sequences to start with (default: TAGTATTAC).")
-def adjust_seq(input_fasta, output_fasta, motif):
+def adjust_seq(input_fasta, output, motif):
     """Adjust sequences in a FASTA file to start with a specified motif."""
     try:
         from cressent.modules.adjust_seq import main as adjust_seq_main
         sys.argv = [sys.argv[0]]
         if input_fasta:
             sys.argv.extend(['-i', input_fasta])
-        if output_fasta:
-            sys.argv.extend(['-o', output_fasta])
+        if output:
+            sys.argv.extend(['-o', output])
         if motif:
             sys.argv.extend(['-m', motif])
         adjust_seq_main()
@@ -677,19 +677,19 @@ def adjust_seq(input_fasta, output_fasta, motif):
 # Build contaminant database module
 @cli.command(name="build_contaminant_db")
 @click.option("--accession-csv", required=True, help="CSV file with accessions (must have 'accession' column)")
-@click.option("--output-dir", required=True, help="Output directory where files will be saved")
+@click.option("-o","--output", required=True, help="Path to the output directory (Default: working directory)")
 @click.option("--output-name", default="contaminant_db", help="Base name for output files (default: contaminant_db)")
-@click.option("--email", default="user@example.com", help="Email for NCBI Entrez queries")
-@click.option("--batch-size", type=int, default=10, help="Maximum number of sequences to download in each batch")
-def build_contaminant_db(accession_csv, output_dir, output_name, email, batch_size):
+@click.option("--email", default="user@example.com", help="Email for NCBI Entrez queries (not required, default: user@example.com)")
+@click.option("--batch-size", type=int, default=10, help="Maximum number of sequences to download in each batch (default = 10)")
+def build_contaminant_db(accession_csv, output, output_name, email, batch_size):
     """Build a viral contaminant database for decontamination pipelines."""
     try:
         from cressent.modules.build_contaminant_db import main as build_contaminant_db_main
         sys.argv = [sys.argv[0]]
         if accession_csv:
             sys.argv.extend(['--accession-csv', accession_csv])
-        if output_dir:
-            sys.argv.extend(['--output-dir', output_dir])
+        if output:
+            sys.argv.extend(['--output', output])
         if output_name:
             sys.argv.extend(['--output-name', output_name])
         if email:

@@ -241,11 +241,11 @@ def main():
     )
     
     parser.add_argument("-i", "--input_fasta", required=True, help="Path to input FASTA file")
-    parser.add_argument("-o", "--output", default=".", help="Directory to save output")
-    parser.add_argument("-t", "--threads", type=int, default=32, help="Number of threads for BLAST")
-    parser.add_argument("--min_ani", type=float, default=95.0, help="Minimum average identity for clustering")
-    parser.add_argument("--min_tcov", type=float, default=85.0, help="Minimum target coverage")
-    parser.add_argument("--min_qcov", type=float, default=0.0, help="Minimum query coverage")
+    parser.add_argument("-o", "--output", default=".", help="Path to the output directory (Default: working directory)")
+    parser.add_argument("-t", "--threads", type=int, default=1, help="Number of threads for BLAST (Default = 1)")
+    parser.add_argument("--min_ani", type=float, default=95.0, help="Minimum average identity for clustering (Default = 95.0)")
+    parser.add_argument("--min_tcov", type=float, default=85.0, help="Minimum target coverage (Default = 85.0)")
+    parser.add_argument("--min_qcov", type=float, default=0.0, help="Minimum query coverage (Default = 0.0)")
     parser.add_argument("--keep_names", action="store_true", help="Keep only first word of sequence IDs")
     
     args = parser.parse_args()

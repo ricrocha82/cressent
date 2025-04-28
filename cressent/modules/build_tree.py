@@ -109,16 +109,16 @@ def extract_chosen_model(iqtree_log_file):
 def main():
     parser = argparse.ArgumentParser(description="Pipeline for sequence alignment, trimming, motif splitting, and phylogenetic tree generation.")
     parser.add_argument("-i","--input_fasta", required=True, help="Input FASTA file with sequences.")
-    parser.add_argument("-d", "--directory", required=True, help="Directory containing input FASTA file and for saving outputs.")
+    parser.add_argument("-o", "--output", required=True, default = ".",help="Path to the output directory (Default: working directory)")
     parser.add_argument("-B", "--bootstrap", default=1000, type=int, help="Number of bootstrap iterations (default: 1000)")
-    parser.add_argument("-T", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
+    parser.add_argument("-t", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
     parser.add_argument("-m", "--model", default="MFP", help="Substitution models (default: MFP - ModelFinder)")
     parser.add_argument("--extra_args", nargs="+", help="Extra arguments to pass directly to IQ-TREE (e.g. --extra_args '-cmax 15')")
     parser.add_argument("--keep_names", action="store_true", help="Keep only first word of sequence IDs")
     
 
     args = parser.parse_args()
-    output_dir = args.directory
+    output_dir = args.output
 
     prefix = os.path.join(
         output_dir,

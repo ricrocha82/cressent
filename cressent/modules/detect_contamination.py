@@ -365,7 +365,7 @@ def parse_arguments():
     
     parser.add_argument("-i","--input_fasta", required=True, help="Input FASTA file")
     parser.add_argument("--db", required=True, help="Contaminant database FASTA file")
-    parser.add_argument("-o","--output-dir", required=True, help="Output directory for results")
+    parser.add_argument("-o","--output", required=True, help="Path to the output directory (Default: working directory)")
     parser.add_argument("--output-name", default="clean_sequences", 
                         help="Base name for output files (default: clean_sequences)")
     parser.add_argument("--seq-type", choices=['nucl', 'prot'], 
@@ -376,7 +376,7 @@ def parse_arguments():
                         help="Minimum percent identity to consider a match (default: 90.0)")
     parser.add_argument("--coverage", type=float, default=50.0, 
                         help="Minimum query coverage to consider a match (default: 50.0)")
-    parser.add_argument("--threads", type=int, default=1, 
+    parser.add_argument("-t","--threads", type=int, default=1, 
                         help="Number of CPU threads for BLAST (default: 1)")
     parser.add_argument("--keep-temp", action="store_true", 
                         help="Keep temporary BLAST output files")
@@ -388,7 +388,7 @@ def main():
     args = parse_arguments()
     
     # Create output directory if it doesn't exist
-    output_dir = args.output_dir
+    output_dir = args.output
     os.makedirs(output_dir, exist_ok=True)
 
     # Determine the input FASTA full path

@@ -62,11 +62,11 @@ def main():
     parser.add_argument("--tree2", required = True, help = "Path to the second tree file.") # arg_tree2
     parser.add_argument("--label1", required = True, help = "Label for the first tree in the tanglegram.") # arg_label1
     parser.add_argument("--label2", required = True, help = "Label for the second tree in the tanglegram.") # arg_label2
-    parser.add_argument("--output", required = True, help = "Directory where the tanglegram will be saved.") # arg_output
-    parser.add_argument("--name_tanglegram", default = "tanglegram.pdf", help = "Name of the tanglegram PDF file.") 
-    parser.add_argument("--width", default = 20, type=float, help = "Width of the tanglegram PDF file.") 
-    parser.add_argument("--height", default = 11, type=float, help = "Height of the tanglegram PDF file.") 
-    parser.add_argument("--lab_cex", default = 1.5, type=float, help = "cex size of the labels.") 
+    parser.add_argument("-o", "--output", required=True, default=".",help="Path to the output directory (Default: working directory)") # arg_output
+    parser.add_argument("--name_tanglegram", default = "tanglegram.pdf", help = "Name of the tanglegram (default: tanglegram.pdf)") 
+    parser.add_argument("--width", default = 20, type=float, help = "Width of the tanglegram (default = 20)") 
+    parser.add_argument("--height", default = 11, type=float, help = "Height of the tanglegram (default = 11)") 
+    parser.add_argument("--lab_cex", default = 1.5, type=float, help = "cex size of the labels (default = 1.5)") 
 
     args = parser.parse_args()
 

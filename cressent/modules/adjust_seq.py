@@ -44,11 +44,11 @@ def process_fasta(input_fasta, output_dir, motif="TAGTATTAC"):
 def main():
     parser = argparse.ArgumentParser(description="Adjust sequences in a FASTA file to start with a specified motif.")
     parser.add_argument("-i","--input_fasta", help="Path to the input FASTA file.")
-    parser.add_argument("-o","--output_fasta", default=".", help="Path to the output directory.")
+    parser.add_argument("-o","--output", default=".", help="Path to the output directory. (Default: working directory)")
     parser.add_argument("-m","--motif", default="TAGTATTAC", help="Motif to adjust sequences to start with (default: TAGTATTAC).")
     
     args = parser.parse_args()
-    output_dir = args.output_fasta
+    output_dir = args.output
     os.makedirs(output_dir , exist_ok=True)
 
     def validate_fasta(filename):

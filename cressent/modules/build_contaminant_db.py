@@ -260,14 +260,14 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Build a viral contaminant database for decontamination pipelines")
     parser.add_argument("--accession-csv", required=True, 
                         help="CSV file with accessions (must have 'accession' column)")
-    parser.add_argument("--output-dir", required=True, 
-                        help="Output directory where files will be saved")
+    parser.add_argument("-o","--output", required=True, 
+                        help="Path to the output directory (Default: working directory)")
     parser.add_argument("--output-name", default="contaminant_db",
                         help="Base name for output files (default: contaminant_db)")
     parser.add_argument("--email", default="user@example.com", 
-                        help="Email for NCBI Entrez queries")
+                        help="Email for NCBI Entrez queries (not required, default: user@example.com)")
     parser.add_argument("--batch-size", type=int, default=10,
-                        help="Maximum number of sequences to download in each batch")
+                        help="Maximum number of sequences to download in each batch (default = 10)")
     return parser.parse_args()
 
 def main():
@@ -275,20 +275,20 @@ def main():
     args = parse_arguments()
     
     # Create output directory if it doesn't exist
-    os.makedirs(args.output_dir, exist_ok=True)
+    os.makedirs(args.output, exist_ok=True)
     
     # Set up file paths
-    output_fasta = os.path.join(args.output_dir, f"{args.output_name}.fasta")
-    output_protein_fasta = os.path.join(args.output_dir, f"{args.output_name}_proteins.fasta")
-    output_metadata = os.path.join(args.output_dir, f"{args.output_name}_metadata.tsv")
-    output_protein_metadata = os.path.join(args.output_dir, f"{args.output_name}_protein_metadata.tsv")
-    log_file = os.path.join(args.output_dir, f"{args.output_name}_build.log")
+    output_fasta = os.path.join(args.output, f"{args.output_name}.fasta")
+    output_protein_fasta = os.path.join(args.output, f"{args.output_name}_proteins.fasta")
+    output_metadata = os.path.join(args.output, f"{args.output_name}_metadata.tsv")
+    output_protein_metadata = os.path.join(args.output, f"{args.output_name}_protein_metadata.tsv")
+    log_file = os.path.join(args.output, f"{args.output_name}_build.log")
     
     # Set up global logger
     global logger
     logger = setup_logging(log_file)
     logger.info(f"Starting contaminant database build process")
-    logger.info(f"Output directory: {args.output_dir}")
+    logger.info(f"Output directory: {args.output}")
     logger.info(f"Output FASTA: {output_fasta}")
     logger.info(f"Output protein FASTA: {output_protein_fasta}")
     
@@ -319,7 +319,7 @@ def main():
         create_metadata_file(proteins, output_protein_metadata)
         
     logger.info(f"Database build process completed")
-    logger.info(f"Results saved to {args.output_dir}")
+    logger.info(f"Results saved to {args.output}")
     logger.info(f"- FASTA database: {output_fasta}")
     logger.info(f"- Protein FASTA database: {output_protein_fasta}")
     logger.info(f"- Metadata file: {output_metadata}")

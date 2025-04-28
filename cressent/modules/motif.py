@@ -211,14 +211,14 @@ def main():
                         help="Input FASTA file with sequences.")
     
     # Output options
-    parser.add_argument("-d", "--directory", default=".",
+    parser.add_argument("-o", "--output", default=".",
                         help="Directory for saving outputs and log files.")
     
     # Motif finding options
     parser.add_argument("-p", "--pattern", required=True,
                         help="Sequence pattern (regex) for motif searching.")
     parser.add_argument("-n", "--table_name", default="pattern_positions.txt",
-                        help="Name of the file that will store motif positions.")
+                        help="Name of the file that will store motif positions (Default: pattern_positions.txt)")
     parser.add_argument("--remove-gaps", action="store_true",
                         help="If set, removes gaps ('-') before searching for motifs.")
     parser.add_argument("--split-sequences", action="store_true",
@@ -228,13 +228,13 @@ def main():
     parser.add_argument("--generate-logo", action="store_true",
                         help="If set, generate a sequence logo from the motif results.")
     parser.add_argument("--logo-name", default="sequence_logo.pdf",
-                        help="Name of the sequence logo PDF file.")
+                        help="Name of the sequence logo PDF file (Default: sequence_logo.pdf)")
     parser.add_argument("--plot-title", default="sequence_logo",
-                        help="Title of the Sequence Logo.")
+                        help="Title of the Sequence Logo (Default: sequence_logo)")
     parser.add_argument("--width", default=10, type=float,
-                        help="Width of the sequence logo PDF file.")
+                        help="Width of the sequence logo PDF file (Default = 10)")
     parser.add_argument("--height", default=10, type=float,
-                        help="Height of the sequence logo PDF file.")
+                        help="Height of the sequence logo PDF file (Default = 10)")
     parser.add_argument("--split-logo", action="store_true",
                         help="If set, the sequence logo will be split by group label.")
     parser.add_argument("--metadata", 
@@ -247,7 +247,7 @@ def main():
     args = parser.parse_args()
 
     # Ensure the output directory exists
-    output_dir = args.directory
+    output_dir = args.output
     try:
         os.makedirs(output_dir, exist_ok=True)
         print(f"Output directory '{output_dir}' is ready.")
