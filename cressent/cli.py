@@ -132,7 +132,7 @@ def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov):
 @cli.command(name="motif_disc")
 @click.option("-i", "--input_fasta", required=True, help="Input FASTA file")
 @click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory) (used for MEME and generated files)")
-@click.option("-nmotifs", type=int, default=3, help="Number of motifs to find (Default = 3)")
+@click.option("-nmotifs", type=int, default=1, help="Number of motifs to find (Default = 1)")
 @click.option("-minw", type=int, default=5, help="Minimum motif width (Default = 5)")
 @click.option("-maxw", type=int, default=10, help="Maximum motif width (Default = 10)")
 @click.option("--meme_extra", multiple=True, help="Additional MEME arguments (list format)")
@@ -142,8 +142,8 @@ def motif_disc(input_fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite
     try:
         from cressent.modules.motif_disc import main as motif_disc_main
         sys.argv = [sys.argv[0]]
-        if fasta:
-            sys.argv.extend(['--input_fasta', fasta])
+        if input_fasta:
+            sys.argv.extend(['--input_fasta', input_fasta])
         if output:
             sys.argv.extend(['--output', output])
         if nmotifs:

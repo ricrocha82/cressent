@@ -11,6 +11,7 @@ from Bio import SeqIO, motifs
 from Bio.ExPASy import ScanProsite
 from Bio import ExPASy
 import time
+import xml.etree.ElementTree as ET
 
 
 def determine_seq_type(fasta_file):
@@ -99,75 +100,111 @@ def consensus_motif(motifs, output_dir):
     logging.info(f"Consensus table saved to: {csv_file}")
 
 
-def create_motif_table(motifs, output_dir):
+def create_motif_table(motifs, output_dir, xml_path: str) -> pd.DataFrame:
     """
-    Creates a text file table summarizing motifs for plotting seqlogos.
-    The table includes motif name, consensus, length, and count.
+    Create a detailed motif match table including sequence name, motif info, and matched region.
     """
-    # List to store dictionaries for each instance's attributes
     rows = []
 
-    # Loop over each motif and its instances
-    for motif in motifs:
-        for instance in motif.instances:
-            # Get attribute names: exclude callable attributes and private ones (starting with '_')
-            attr_names = [attr for attr in dir(instance) 
-                        if not callable(getattr(instance, attr)) and not attr.startswith("_")]
-            # Create a dictionary for this instance
-            instance_data = {}
-            for attr in attr_names:
-                try:
-                    instance_data[attr] = getattr(instance, attr)
-                except Exception as e:
-                    instance_data[attr] = None  # In case of any issues accessing an attribute
-            rows.append(instance_data)
+    for motif_idx, motif in enumerate(motifs, start=1):
+        for instance in motif.alignment.sequences:
+            matched = str(instance)
+            start = instance.start
+            row = {
+                "sequence_name": instance.sequence_name,
+                "motif_id": f"motif_{motif_idx}",
+                "motif_name": motif.alt_id,
+                "matched": matched,
+                "length": len(matched),
+                "start": start,
+                "end": start + len(matched) if start is not None else None,
+                "strand": instance.strand
+            }
+            rows.append(row)
 
-    # Create a DataFrame from the list of dictionaries
+    # Now convert to DataFrame
     df = pd.DataFrame(rows)
 
-    
-    # If both 'start' and 'length' columns exist, calculate the 'end' column
-    if 'start' in df.columns and 'length' in df.columns:
-        df['end'] = df['start'] + df['length']
-        # Reorder columns: insert 'end' immediately after 'start'
-        cols = list(df.columns)
-        if 'end' in cols:
-            start_idx = cols.index('start')
-            cols.remove('end')
-            cols.insert(start_idx + 1, 'end')
-            df = df[cols]
+    # Load motif regex from MEME XML and merge by motif_id
+    regex_df = extract_motif_regex_from_meme_xml(xml_path, output_dir)
+    merged_df = df.merge(regex_df, on="motif_id", how="left")
 
-    df = df.rename(columns={'motif_name': 'matched'})
-    df = df.rename(columns={'sequence_name': 'seqID'})
-    motif_table_path = os.path.join(output_dir, "motif_table.csv")
-    df.to_csv(motif_table_path, sep='\t', index=False)
+    # Order columns
+    column_order = [
+        "sequence_name", "motif_name", "motif_id", "motif_seq", "matched",
+        "length", "start", "end", "strand", "regex"
+    ]
+    merged_df = merged_df[column_order]
 
-    logging.info(f"Motif table saved to: {motif_table_path}")
+    # Save output
+    output_path = os.path.join(output_dir, "motif_table.csv")
+    merged_df.to_csv(output_path, sep='\t', index=False)
+    logging.info(f"Motif table saved to: {output_path}")
 
-def create_pwm_matrix(motifs, output_dir):
+    return merged_df
+
+
+def extract_motif_regex_from_meme_xml(xml_path: str, output_dir: str) -> pd.DataFrame:
     """
-    For each discovered motif, creates a CSV file containing its PWM matrix.
-    The file is named as "<motif.name>_pwm_matrix.csv".
+    Extract regular expressions for each motif from a MEME XML file and save them as a CSV.
+
+    Args:
+        xml_path (str): Path to the MEME XML file.
+        output_dir (str): Directory where the output CSV will be saved.
+
+    Returns:
+        pd.DataFrame: DataFrame containing motif_id, motif_name, and regex.
     """
-    for motif in motifs:
-        # Log the discovered motif details.
-        logging.info("Saving PWM matrix")
+
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+
+    # Find the motifs section
+    motifs_section = root.find("motifs")
+    data = []
+
+    for motif in motifs_section.findall("motif"):
+        motif_id = motif.get("id")
+        motif_seq = motif.get("name")
+        regex_elem = motif.find("regular_expression")
+        regex = regex_elem.text.strip() if regex_elem is not None else None
+        data.append({
+            "motif_id": motif_id,
+            "motif_seq": motif_seq,
+            "regex": regex
+        })
+
+    df = pd.DataFrame(data)
+    # path = os.path.join(output_dir, "motif_regex.csv")
+    # df.to_csv(path, sep='\t', index=False)
+    # logging.info(f"Motif regex saved to: {path}")
+
+    return df
+
+# def create_pwm_matrix(motifs, output_dir):
+#     """
+#     For each discovered motif, creates a CSV file containing its PWM matrix.
+#     The file is named as "<motif.name>_pwm_matrix.csv".
+#     """
+#     for motif in motifs:
+#         # Log the discovered motif details.
+#         logging.info("Saving PWM matrix")
         
-        # Create the file name for this motif's PWM matrix.
-        matrix_file = os.path.join(output_dir, f"{motif.alt_id}_pwm_matrix.csv")
-        with open(matrix_file, "w", newline="") as f:
-            writer = csv.writer(f)
-            # Assume pwm is a dictionary: keys are letters and values are lists of numbers.
-            # Determine the number of positions from the length of the first entry.
-            positions = list(range(1, len(next(iter(motif.pwm.values()))) + 1))
-            # Write header row: an empty cell then columns for each position.
-            header = [""] + [f"Pos {i}" for i in positions]
-            writer.writerow(header)
-            # Write each letter's PWM row.
-            for letter in sorted(motif.pwm.keys()):
-                row = [letter] + list(motif.pwm[letter])
-                writer.writerow(row)
-        logging.info(f"PWM matrix for motif {motif.name} saved to: {matrix_file}")
+#         # Create the file name for this motif's PWM matrix.
+#         matrix_file = os.path.join(output_dir, f"{motif.alt_id}_pwm_matrix.csv")
+#         with open(matrix_file, "w", newline="") as f:
+#             writer = csv.writer(f)
+#             # Assume pwm is a dictionary: keys are letters and values are lists of numbers.
+#             # Determine the number of positions from the length of the first entry.
+#             positions = list(range(1, len(next(iter(motif.pwm.values()))) + 1))
+#             # Write header row: an empty cell then columns for each position.
+#             header = [""] + [f"Pos {i}" for i in positions]
+#             writer.writerow(header)
+#             # Write each letter's PWM row.
+#             for letter in sorted(motif.pwm.keys()):
+#                 row = [letter] + list(motif.pwm[letter])
+#                 writer.writerow(row)
+#         logging.info(f"PWM matrix for motif {motif.name} saved to: {matrix_file}")
 
 def run_scanprosite(fasta_file, seq_type):
     """
@@ -276,7 +313,7 @@ def main():
     parser = argparse.ArgumentParser(description="motif_discovery: Discover de novo motifs using MEME")
     parser.add_argument("-i","--input_fasta", help="Input FASTA file", required=True)
     parser.add_argument("-o", "--output", default=".", help="Path to the output directory (Default: working directory) (used for MEME and generated files)")
-    parser.add_argument("-nmotifs", type=int, default=3, help="Number of motifs to find (Default = 3)")
+    parser.add_argument("-nmotifs", type=int, default=1, help="Number of motifs to find (Default = 1)")
     parser.add_argument("-minw", type=int, default=5, help="Minimum motif width (Default = 5)")
     parser.add_argument("-maxw", type=int, default=10, help="Maximum motif width (Default = 10)")
     parser.add_argument("--meme_extra", nargs="+", help="Additional MEME arguments (list format)")
@@ -319,8 +356,10 @@ def main():
     # Parse MEME output (assumes MEME XML output is stored in <output>/meme.xml).
     motifs = parse_meme_output(args.output)
     
-    create_motif_table(motifs, args.output)
-    create_pwm_matrix(motifs, args.output)
+    create_motif_table(motifs, args.output, os.path.join(args.output, "meme.xml"))
+    # create_motif_table(motifs, args.output)
+    # extract_motif_regex_from_meme_xml(os.path.join(args.output, "meme.xml"), args.output)
+    # create_pwm_matrix(motifs, args.output)
     consensus_motif(motifs, args.output)
 
 

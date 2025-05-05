@@ -45,7 +45,7 @@ def get_database_files(db_path: str, families: List[str], protein_type: Optional
         logging.info(f"Files in directory: {all_files}")
     except Exception as e:
         logging.error(f"Error listing directory {db_path}: {str(e)}")
-        return db_files
+        exit(1)  # Exit with error status instead of continuing
     
     # if "all" in families:  
     #     families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
@@ -61,11 +61,14 @@ def get_database_files(db_path: str, families: List[str], protein_type: Optional
                     logging.info(f"Found families in protein dir: {families}")
                 except Exception as e:
                     logging.error(f"Error listing protein directory {protein_dir}: {str(e)}")
+                    exit(1)  # Exit with error status instead of continuing
             else:
-                logging.warning(f"Protein directory not found: {protein_dir}")
-                # Fall back to regular pattern with protein type in path
-                families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
-                logging.info(f"Using base directory families: {families}")
+                logging.error(f"Protein directory not found: {protein_dir}")
+                exit(1)  # Exit with error status
+                # logging.warning(f"Protein directory not found: {protein_dir}")
+                # # Fall back to regular pattern with protein type in path
+                # families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
+                # logging.info(f"Using base directory families: {families}")
         else:
             families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
             logging.info(f"Using base directory families (no protein type): {families}")
@@ -80,7 +83,9 @@ def get_database_files(db_path: str, families: List[str], protein_type: Optional
         if os.path.exists(file_path):
             db_files.append(file_path)
         else:
-            logging.warning(f"Database file not found: {file_path}")
+            logging.error(f"Database file not found: {file_path}")
+            exit(1) 
+            # logging.warning(f"Database file not found: {file_path}")
 
     return db_files
 
