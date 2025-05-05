@@ -12,7 +12,7 @@ from Bio.ExPASy import ScanProsite
 from Bio import ExPASy
 import time
 import xml.etree.ElementTree as ET
-
+import shutil
 
 def determine_seq_type(fasta_file):
     """
@@ -206,6 +206,21 @@ def extract_motif_regex_from_meme_xml(xml_path: str, output_dir: str) -> pd.Data
 #                 writer.writerow(row)
 #         logging.info(f"PWM matrix for motif {motif.name} saved to: {matrix_file}")
 
+def move_eps_files(output_dir: str):
+    """
+    Moves all .eps files from the output directory to a subfolder named eps_files.
+    """
+    eps_dir = os.path.join(output_dir, "eps_files")
+    os.makedirs(eps_dir, exist_ok=True)
+
+    for file in os.listdir(output_dir):
+        if file.endswith(".eps"):
+            src = os.path.join(output_dir, file)
+            dst = os.path.join(eps_dir, file)
+            shutil.move(src, dst)
+    
+    logging.info(f"Moved eps files to {eps_dir}")
+
 def run_scanprosite(fasta_file, seq_type):
     """
     Scans each protein sequence in the input FASTA file using Biopython's ScanProsite.
@@ -361,6 +376,7 @@ def main():
     # extract_motif_regex_from_meme_xml(os.path.join(args.output, "meme.xml"), args.output)
     # create_pwm_matrix(motifs, args.output)
     consensus_motif(motifs, args.output)
+    move_eps_files(args.output)
 
 
     # Determine if ScanProsite will be used
