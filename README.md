@@ -187,7 +187,7 @@ Change the database directory and specify the database file name with `--db_fami
 cressent align \
        --threads 24 \
        -i /path/to/my_sequence.fa \
-       --db_family name_of_my_db.fa \
+       --db_family name_of_my_db \
        --db_path path/to/my/own/database \
        -o path/to/output/directory
 ```
@@ -429,21 +429,29 @@ cressent motif_disc \
 #### Outputs
 ```pgsql
 .
+├── ./eps_files
+│  # folder with sequence logos in eps format (meme output) for each discovered motif.
 ├── consensus_table.csv
 │  # table with the consensus motif sequences (id,consensus,length,occurrences)
-├── logo1.eps
-│  # sequence logo in eps format (meme output) for each discovered motif.
-├── MEME-1_pwm_matrix.csv
-│  # Position Weight Matrix (PWM) matrix for each discovered motif.
 ├── meme.html # meme output
 ├── meme.txt # meme output
 ├── meme.xml # meme output
 ├── motif_discovery.log
 │  # log file
 ├── motif_table.csv
-│  # table with all the motif sequences and attributes (length,motif_name,pvalue,sequence_id,sequence_name,start,end,strand)
+│  # table with all the motif sequences and attributes (sequence_name,motif_name,motif_id,motif_seq,matched,length,start,end,strand,regex)
 └── scanprosite_results.csv (if --scanprofile selected)
     # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name,prosite_ann)
+```
+
+motif_table.csv 
+```pgsql
+sequence_name	motif_name	motif_id	motif_seq	matched	length	start	end	strand	regex
+Cyclovirus_bat_USA_2009_Circoviridae	MEME-1	motif_1	YYGPSGTGKS	YWGPPGTGKS	10	164	174	+	[YIL]YGP[SGPT][GR]TGK[ST]
+Uncultured_marine_virus_clone_GOM03041_CRESS2	MEME-1	motif_1	YYGPSGTGKS	YCGPSGTGKS	10	160	170	+	[YIL]YGP[SGPT][GR]TGK[ST]
+Pacific_flying_fox_faeces_associated_circular_DNA_virus_4_isolat_Tbat_29894_CRESS2	MEME-1	motif_1	YYGPSGTGKS	IYGPPGTGKS	10	166	176	+	[YIL]YGP[SGPT][GR]TGK[ST]
+Lake_Sarah_associated_circular_virus_38_CRESS2	MEME-1	motif_1	YYGPSGTGKS	IYGPTGTGKS	10	170	180	+	[YIL]YGP[SGPT][GR]TGK[ST]
+Odonata_associated_circular_virus_12_isolat_OdasCV_12_US_1518LM1_12_CRESS_Rec1	MEME-1	motif_1	YYGPSGTGKS	FWGPTGTGKS	10	156	166	+	[YIL]YGP[SGPT][GR]TGK[ST]
 ```
 
 You can plot a gene map using the motif_table.csv as input
