@@ -111,7 +111,7 @@ def create_motif_table(motifs, output_dir, xml_path: str) -> pd.DataFrame:
             matched = str(instance)
             start = instance.start
             row = {
-                "sequence_name": instance.sequence_name,
+                "seqID": instance.sequence_name,
                 "motif_id": f"motif_{motif_idx}",
                 "motif_name": motif.alt_id,
                 "matched": matched,
@@ -131,7 +131,7 @@ def create_motif_table(motifs, output_dir, xml_path: str) -> pd.DataFrame:
 
     # Order columns
     column_order = [
-        "sequence_name", "motif_name", "motif_id", "motif_seq", "matched",
+        "seqID", "motif_name", "motif_id", "motif_seq", "matched",
         "length", "start", "end", "strand", "regex"
     ]
     merged_df = merged_df[column_order]
@@ -254,7 +254,7 @@ def run_scanprosite(fasta_file, seq_type):
                 df = pd.DataFrame(scan_results)
                 # Add columns to track which sequence produced the results.
                 df["record_id"] = record.id
-                df["sequence_name"] = record.description
+                df["seqID"] = record.description
                 all_dfs.append(df)
             except Exception as e:
                 logging.error(f"Error scanning sequence {record.id}: {e}")
