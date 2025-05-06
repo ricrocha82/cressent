@@ -111,7 +111,7 @@ def detect_sequence_type(fasta_file: str) -> str:
     """
     # Read first few sequences to determine type
     nuc_chars = set('ATGCNatgcn')
-    prot_chars = set('EFILPQefilpq')  # Amino acids not in nucleotide alphabet
+    prot_chars = set('ACDEFGHIKLMNPQRSTVWYBXZacdefghiklmnpqrstvwybxz') - nuc_chars # Amino acids not in nucleotide alphabet
     
     try:
         sequences = []
@@ -142,8 +142,8 @@ def detect_sequence_type(fasta_file: str) -> str:
             return 'nucl'
             
     except Exception as e:
-        logger.warning(f"Error detecting sequence type: {e}. Defaulting to nucleotide.")
-        return 'nucl'
+        logger.error(f"Error detecting sequence type: {e}")
+        raise RuntimeError(f"Failed to detect sequence type: {e}")
 
 def run_blast(query_file: str, db_file: str, output_file: str, 
               seq_type: str = 'nucl',

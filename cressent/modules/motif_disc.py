@@ -366,9 +366,11 @@ def main():
         meme_args = default_args
         logging.info(f"Using default MEME arguments: {meme_args}")
     
+    logging.info("Running MEME")
     run_meme(args.input_fasta, args.output, seq_type, meme_args)
     
     # Parse MEME output (assumes MEME XML output is stored in <output>/meme.xml).
+    logging.info("Parsing MEME outputs")
     motifs = parse_meme_output(args.output)
     
     create_motif_table(motifs, args.output, os.path.join(args.output, "meme.xml"))
@@ -386,6 +388,7 @@ def main():
         # Run ScanProsite and get the combined DataFrame.
         scan_df = run_scanprosite(args.input_fasta, seq_type)
         # Add the annotation column.
+        logging.info("Parsing ScanProsite outputs.")
         add_annotation_to_scanprosite_results(scan_df, args.output)
 
 
