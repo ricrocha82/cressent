@@ -66,7 +66,7 @@ def build_tree(input_fasta, output, bootstrap, threads, model, extra_args, keep_
 @click.option("--mafft_ep", type=float, default=0.123, help="Alignment length for MAFFT (default: 0.123)")
 @click.option("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
 @click.option("--db_family", help="List of family names for specific families or 'all' to use all the database")
-@click.option("--db_path", default="./db", help="Path to the database FASTA files (Default: ./db)")
+@click.option("--db_path", default="./DB", help="Path to the database FASTA files (Default: ./DB)")
 @click.option("--protein_type", type=click.Choice(['reps', 'caps']), help="Specify protein type (Rep or Cap) for database files")
 def align(threads, input_fasta, output, mafft_ep, gap_threshold, db_family, db_path, protein_type):
     """Pipeline for sequence alignment and trimming."""

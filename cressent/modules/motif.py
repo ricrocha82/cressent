@@ -145,8 +145,10 @@ def split_fasta(table_file, fasta_file, prefix_out):
     out2 = f"{prefix_out}_2.fasta"
     with open(out1, "w") as seq1_file:
         seq1_file.write("\n".join(seq1_fasta))
+        seq1_file.write("\n")
     with open(out2, "w") as seq2_file:
         seq2_file.write("\n".join(seq2_fasta))
+        seq2_file.write("\n")
     logging.info(f"Split sequences saved to: {out1} and {out2}")
     return out1, out2
 

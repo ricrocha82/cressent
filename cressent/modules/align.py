@@ -95,14 +95,23 @@ def merge_fasta_files(input_file: str, db_files: List[str], output_file: str) ->
         # First, copy input file
         if os.path.exists(input_file):
             with open(input_file, 'r') as in_f:
-                shutil.copyfileobj(in_f, out_f)
+                # shutil.copyfileobj(in_f, out_f)
+                content = in_f.read()
+                out_f.write(content)
+                if content and not content.endswith('\n'):
+                    out_f.write('\n')
+
             logging.info(f"Added sequences from {input_file}")
         
         # Then add database sequences
         for db_file in db_files:
             if os.path.exists(db_file):
                 with open(db_file, 'r') as in_f:
-                    shutil.copyfileobj(in_f, out_f)
+                    # shutil.copyfileobj(in_f, out_f)
+                    content = in_f.read()
+                    out_f.write(content)
+                    if content and not content.endswith('\n'):
+                        out_f.write('\n')
                 logging.info(f"Added sequences from {db_file}")
 
 def create_metadata_dataframe(fasta_file: str, family: str = "input", source: str = "input") -> pd.DataFrame:
@@ -229,7 +238,7 @@ def main():
     parser.add_argument("--mafft_ep", type=float, default=0.123, help="Alignment length for MAFFT (default: 0.123)")
     parser.add_argument("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
     parser.add_argument("--db_family", nargs='+', help="List of family names for specific families or 'all' to use all the database.")
-    parser.add_argument("--db_path", default="./db", help="Path to the database FASTA files (Default: ./db)")
+    parser.add_argument("--db_path", default="./DB", help="Path to the database FASTA files (Default: ./DB)")
     parser.add_argument("--protein_type", choices=['reps', 'caps'], help="Specify protein type (Rep or Cap) for database files")
     
     args = parser.parse_args()
@@ -244,7 +253,26 @@ def main():
         logging.error("Required dependencies (MAFFT, TrimAl) are missing. Exiting.")
         exit(1)
 
-    
+    # Check that if db_path is provided, db_family is also provided
+    if args.db_path and not args.db_family:
+        logging.error("Error: --db_path was specified but --db_family was not. Both must be provided together.")
+        print("Error: --db_path was specified but --db_family was not. Both must be provided together.")
+        exit(1)
+
+    # Check the other way around as well
+    if args.db_family and not args.db_path:
+        logging.error("Error: --db_family was specified but the default --db_path './db' does not exist.")
+        print("Error: --db_family was specified but the default --db_path './db' does not exist.")
+        print("Please specify a valid database path using --db_path.")
+        exit(1)
+
+    # If both are specified, check if db_path exists
+    if args.db_path and args.db_family:
+        if not os.path.exists(args.db_path):
+            logging.error(f"Error: Database path '{args.db_path}' does not exist.")
+            print(f"Error: Database path '{args.db_path}' does not exist.")
+            exit(1)
+
     # Set up input and output paths
     prefix = os.path.splitext(os.path.basename(args.input_fasta))[0]
     input_fasta = args.input_fasta
