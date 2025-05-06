@@ -441,26 +441,17 @@ cressent motif_disc \
 ├── motif_table.csv
 │  # table with all the motif sequences and attributes (sequence_name,motif_name,motif_id,motif_seq,matched,length,start,end,strand,regex)
 └── scanprosite_results.csv (if --scanprofile selected)
-    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,sequence_name,prosite_ann)
+    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,SeqID,prosite_ann)
 ```
 
 motif_table.csv 
 ```pgsql
-sequence_name	motif_name	motif_id	motif_seq	matched	length	start	end	strand	regex
+SeqID	motif_name	motif_id	motif_seq	matched	length	start	end	strand	regex
 Cyclovirus_bat_USA_2009_Circoviridae	MEME-1	motif_1	YYGPSGTGKS	YWGPPGTGKS	10	164	174	+	[YIL]YGP[SGPT][GR]TGK[ST]
 Uncultured_marine_virus_clone_GOM03041_CRESS2	MEME-1	motif_1	YYGPSGTGKS	YCGPSGTGKS	10	160	170	+	[YIL]YGP[SGPT][GR]TGK[ST]
 Pacific_flying_fox_faeces_associated_circular_DNA_virus_4_isolat_Tbat_29894_CRESS2	MEME-1	motif_1	YYGPSGTGKS	IYGPPGTGKS	10	166	176	+	[YIL]YGP[SGPT][GR]TGK[ST]
 Lake_Sarah_associated_circular_virus_38_CRESS2	MEME-1	motif_1	YYGPSGTGKS	IYGPTGTGKS	10	170	180	+	[YIL]YGP[SGPT][GR]TGK[ST]
 Odonata_associated_circular_virus_12_isolat_OdasCV_12_US_1518LM1_12_CRESS_Rec1	MEME-1	motif_1	YYGPSGTGKS	FWGPTGTGKS	10	156	166	+	[YIL]YGP[SGPT][GR]TGK[ST]
-```
-
-You can plot a gene map using the motif_table.csv as input
-```bash
-cressent gene_map \
-            -i ./motif_table.csv \
-            -o ./motif_disc/gene_map_motif.pdf \
-            --height 10 --width 10 \
-            -t "Motif Distribution in Genes"
 ```
 
 ## 4: make Sequence logo
@@ -495,6 +486,16 @@ cressent seq_logo \
     --split \
     --metadata /output/metadata.csv \
     --ncol 2 --group_label family
+
+# using the output from motif_disc
+cressent seq_logo \
+    seq_logo \
+      -tb output/motif_disc/motif_table.csv \
+      -o output/motif_disc \
+      --output_name logo_table_split_motif_disc.pdf \
+      --split \
+      --metadata output/metadata.csv \
+      --group_label motif_name --ncol 4
 ```
 
 ## 5: Putative Stem Loop and Iterons annotation

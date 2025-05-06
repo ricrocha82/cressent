@@ -7,6 +7,7 @@
 **/caps_model
 **/reps_model
 **/DB
+**/gene_map*
 
 # Distribution / packaging
 .Python
