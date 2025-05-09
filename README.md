@@ -192,6 +192,16 @@ cressent align \
        -o path/to/output/directory
 ```
 
+You can use a custom DB to align with your sequences. Ensured that when `custom` is specified in `--db_family`, the `--custom_aa` parameter is also provided (the fasta file path)
+```bash
+cressent align --threads 24 \
+      --input_fasta input_sequences.fa \
+      --db_family custom \
+      --custom_aa outdir/split_sequences_1.fasta \
+      -o output_dir
+
+```
+
 ##### Alignment Outputs
 The alignment output directory (`output/`) will include:
 ```pgsql
