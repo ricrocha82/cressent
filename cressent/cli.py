@@ -68,7 +68,8 @@ def build_tree(input_fasta, output, bootstrap, threads, model, extra_args, keep_
 @click.option("--db_family", help="List of family names for specific families or 'all' to use all the database")
 @click.option("--db_path", default="./DB", help="Path to the database FASTA files (Default: ./DB)")
 @click.option("--protein_type", type=click.Choice(['reps', 'caps']), help="Specify protein type (Rep or Cap) for database files")
-def align(threads, input_fasta, output, mafft_ep, gap_threshold, db_family, db_path, protein_type):
+@click.option("--custom_aa", help="Path to custom AA fasta file for alignment")
+def align(threads, input_fasta, output, mafft_ep, gap_threshold, db_family, db_path, protein_type, custom_aa):
     """Pipeline for sequence alignment and trimming."""
     try:
         from cressent.modules.align import main as align_main
@@ -93,6 +94,8 @@ def align(threads, input_fasta, output, mafft_ep, gap_threshold, db_family, db_p
             sys.argv.extend(['--db_path', db_path])
         if protein_type:
             sys.argv.extend(['--protein_type', protein_type])
+        if custom_aa:
+            sys.argv.extend(['--custom_aa', custom_aa])
         align_main()
     except Exception as e:
         click.echo(f"Error running align module: {e}", err=True)

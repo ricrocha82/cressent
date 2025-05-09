@@ -32,7 +32,7 @@ def run_command(command: str, error_message: str) -> None:
         logging.error(f"{error_message}: {e}")
         exit(1)
 
-def get_database_files(db_path: str, families: List[str], protein_type: Optional[str] = None) -> List[str]:
+def get_database_files(db_path: str, families: List[str], protein_type: Optional[str] = None, custom_aa: Optional[str] = None) -> List[str]:
     """Get relevant database files based on family names and protein type."""
     db_files = []
 
@@ -49,6 +49,24 @@ def get_database_files(db_path: str, families: List[str], protein_type: Optional
     
     # if "all" in families:  
     #     families = [f.split(".")[0] for f in os.listdir(db_path) if f.endswith(".fa") and f != "all.fa"]
+
+    # Handle custom AA database if specified
+    if "custom" in families and custom_aa:
+        logging.info(f"Using custom AA database: {custom_aa}")
+        if os.path.exists(custom_aa):
+            db_files.append(custom_aa)
+            logging.info(f"Added custom database file: {custom_aa}")
+            return db_files
+        else:
+            logging.error(f"Custom AA database file not found: {custom_aa}")
+            exit(1)
+    
+    try:
+        all_files = os.listdir(db_path)
+        logging.info(f"Files in directory: {all_files}")
+    except Exception as e:
+        logging.error(f"Error listing directory {db_path}: {str(e)}")
+        exit(1)  # Exit with error status instead of continuing
 
     if "all" in families:
         if protein_type:
@@ -240,6 +258,7 @@ def main():
     parser.add_argument("--db_family", nargs='+', help="List of family names for specific families or 'all' to use all the database.")
     parser.add_argument("--db_path", default="./DB", help="Path to the database FASTA files (Default: ./DB)")
     parser.add_argument("--protein_type", choices=['reps', 'caps'], help="Specify protein type (Rep or Cap) for database files")
+    parser.add_argument("--custom_aa", help="Path to custom AA fasta file for alignment")
     
     args = parser.parse_args()
     
@@ -259,15 +278,22 @@ def main():
         print("Error: --db_path was specified but --db_family was not. Both must be provided together.")
         exit(1)
 
-    # Check the other way around as well
-    if args.db_family and not args.db_path:
+    # Check if custom is specified but custom_aa is not provided
+    if args.db_family and "custom" in args.db_family and not args.custom_aa:
+        logging.error("Error: 'custom' specified in --db_family but --custom_aa was not provided.")
+        print("Error: 'custom' specified in --db_family but --custom_aa was not provided.")
+        print("Please specify a custom AA file using --custom_aa.")
+        exit(1)
+
+    # Check if db_family is provided without db_path (except for 'custom' case)
+    if args.db_family and not args.db_path and not ("custom" in args.db_family and args.custom_aa):
         logging.error("Error: --db_family was specified but the default --db_path './db' does not exist.")
         print("Error: --db_family was specified but the default --db_path './db' does not exist.")
         print("Please specify a valid database path using --db_path.")
         exit(1)
 
-    # If both are specified, check if db_path exists
-    if args.db_path and args.db_family:
+    # If both are specified, check if db_path exists (except for 'custom' case)
+    if args.db_path and args.db_family and not ("custom" in args.db_family and len(args.db_family) == 1):
         if not os.path.exists(args.db_path):
             logging.error(f"Error: Database path '{args.db_path}' does not exist.")
             print(f"Error: Database path '{args.db_path}' does not exist.")
@@ -284,7 +310,7 @@ def main():
     db_files = []
     # Handle database integration if requested
     if args.db_family:
-        db_files = get_database_files(args.db_path, args.db_family, args.protein_type)
+        db_files = get_database_files(args.db_path, args.db_family, args.protein_type, args.custom_aa)
         
         # Generate metadata for database sequences separately
         save_metadata(args.input_fasta, db_files, args.output)
