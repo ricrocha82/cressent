@@ -256,7 +256,7 @@ def main():
     parser.add_argument("--mafft_ep", type=float, default=0.123, help="Alignment length for MAFFT (default: 0.123)")
     parser.add_argument("--gap_threshold", type=float, default=0.2, help="Gap threshold for TrimAl (default: 0.2)")
     parser.add_argument("--db_family", nargs='+', help="List of family names for specific families, 'all' to use all the database, or 'custom' to use a custom AA file")
-    parser.add_argument("--db_path", default="./DB", help="Path to the database FASTA files (Default: ./DB)")
+    parser.add_argument("--db_path", help="Path to the database FASTA files")
     parser.add_argument("--protein_type", choices=['reps', 'caps'], help="Specify protein type (Rep or Cap) for database files")
     parser.add_argument("--custom_aa", help="Path to custom AA fasta file for alignment")
     
@@ -306,7 +306,7 @@ def main():
     # Generate metadata only for the input file first
     save_metadata(args.input_fasta, [], args.output)  # No database sequences yet
     
-     # Handle database integration if requested
+    # Handle database integration if requested
     db_files = []
     # Handle database integration if requested
     if args.db_family:

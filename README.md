@@ -198,7 +198,7 @@ cressent align --threads 24 \
       --input_fasta input_sequences.fa \
       --db_family custom \
       --custom_aa outdir/split_sequences_1.fasta \
-      -o output_dir
+      -o path/to/output/directory
 
 ```
 
