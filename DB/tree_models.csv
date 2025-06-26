@@ -12,7 +12,7 @@ Draupnirviridae,Blosum62+R6,rtREV+F+R3
 Finnlakeviridae,none,none
 Gandrviridae,LG+G4,rtREV+F+I+G4
 Geminiviridae,VT+G4,LG+G4
-Genomoviridae,VT+F+R10,
+Genomoviridae,VT+F+R10,Q.pfam+F+R10
 Inoviridae,VT+F+R8,none+F30
 Kirkoviridae,LG+I+G4,none
 Metaxyviridae,none,none

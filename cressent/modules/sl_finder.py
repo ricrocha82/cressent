@@ -281,7 +281,7 @@ def main():
                                'cycloviridae', 'circoviridae', 'general'])
     parser.add_argument("--idealstemlen", "-s", help="Ideal stem length (default = 11)", 
                        type=int, default=11)
-    parser.add_argument("--ideallooplen", "-l", help="Ideal loop length (default = 11)" 
+    parser.add_argument("--ideallooplen", "-l", help="Ideal loop length (default = 11)", 
                        type=int, default=11)
     parser.add_argument("--frame", "-f", help="Bases around motif for folding (default = 15)", 
                        type=int, default=15)

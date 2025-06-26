@@ -45,6 +45,8 @@ def sanitize_sequence_names(input_fasta, sanitized_fasta, name_table_file, keep_
             temp_string = re.sub(r'[^a-zA-Z0-9_]', '_', original_id)
             # Then replace multiple consecutive underscores with a single underscore
             sanitized_id = re.sub(r'_+', '_', temp_string)
+            # Remove leading/trailing underscores
+            sanitized_id = sanitized_id.strip('_')
         
         # Handle duplicate sanitized IDs
         if sanitized_id in id_map:

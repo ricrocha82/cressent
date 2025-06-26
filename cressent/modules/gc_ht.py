@@ -91,7 +91,7 @@ def plot_gc_heatmap(input_fasta, output_dir=".", window_size=30, step_size=5,
                 cbar_kws=dict(use_gridspec=False, location="bottom"))  # Legend at the bottom
 
     # Customize plot
-    ax.set_xlabel("Genomic Position (bp)")
+    ax.set_xlabel("Genomic Window")
     ax.set_ylabel("Sequences")
 
     # Add right-side GC content summary

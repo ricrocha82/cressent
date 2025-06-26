@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
   library(tidyr)
   library(ape)
   library(rlang)
+  library(Biostrings)
 })
 
 # --- Parse command-line arguments using commandArgs() ---
@@ -80,17 +81,58 @@ if (!is.null(opt$dist_matrix)) {
   tree <- read.tree(opt$tree)
 }
 
+# --- Harmonize alignment names if alignment is provided ---
+# --- Helper function to sanitize names (same logic as used elsewhere) ---
+sanitize_name <- function(name) {
+  # Replace spaces with underscores and remove problematic characters
+  sanitized <- gsub(" ", "_", name)
+  sanitized <- gsub("[^a-zA-Z0-9_]", "_", sanitized)
+  sanitized <- gsub("_+", "_", sanitized)
+  sanitized <- gsub("^_+|_+$", "", sanitized)
+  return(sanitized)
+}
+
+harmonized_alignment <- opt$alignment
+if (!is.null(opt$alignment)) {
+  tree_tips <- tree$tip.label
+  
+  # Read alignment to check for name mismatches
+  sequences <- readAAStringSet(opt$alignment)
+  alignment_names <- names(sequences)
+  
+  # Check if names match between tree and alignment
+  exact_matches <- sum(alignment_names %in% tree_tips)
+  total_tree_tips <- length(tree_tips)
+  total_alignment_seqs <- length(alignment_names)
+  
+  message("Checking alignment-tree name compatibility...")
+  message("Tree tips: ", total_tree_tips, ", Alignment sequences: ", total_alignment_seqs)
+  message("Exact matches: ", exact_matches)
+  
+  # Automatically harmonize if there are mismatches but potential for improvement
+  if (exact_matches < total_tree_tips || exact_matches < total_alignment_seqs) {
+    message("Name mismatch detected between tree and alignment. Attempting harmonization...")
+    names(sequences) <- sanitize_name(alignment_names)
+    # Create a temporary harmonized alignment file
+    temp_alignment_file <- tempfile(pattern = "harmonized_alignment_", fileext = ".fasta")
+    writeXStringSet(sequences, temp_alignment_file)
+    harmonized_alignment = temp_alignment_file
+  } else {
+    message("All names match perfectly. No harmonization needed.")
+  }
+}
+
 # --- Merge tree with metadata if provided ---
 if (!is.null(opt$metadata_2)) {
     # Both metadata files are provided.
     meta_data_1 <- read.csv(opt$metadata_1)
     meta_data_2 <- read.delim(opt$metadata_2, sep="\t")
     
-    meta_data_2 <- meta_data_2 %>% rename(protein_description = Original_Name)
+    meta_data_2 <- meta_data_2 %>% dplyr::rename(protein_description = Original_Name)
     
     # Merge using protein_description as key, then rename the join column to "label"
     meta_final <- left_join(meta_data_2, meta_data_1, by = "protein_description") %>%
-                  rename(label = Sanitized_Name)
+                  dplyr::rename(label = Sanitized_Name)
     trda <- tree %>% left_join(meta_final, by = "label")
     
   } else if (!is.null(opt$metadata_1)) {
@@ -166,9 +208,17 @@ if (layout %in% c("circular", "unrooted")) {
 }
 
 # --- Add alignment plot if alignment file is provided ---
-if (!is.null(opt$alignment)) {
+# --- Add alignment plot if alignment file is provided ---
+if (!is.null(harmonized_alignment)) {
+  message("Adding alignment plot using: ", harmonized_alignment)
+  p <- msaplot(p, fasta = harmonized_alignment) + theme(legend.position = "none")
+}else{
   p <- msaplot(p, fasta = opt$alignment) + theme(legend.position = "none")
 }
+
+# if (!is.null(opt$alignment)) {
+#   p <- msaplot(p, fasta = opt$alignment) + theme(legend.position = "none")
+# }
 
 # --- Optionally color the tree if --color is TRUE and metadata is provided ---
 if (opt$color && !is.null(opt$metadata_1) && !is.null(opt$metadata_2)) {

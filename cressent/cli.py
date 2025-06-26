@@ -31,7 +31,7 @@ def cli():
 @click.option("-B", "--bootstrap", default=1000, type=int, help="Number of bootstrap iterations (default: 1000)")
 @click.option("-t", "--threads", default="AUTO", help="Number of threads to use (default: AUTO)")
 @click.option("-m", "--model", default="MFP", help="Substitution models (default: MFP - ModelFinder)")
-@click.option("--keep_names", is_flag=True, help="Keep only first word of sequence IDs")
+@click.option("--keep_names", is_flag=True, help="Keep only the first word of sequence IDs, otherwise it replaces space with _")
 @click.option("--extra_args", multiple=True, help="Extra arguments to pass directly to IQ-TREE (can be specified multiple times)")
 def build_tree(input_fasta, output, bootstrap, threads, model, extra_args, keep_names):
     """Build phylogenetic tree using IQ-TREE."""
@@ -109,7 +109,8 @@ def align(threads, input_fasta, output, mafft_ep, gap_threshold, db_family, db_p
 @click.option("--min_ani", type=float, default=95.0, help="Minimum average identity for clustering (Default = 95.0)")
 @click.option("--min_tcov", type=float, default=85.0, help="Minimum target coverage (Default = 85.0)")
 @click.option("--min_qcov", type=float, default=0.0, help="Minimum query coverage (Default = 0.0)")
-def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov):
+@click.option("--keep_names", is_flag=True, help="Keep only the first word of sequence IDs, otherwise replaces space with _")
+def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov, keep_names):
     """Sequence clustering using BLAST, anicalc, and aniclust."""
     try:
         from cressent.modules.cluster import main as cluster_main
@@ -126,6 +127,8 @@ def cluster(input_fasta, output, threads, min_ani, min_tcov, min_qcov):
             sys.argv.extend(['--min_tcov', str(min_tcov)])
         if min_qcov:
             sys.argv.extend(['--min_qcov', str(min_qcov)])
+        if keep_names:
+            sys.argv.append('--keep_names')
         cluster_main()
     except Exception as e:
         click.echo(f"Error running cluster module: {e}", err=True)
@@ -381,7 +384,7 @@ def seq_logo(input_fasta, seq_df, output, output_name, plot_title, width, height
         from cressent.modules.seq_logo import main as seq_logo_main
         sys.argv = [sys.argv[0]]
         if input_fasta:
-            sys.argv.extend(['-i', fasta])
+            sys.argv.extend(['-i', input_fasta])
         if seq_df:
             sys.argv.extend(['-tb', seq_df])
         if output:

@@ -70,6 +70,8 @@ def preprocess_fasta(input_fasta, output_fasta, keep_names=False):
             temp_string = re.sub(r'[^a-zA-Z0-9_]', '_', original_id)
             # Then replace multiple consecutive underscores with a single underscore
             sanitized_id = re.sub(r'_+', '_', temp_string)
+            # Remove leading/trailing underscores
+            sanitized_id = sanitized_id.strip('_')
         
         # Handle duplicate IDs
         if sanitized_id in id_map:
@@ -167,7 +169,10 @@ def cluster_sequences(input_fasta, output_dir, threads=32, min_ani=95.0, min_tco
         logging.info("Starting sequence clustering pipeline")
         
         # Define file paths
-        cleaned_fasta = output_dir / f"renamed_{Path(input_fasta).name}"
+        if keep_names:
+            cleaned_fasta = output_dir / f"{Path(input_fasta).name}"
+        else:
+            cleaned_fasta = output_dir / f"renamed_{Path(input_fasta).name}"
         db_path = temp_dir / "blast_db"
         blast_output = output_dir / "blast_results.tsv"
         ani_output = output_dir / "ani_results.tsv"
