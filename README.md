@@ -222,7 +222,7 @@ seq3,description_seq3,Family_A,scientific_name3,protein_name3,my_seqs
 ```
 
 ### b) Phylogenetic Tree Construction
-Use the (trimmed) alignment file to build the phylogenetic tree:
+Use the (trimmed) alignment file to build the phylogenetic tree. We pre-computed all the protein DBs to find the best model for each family. The goal is to speed up the tree construction step using IQ-TREE. You can find all the models [here](DB/tree_models.csv).
 
 ```bash
 cressent build_tree \
@@ -347,6 +347,8 @@ The additional --split flag instructs the module to:
      - The part before the motif.
      - The part from the motif onward.
 - Write the split sequences to two FASTA files (named with a _1.fasta and _2.fasta suffix) in the specified output directory.
+
+You can find regex of the WalkerA [here](DB/walkerA_motif_regex.csv).
 
 ```bash
 # 1. Basic motif finding:
