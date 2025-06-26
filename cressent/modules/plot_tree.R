@@ -212,7 +212,9 @@ if (layout %in% c("circular", "unrooted")) {
 if (!is.null(harmonized_alignment)) {
   message("Adding alignment plot using: ", harmonized_alignment)
   p <- msaplot(p, fasta = harmonized_alignment) + theme(legend.position = "none")
-}else{
+}
+
+if (!is.null(opt$alignment) && is.null(harmonized_alignment)) {
   p <- msaplot(p, fasta = opt$alignment) + theme(legend.position = "none")
 }
 
