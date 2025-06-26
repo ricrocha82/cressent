@@ -275,8 +275,8 @@ A plotting module (using [ggtree](https://yulab-smu.top/treedata-book/)) is avai
  - branch_length: if `none` draw cladogram
  - open_angle only for `fan` layout
  - offset: tiplab offset, horizontal adjustment to nudge tip labels, defaults to 0.14
- - tip_label: name of the color group (default is `family` which is based on the [build_tree](https://github.com/ricrocha82/cressent/blob/main/cressent_core/modules/build_tree.py) module metadata)
- - fig_width and fig_height are based on [ggsave](https://ggplot2.tidyverse.org/reference/ggsave.html) function in R
+ - tip_label: name of the color group (default is `family` which is based on the [build_tree](https://github.com/ricrocha82/cressent/blob/main/cressent_core/modules/build_tree.py) module metadata).
+ - fig_width and fig_height are based on [ggsave](https://ggplot2.tidyverse.org/reference/ggsave.html) function in R.
 
 
 ```bash
@@ -320,7 +320,7 @@ cressent plot_tree \
 
 ### d) Plotting a Tanglegram (or “cophylo plot”) 
 
-The module calculates the [Robinson-Foulds distance](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-07011-0) (RF score)
+The module calculates the [Robinson-Foulds distance](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-07011-0) (RF score).
 
 ```bash
 cressent tanglegram \
@@ -348,7 +348,7 @@ The additional --split flag instructs the module to:
      - The part from the motif onward.
 - Write the split sequences to two FASTA files (named with a _1.fasta and _2.fasta suffix) in the specified output directory.
 
-You can find regex of the WalkerA [here](DB/walkerA_motif_regex.csv).
+You can find regex of the WalkerA motif [here](DB/walkerA_motif_regex.csv).
 
 ```bash
 # 1. Basic motif finding:
