@@ -93,10 +93,16 @@ def consensus_motif(motifs, output_dir):
         writer = csv.writer(f)
         # Write header row
         writer.writerow(["id","consensus", "length", "occurrences"])
-        # Write motif data
-        for motif in motifs:
-            # Assuming each motif object has attributes 'consensus', 'length', and 'num_occurrences'
-            writer.writerow([motif.alt_id, motif.consensus, motif.length, motif.num_occurrences])
+        
+        # Check if motifs is empty
+        if not motifs or len(list(motifs)) == 0:
+            logging.warning("No motifs found. Creating empty consensus table.")
+        else:
+            # Write motif data
+            for motif in motifs:
+                # Assuming each motif object has attributes 'consensus', 'length', and 'num_occurrences'
+                writer.writerow([motif.alt_id, motif.consensus, motif.length, motif.num_occurrences])
+    
     logging.info(f"Consensus table saved to: {csv_file}")
 
 
@@ -105,6 +111,22 @@ def create_motif_table(motifs, output_dir, xml_path: str) -> pd.DataFrame:
     Create a detailed motif match table including sequence name, motif info, and matched region.
     """
     rows = []
+
+    # Check if motifs is empty or has no motifs
+    if not motifs or len(list(motifs)) == 0:
+        logging.warning("No motifs found. Creating empty motif table.")
+        # Create empty DataFrame with expected columns
+        empty_df = pd.DataFrame(columns=[
+            "seqID", "motif_name", "motif_id", "motif_seq", "matched",
+            "length", "start", "end", "strand", "regex"
+        ])
+        
+        # Save empty output
+        output_path = os.path.join(output_dir, "motif_table.csv")
+        empty_df.to_csv(output_path, sep='\t', index=False)
+        logging.info(f"Empty motif table saved to: {output_path}")
+        
+        return empty_df
 
     for motif_idx, motif in enumerate(motifs, start=1):
         for instance in motif.alignment.sequences:
@@ -124,6 +146,20 @@ def create_motif_table(motifs, output_dir, xml_path: str) -> pd.DataFrame:
 
     # Now convert to DataFrame
     df = pd.DataFrame(rows)
+
+    # Check if df is empty (shouldn't happen if motifs exist, but safety check)
+    if df.empty:
+        logging.warning("No motif instances found. Creating empty motif table.")
+        empty_df = pd.DataFrame(columns=[
+            "seqID", "motif_name", "motif_id", "motif_seq", "matched",
+            "length", "start", "end", "strand", "regex"
+        ])
+        
+        output_path = os.path.join(output_dir, "motif_table.csv")
+        empty_df.to_csv(output_path, sep='\t', index=False)
+        logging.info(f"Empty motif table saved to: {output_path}")
+        
+        return empty_df
 
     # Load motif regex from MEME XML and merge by motif_id
     regex_df = extract_motif_regex_from_meme_xml(xml_path, output_dir)
@@ -163,21 +199,31 @@ def extract_motif_regex_from_meme_xml(xml_path: str, output_dir: str) -> pd.Data
     motifs_section = root.find("motifs")
     data = []
 
-    for motif in motifs_section.findall("motif"):
-        motif_id = motif.get("id")
-        motif_seq = motif.get("name")
-        regex_elem = motif.find("regular_expression")
-        regex = regex_elem.text.strip() if regex_elem is not None else None
-        data.append({
-            "motif_id": motif_id,
-            "motif_seq": motif_seq,
-            "regex": regex
-        })
+    if motifs_section is not None:
+        for motif in motifs_section.findall("motif"):
+            motif_id = motif.get("id")
+            motif_seq = motif.get("name")
+            regex_elem = motif.find("regular_expression")
+            regex = regex_elem.text.strip() if regex_elem is not None else None
+            data.append({
+                "motif_id": motif_id,
+                "motif_seq": motif_seq,
+                "regex": regex
+            })
+    else:
+        logging.warning("No motifs section found in MEME XML file.")
 
     df = pd.DataFrame(data)
     # path = os.path.join(output_dir, "motif_regex.csv")
     # df.to_csv(path, sep='\t', index=False)
     # logging.info(f"Motif regex saved to: {path}")
+
+    # If no motifs found, create empty DataFrame with expected columns
+    if df.empty:
+        df = pd.DataFrame(columns=["motif_id", "motif_seq", "regex"])
+        logging.warning("No motif regex data found. Creating empty regex DataFrame.")
+    
+    return df
 
     return df
 

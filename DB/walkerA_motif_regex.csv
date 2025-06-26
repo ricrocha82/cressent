@@ -1,0 +1,28 @@
+﻿Family,Walker_regex,start,length,note
+Adamaviridae,G[AP][APST][GR][AISTV]GK[DST][HKRY][AKLS][AV][ERS],177,12,
+Alphapleolipovirus,.{5}GK[TS].{4},,12,only 3 seqs
+Alphasatellitidae,[PS][DEHNQT]G[GN]EGK[ST][QT][FW]A[KR],187,12,
+Amesuviridae,[EP][IR]GG[AS]GKS[ST]FA[KR],202,12,only 2 seqs
+Anelloviridae,{5}GK[TS].{3},,12,only 4 bad alignment
+Anicreviridae,[ACEGLQS][EKLQRTVY]G[GN][KMNT]GK[ST][FWY][FILM][ACST][KN],209,12,
+Bacilladnaviridae,GA[AG]GTGK[ST]T[LMT][ACV][HMQR],311,12,
+Circoviridae ,[DEGS][AEKP][AEKPQT][AG][ACEIKLSTV]GK[ST][FHKRSTY][ACFLTWY][ACISV][AHKLNQR],194,12,
+Draupnirviridae,G[AEKP][ST]G[ACSTV]GK[ST][HKR][AEKLMTWY][AV][AFHKQRSY],168,12,
+Gandrviridae,[EFKLV][AILRTV]GN[NQST]GK[ST]W[FY][AC][DHRT],206,12,
+Geminiviridae,G[DEP][ST]RTGKT[MT]WAR,225,12,bad alignment
+Genomoviridae,G[ADEGP][ST][LQR][LMT]GKT[LSTV]WAR,216,12,
+Inoviridae,,,12,phage
+Kirkoviridae,G[EP][APT][GR][KSTV]GK[ST][KMRT][AFLVW][AS][LR],183,12,
+Microviridae,,,12,phage
+Nanoviridae,[PS][DKNQ]G[GN]EGK[ST][CST][FY]A[KR],192,12,
+Naryaviridae,G[ADEKP][ST]G[CISV]GK[ST][EKNQRY][KMNW][AV][FKLY],185,12,
+Nenyaviridae,G[DKP][AKP]G[CLT]GK[ST][AGR][FILS][AFV][ERY],169,12,
+Ouroboviridae,[EPR][ADENQV]G[GN][AKNST]GK[ST][FWY][FL][CIQSTV][KQR],201,12,
+Parvoviridae,[DEKP][AST][GS][ILMVY]GKT[ANQS][FWY]A[KLM][AS],275,12,linear genome
+Paulinoviridae,.{5}GK[TS].{4},,12,only two seqs
+Pecoviridae,G[AGKPQR][AS]G[ASTV]GK[ST][HWY][AHNR]C[AFNSWY],189,12,
+Plectroviridae,.{5}GK[TS].{4},,12,only two seqs
+Redondoviridae,G[AEKNP]TG[EST]GKT[KR][KMT][AT][ILTV],186,12,
+Smacoviridae,[EHKPRST][DEKRSTV]G[GN][AHIKRSTV]GK[ST][FTWY][FL][ACST][GKR],145,12,
+Tolecusatellitidae,.{5}GK[TS].{4},,12,only 4 seqs
+Vilyaviridae,G[ADENPS][ST]G[AGMST]GKS[HRWY][FRWY][AV][AFHKNQRY],179,12,

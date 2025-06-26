@@ -170,6 +170,24 @@ def motif_disc(input_fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite
         click.echo(f"Error running motif_disc module: {e}", err=True)
         sys.exit(1)
 
+# Scanprosite gene map vix
+@cli.command(name="scanprosite_map_viz")
+@click.option("-f","--file", help="Input file from scanprosite", required=True)
+@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory) (used for MEME and generated files)")
+def motif(file, output):
+    """Module to plot ScanProsite results"""
+    try:
+        from cressent.modules.scanprosite_map_viz import main as scanprosite_map_viz_main
+        sys.argv = [sys.argv[0]]
+        if file:
+            sys.argv.extend(['--file', file])
+        if output:
+            sys.argv.extend(['--output', output])
+            scanprosite_map_viz_main()
+    except Exception as e:
+        click.echo(f"Error running scanprosite_map_viz_main module: {e}", err=True)
+        sys.exit(1)
+
 # Motif module
 @cli.command(name="motif")
 @click.option("-i", "--input_fasta", required=True, help="Input FASTA file with sequences.")

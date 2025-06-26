@@ -416,6 +416,8 @@ It is optional to use [ScanProsite](https://pubmed.ncbi.nlm.nih.gov/16845026/) t
 - `--meme_extra`: Additional MEME arguments provided as key-value pairs. This allows users to pass extra options to MEME without modifying the code (optional).
 - `--scanprosite`: Run both MEME and ScanProsite
 
+Running `--scanprosite` allows you to produce 4 figures (detailed_genome_map, genome_map_linear, motif_density, and motif_heatmapo) with `scanprosite_map_viz` module. It allows you to analyse and explore even further the __de novo__ motif dicovery module outputs.
+
 ```bash
 # basic
 cressent motif_disc -i <input_fasta_file> -o <output_directory> [-nmotifs N] [-minw MINW] [-maxw MAXW] [--meme_extra KEY VALUE ...] --scanprofite
@@ -434,6 +436,10 @@ cressent motif_disc \
             -nmotifs 5 -minw 6 -maxw 50 \
             --meme_extra "-mod zoops -evt 0.05" \
             --scanprosite
+
+cressent scanprosite_map_viz \
+                -f scanprosite_results.csv \
+                -o motif_disc
 ```
 
 #### Outputs
@@ -450,8 +456,13 @@ cressent motif_disc \
 │  # log file
 ├── motif_table.csv
 │  # table with all the motif sequences and attributes (sequence_name,motif_name,motif_id,motif_seq,matched,length,start,end,strand,regex)
-└── scanprosite_results.csv (if --scanprofile selected)
-    # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,SeqID,prosite_ann)
+├── scanprosite_results.csv (if --scanprofile selected)
+│  # ScanProsite table (sequence_ac,start,stop,signature_ac,score,level,sequence_id,SeqID,prosite_ann)
+├── detailed_genome_map.png (if --scanprofile selected)
+├── genome_map_linear.png (if --scanprofile selected)
+├── motif_density.png (if --scanprofile selected)
+└── motif_heatmap.png (if --scanprofile selected)
+
 ```
 
 motif_table.csv 
@@ -462,6 +473,15 @@ Uncultured_marine_virus_clone_GOM03041_CRESS2	MEME-1	motif_1	YYGPSGTGKS	YCGPSGTG
 Pacific_flying_fox_faeces_associated_circular_DNA_virus_4_isolat_Tbat_29894_CRESS2	MEME-1	motif_1	YYGPSGTGKS	IYGPPGTGKS	10	166	176	+	[YIL]YGP[SGPT][GR]TGK[ST]
 Lake_Sarah_associated_circular_virus_38_CRESS2	MEME-1	motif_1	YYGPSGTGKS	IYGPTGTGKS	10	170	180	+	[YIL]YGP[SGPT][GR]TGK[ST]
 Odonata_associated_circular_virus_12_isolat_OdasCV_12_US_1518LM1_12_CRESS_Rec1	MEME-1	motif_1	YYGPSGTGKS	FWGPTGTGKS	10	156	166	+	[YIL]YGP[SGPT][GR]TGK[ST]
+```
+
+scanprosite_results.csv
+```pgsql
+sequence_ac	start	stop	signature_ac	record_id	seqID	prosite_ann
+XQD68805-1	1	4	PS00009	XQD68805.1	XQD68805.1 |capsid protein [Naryaviridae sp.]	Amidation site.
+XQD68805-1	8	10	PS00005	XQD68805.1	XQD68805.1 |capsid protein [Naryaviridae sp.]	Protein kinase C phosphorylation site.
+XQD68805-1	11	13	PS00005	XQD68805.1	XQD68805.1 |capsid protein [Naryaviridae sp.]	Protein kinase C phosphorylation site.
+XQD68805-1	13	16	PS00004	XQD68805.1	XQD68805.1 |capsid protein [Naryaviridae sp.]	cAMP- and cGMP-dependent protein kinase phosphorylation site.
 ```
 
 ## 4: make Sequence logo
