@@ -489,16 +489,19 @@ XQD68805-1	13	16	PS00004	XQD68805.1	XQD68805.1 |capsid protein [Naryaviridae sp.
 ## 4: make Sequence logo
 This module generates sequence logos from FASTA files or motif detection tables. It supports splitting the figure by a metadata column and automatically detects protein vs. nucleotide sequences. A log file (`seq_logo.log`) is automatically created in the output directory.
 
-- -tb pattern_positions.txt: Input motif table (e.g., from seqkit locate).
-- -o output_dir: Output directory for the generated logo.
-- --output_name logo.pdf: Name of the output sequence logo.
-- --split: Enables splitting based on a metadata column.
-- --metadata: Metadata file (must contain protein_id and group labels). From the aligment module.
-- --ncol 2: Number of columns in the split figure.
-- --group_label: Column name in metadata.csv for grouping. for example `family`
-- --positions_per_row: Number of positions per row when creating multi-row plots (default: 50).
-- --max_positions_single_row: Maximum number of positions before automatically splitting into multiple rows (default: 100)
-- --method: Method for ggseqlogo: 'bits' for information content or 'prob' for probability (default: prob)
+- `-i`: Input fasta file
+- `-tb` (e.g., pattern_positions.txt): Input motif table (e.g., from seqkit locate).
+- `-o` output_dir: Output directory for the generated logo.
+- `--output_name` logo.pdf: Name of the output sequence logo.
+- `--split`: Enables splitting based on a metadata column.
+- `--metadata`: Metadata file (must contain protein_id and group labels). From the aligment module.
+- `--ncol` 2: Number of columns in the split figure.
+- `--group_label`: Column name in metadata.csv for grouping. for example `family`
+- `--plot_title`: Title for the plot
+- `--height` and `--width`: plot size
+- `--positions_per_row`: Number of positions per row when creating multi-row plots (default: 50).
+- `--max_positions_single_row`: Maximum number of positions before automatically splitting into multiple rows (default: 100)
+- `--method`: Method for ggseqlogo: 'bits' for information content or 'prob' for probability (default: prob)
 
 ```bash
 # Basic Sequence Logo Generation using the output of the MOTIF module
