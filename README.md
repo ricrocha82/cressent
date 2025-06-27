@@ -439,7 +439,7 @@ cressent motif_disc \
             --meme_extra "-mod zoops -evt 0.05" \
             --scanprosite
 
-cressent scanprosite_map_viz \
+cressent motif_map_viz \
                 -f scanprosite_results.csv \
                 -o motif_disc
 ```
@@ -496,6 +496,9 @@ This module generates sequence logos from FASTA files or motif detection tables.
 - --metadata: Metadata file (must contain protein_id and group labels). From the aligment module.
 - --ncol 2: Number of columns in the split figure.
 - --group_label: Column name in metadata.csv for grouping. for example `family`
+- --positions_per_row: Number of positions per row when creating multi-row plots (default: 50).
+- --max_positions_single_row: Maximum number of positions before automatically splitting into multiple rows (default: 100)
+- --method: Method for ggseqlogo: 'bits' for information content or 'prob' for probability (default: prob)
 
 ```bash
 # Basic Sequence Logo Generation using the output of the MOTIF module
@@ -503,12 +506,6 @@ cressent seq_logo \
       -tb output/motif/pattern_positions.txt \
       -o output/motif \
       --output_name logo.pdf
-
-# Generating Sequence Logo from a FASTA File
-cressent seq_logo \
-      -f my_sequences.fasta \
-      -o output/motif \
-      --output_name fasta_logo.pdf
 
 # Splitting the Figure by Group Labels (Metadata)
 cressent seq_logo \
@@ -521,13 +518,21 @@ cressent seq_logo \
 
 # using the output from motif_disc
 cressent seq_logo \
-    seq_logo \
       -tb output/motif_disc/motif_table.csv \
       -o output/motif_disc \
       --output_name logo_table_split_motif_disc.pdf \
       --split \
       --metadata output/metadata.csv \
       --group_label motif_name --ncol 4
+
+# Generating Sequence Logo from a FASTA File
+cressent seq_logo \
+      -i my_sequences.fasta \
+      -o output/motif \
+      --output_name fasta_logo.pdf \
+      --positions_per_row 60 \
+      --max_positions_single_row 120 \
+      --width 15 --method prob
 ```
 
 ## 5: Putative Stem Loop and Iterons annotation
