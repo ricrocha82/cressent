@@ -170,22 +170,27 @@ def motif_disc(input_fasta, output, nmotifs, minw, maxw, meme_extra, scanprosite
         click.echo(f"Error running motif_disc module: {e}", err=True)
         sys.exit(1)
 
-# Scanprosite gene map vix
-@cli.command(name="scanprosite_map_viz")
-@click.option("-f","--file", help="Input file from scanprosite", required=True)
-@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory) (used for MEME and generated files)")
-def motif(file, output):
-    """Module to plot ScanProsite results"""
+# Motif gene map viz
+@cli.command(name="motif_map_viz")
+@click.option("-f","--file", help="Input file from scanprosite or motif analysis", required=True)
+@click.option("-o", "--output", default=".", help="Path to the output directory (Default: working directory)")
+@click.option("--format", type=click.Choice(['prosite', 'motif_table', 'auto']), default='auto', 
+                help="Input format (default: auto-detect)")
+def motif_map_viz(file, output, format):
+    """Module to plot motif analysis results (ScanProsite or MEME motifs)"""
     try:
-        from cressent.modules.scanprosite_map_viz import main as scanprosite_map_viz_main
+        from cressent.modules.motif_map_viz import main as motif_map_viz_main
+        
+        # Set up sys.argv to match argparse expectations
         sys.argv = [sys.argv[0]]
-        if file:
-            sys.argv.extend(['--file', file])
-        if output:
-            sys.argv.extend(['--output', output])
-            scanprosite_map_viz_main()
+        sys.argv.extend(['-f', file])
+        sys.argv.extend(['-o', output])
+        sys.argv.extend(['--format', format])
+        
+        motif_map_viz_main()
+        
     except Exception as e:
-        click.echo(f"Error running scanprosite_map_viz_main module: {e}", err=True)
+        click.echo(f"Error running motif_map_viz module: {e}", err=True)
         sys.exit(1)
 
 # Motif module
@@ -396,7 +401,10 @@ def tanglegram(tree1, tree2, label1, label2, output, name_tanglegram, width, hei
 @click.option("--metadata", help="Path to metadata file containing group labels.")
 @click.option("--ncol", type=int, help="Number of columns when splitting the sequence logo.")
 @click.option("--group_label", help="Column name in metadata for grouping sequences.")
-def seq_logo(input_fasta, seq_df, output, output_name, plot_title, width, height, split, metadata, ncol, group_label):
+@click.option("--positions_per_row", default=50, type=int, help="Number of positions per row when creating multi-row plots (default: 50)")
+@click.option("--max_positions_single_row", default=100, type=int, help="Maximum number of positions before automatically splitting into multiple rows (default: 100)")
+@click.option("--method", type=click.Choice(["bits", "prob"]), default="prob", help="Method for ggseqlogo: 'bits' for information content or 'prob' for probability (default: prob)")
+def seq_logo(input_fasta, seq_df, output, output_name, plot_title, width, height, split, metadata, ncol, group_label, positions_per_row, max_positions_single_row, method):
     """Generate a sequence logo from a FASTA file or sequence table."""
     try:
         from cressent.modules.seq_logo import main as seq_logo_main
@@ -423,6 +431,12 @@ def seq_logo(input_fasta, seq_df, output, output_name, plot_title, width, height
             sys.argv.extend(['--ncol', str(ncol)])
         if group_label:
             sys.argv.extend(['--group_label', group_label])
+        if positions_per_row:
+            sys.argv.extend(['--positions_per_row', str(positions_per_row)])
+        if max_positions_single_row:
+            sys.argv.extend(['--max_positions_single_row', str(max_positions_single_row)])
+        if method:
+            sys.argv.extend(['--method', method])
         seq_logo_main()
     except Exception as e:
         click.echo(f"Error running seq_logo module: {e}", err=True)

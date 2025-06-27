@@ -20,7 +20,6 @@ def setup_logging(output_dir):
         ]
     )
 
-# Determine the input FASTA full path
 def validate_fasta(filename):
     """Validate that a file is in FASTA format if provided."""
     if filename is None:
@@ -37,16 +36,17 @@ def validate_fasta(filename):
 def run_command(command, error_message):
     """Run a shell command and handle errors."""
     try:
-        logging.info(f"Running command: {command}")
+        logging.info(f"Running command: {' '.join(command)}")
         subprocess.run(command, check=True)
-        logging.info(f"Command succeeded: {command}")
+        logging.info(f"Command succeeded")
     except subprocess.CalledProcessError as e:
         logging.error(f"{error_message}: {e}")
         exit(1)
 
 def generate_seqlogo(fasta_file, seq_df, output_dir, output_name="sequence_logo.pdf",
                      plot_title="sequence_logo", width=10, height=10, split=False,
-                     metadata=None, ncol=None, group_label=None):
+                     metadata=None, ncol=None, group_label=None, positions_per_row=50,
+                     max_positions_single_row=100, method="prob"):
     """
     Generate a sequence logo using an R script.
 
@@ -62,6 +62,9 @@ def generate_seqlogo(fasta_file, seq_df, output_dir, output_name="sequence_logo.
         metadata (str): Path to the metadata file for grouping.
         ncol (int): Number of columns in the split plot.
         group_label (str): Column name in metadata for grouping sequences.
+        positions_per_row (int): Number of positions per row in multi-row plots.
+        max_positions_single_row (int): Maximum positions before splitting into rows.
+        method (str): Method for ggseqlogo ('bits' or 'prob').
     """
     # Path to the R script
     modules_dir = Path(__file__).resolve().parent
@@ -85,7 +88,10 @@ def generate_seqlogo(fasta_file, seq_df, output_dir, output_name="sequence_logo.
         f"split={'TRUE' if split else 'FALSE'}",
         f"metadata={metadata if metadata else ''}",
         f"ncol={ncol if ncol else ''}",
-        f"group_label={group_label if group_label else ''}"
+        f"group_label={group_label if group_label else ''}",
+        f"positions_per_row={positions_per_row}",
+        f"max_positions_single_row={max_positions_single_row}",
+        f"method={method}"
     ]
 
     # Run the R script
@@ -100,10 +106,16 @@ def main():
     parser.add_argument("--plot_title", default="sequence_logo", help="Title of the Sequence Logo (default: sequence_logo)")
     parser.add_argument("--width", default=10, type=float, help="Width of the sequence logo (default = 10)")
     parser.add_argument("--height", default=10, type=float, help="Height of the sequence logo (default = 10)")
-    parser.add_argument("--split", action="store_true", help="If set, the sequence logo will be split by group label (default = True)")
+    parser.add_argument("--split", action="store_true", help="If set, the sequence logo will be split by group label")
     parser.add_argument("--metadata", help="Path to metadata file containing group labels.")
     parser.add_argument("--ncol", type=int, help="Number of columns when splitting the sequence logo.")
     parser.add_argument("--group_label", help="Column name in metadata for grouping sequences.")
+    parser.add_argument("--positions_per_row", type=int, default=50, 
+                       help="Number of positions per row when creating multi-row plots (default: 50)")
+    parser.add_argument("--max_positions_single_row", type=int, default=100,
+                       help="Maximum number of positions before automatically splitting into multiple rows (default: 100)")
+    parser.add_argument("--method", choices=["bits", "prob"], default="prob",
+                       help="Method for ggseqlogo: 'bits' for information content or 'prob' for probability (default: prob)")
 
     args = parser.parse_args()
 
@@ -121,13 +133,9 @@ def main():
     logging.info("Starting sequence logo generation.")
 
     # Validate inputs
-    # if input_fasta and args.seq_df:
-    #     logging.error("you need to put in either a table -tb or a fasta -f.")
-    #     parser.error("you need to put in either a table -tb or a fasta -f.")
-
     if input_fasta is None and args.seq_df is None:
-        logging.error("Either --fasta or --seq_df must be provided.")
-        parser.error("Either --fasta or --seq_df must be provided.")
+        logging.error("Either --input_fasta or --seq_df must be provided.")
+        parser.error("Either --input_fasta or --seq_df must be provided.")
 
     if args.split and (args.metadata is None or args.group_label is None or args.ncol is None):
         logging.error("When using --split, --metadata, --group_label, and --ncol must be provided.")
@@ -135,6 +143,10 @@ def main():
 
     if args.split and args.group_label is not None:
         logging.info(f"Splitting the figure by {args.group_label}")
+
+    # Log multi-row parameters
+    logging.info(f"Multi-row parameters: positions_per_row={args.positions_per_row}, max_positions_single_row={args.max_positions_single_row}")
+    logging.info(f"ggseqlogo method: {args.method}")
 
     # Run R script to generate sequence logos
     generate_seqlogo(
@@ -148,7 +160,10 @@ def main():
         split=args.split,
         metadata=args.metadata,
         ncol=args.ncol,
-        group_label=args.group_label
+        group_label=args.group_label,
+        positions_per_row=args.positions_per_row,
+        max_positions_single_row=args.max_positions_single_row,
+        method=args.method
     )
 
     logging.info("Sequence logo generation completed successfully.")
@@ -157,19 +172,19 @@ def main():
 if __name__ == "__main__":
     main()
 
+# Example usage with bits method:
+# python seq_logo.py \
+#     -tb pattern_positions.txt \
+#     -o output_dir \
+#     --output_name bits_logo.pdf \
+#     --plot_title "Information Content Logo" \
+#     --method bits \
+#     --positions_per_row 50 \
+#     --max_positions_single_row 100
 
-# without spliting
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.py \
-#             -tb /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif/pattern_positions.txt \
-#             -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif\
-#             --output_name logo.pdf
-
-# with spltting by group label
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/seq_logo.py \
-#     -f /fs/project/PAS1117/ricardo/ssDNA_tool/DB/reps/Adamaviridae.fa \
-#     -tb /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif/pattern_positions.txt \
-#     -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif \
-#     --output_name logo_split.pdf \
-#     --split \
-#     --metadata /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/metadata.csv \
-#     --ncol 2 --group_label family
+# Example usage with probability method (default):
+# python seq_logo.py \
+#     -i sequences.fa \
+#     -o output_dir \
+#     --output_name prob_logo.pdf \
+#     --method prob
