@@ -11,7 +11,14 @@ def is_nucleotide_sequence(sequence: str) -> bool:
 
 def adjust_sequence_start(sequence, motif="TAGTATTAC"):
     """Rotate the sequence so it starts with the given motif."""
-    motif_index = sequence.find(motif)
+
+    match = re.search(motif, sequence)
+    if match:
+        motif_index = match.start()
+    else:
+        motif_index = -1
+    
+    # motif_index = sequence.find(motif)
     
     if motif_index == -1:
         print(f"Motif '{motif}' not found in sequence: {sequence[:30]}...")  # First 30 bases shown
@@ -70,7 +77,14 @@ if __name__ == "__main__":
 
 
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/adjust_seq.py \
-#             -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/rearrange/alpha_complete.fa \
-#             -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/rearrange1 \
+# python /fs/project/PAS1117/ricardo/cressent/cressent/modules/adjust_seq.py \
+#             -i /fs/project/PAS1117/ricardo/test_cressent/data/alpha_complete.fa \
+#             -o /fs/project/PAS1117/ricardo/test_cressent/rearrange1 \
 #               -m "CCGCAAATAACACTAAC"
+
+
+
+# python /fs/project/PAS1117/ricardo/cressent/cressent/modules/adjust_seq.py \
+#             -i /fs/project/PAS1117/ricardo/test_cressent/genomo_output/rep/align_family/genomo_reann_1a_virus_AA.reps_merged.fasta \
+#             -o /fs/project/PAS1117/ricardo/test_cressent/genomo_output/rep/rearrange \
+#               -m ".{5}GK[TS].{4}"

@@ -373,7 +373,7 @@ cressent motif -i sequences.fasta -o /path/to/output -p "[GA].{4}GK[TS]" --split
 cressent motif \
         -i sequences.fasta \
         -o /path/to/output \
-        -p "[GA].{4}GK[TS]" \
+        -p ".{5}GK[TS].{4}" \
         --generate-logo \
         --logo-name motif_logo.pdf \
         --plot-title "My Motif Logo"
@@ -382,7 +382,7 @@ cressent motif \
 cressent motif \
         -i sequences.fasta \
         -o /path/to/output \
-        -p "[GA].{4}GK[TS]" \
+        -p ".{5}GK[TS].{4}" \
         --split-sequences --generate-logo --split-logo \
         --metadata metadata.csv \
         --ncol 2 \

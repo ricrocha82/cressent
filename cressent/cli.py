@@ -739,6 +739,48 @@ def build_contaminant_db(accession_csv, output, output_name, email, batch_size):
         click.echo(f"Error running build_contaminant_db module: {e}", err=True)
         sys.exit(1)
 
+
+# Build my own DB
+@cli.command(name="db_builder")
+@click.option('-t', '--taxonomy-file', required=True, help='Path to taxonomy_accession_number.csv file')
+@click.option('-l', '--taxonomy-level', required=True,
+              type=click.Choice(['Realm', 'Subrealm', 'Kingdom', 'Subkingdom', 'Phylum', 'Subphylum', 
+                               'Class', 'Subclass', 'Order', 'Suborder', 'Family', 'Subfamily', 
+                               'Genus', 'Subgenus', 'Species']),
+              help='Taxonomy level to use for selection')
+@click.option('-s', '--selected-taxonomies', help='Selected taxonomies (if not provided, will list available options)')
+@click.option('-o', '--output-dir', default=".", help='Output directory for database')
+@click.option('-e', '--email', default="my_email@gmail.com", help='Email for NCBI Entrez')
+@click.option('--threads', type=int, default=8, help='Number of threads to use (default: 8)')
+@click.option('--cd-hit-identity', type=float, default=0.95, help='CD-HIT identity threshold (default: 0.95)')
+@click.option('--mcl-inflation', type=float, default=1.5, help='MCL inflation parameter (default: 1.5)')
+def db_builder(taxonomy_file, taxonomy_level, selected_taxonomies, output_dir, email, threads, cd_hit_identity, mcl_inflation):
+    """ Build taxonomy-based database for ssDNA tool """
+    try:
+        from cressent.modules.db_builder import main as db_builder_main
+        
+        # Construct sys.argv for the db_builder module
+        sys.argv = ['db_builder.py']
+        sys.argv.extend(['--taxonomy-file', taxonomy_file])
+        sys.argv.extend(['--taxonomy-level', taxonomy_level])
+        
+        if selected_taxonomies:
+            # Split by whitespace and add to sys.argv
+            taxa = selected_taxonomies.split()
+            if taxa:
+                sys.argv.extend(['--selected-taxonomies'] + taxa)
+        
+        sys.argv.extend(['--output-dir', output_dir])
+        sys.argv.extend(['--email', email])
+        sys.argv.extend(['--threads', str(threads)])
+        sys.argv.extend(['--cd-hit-identity', str(cd_hit_identity)])
+        sys.argv.extend(['--mcl-inflation', str(mcl_inflation)])
+        
+        db_builder_main()  # Actually call the main function
+    except Exception as e:
+        click.echo(f"Error running db_builder module: {e}", err=True)
+        sys.exit(1)
+
 # Dynamically load additional modules
 def load_dynamic_modules():
     """
