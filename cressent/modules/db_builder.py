@@ -16,15 +16,25 @@ import time
 import logging
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('db_builder.log'),
-        logging.StreamHandler()
-    ]
-)
-
+def setup_logging(output_dir: str, taxonomy_name: str) -> None:
+    """Setup logging configuration with log file in output directory"""
+    log_dir = os.path.join(output_dir, taxonomy_name)
+    Path(log_dir).mkdir(parents=True, exist_ok=True)
+    
+    log_file = os.path.join(log_dir, 'db_builder.log')
+    
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler()
+        ]
+    )
+    
+    logging.info(f"Log file created at: {log_file}")
+    
+# After you have taxonomy_name and args.output_dir
 def setup_directories(base_dir: str, taxonomy_name: str) -> Dict[str, str]:
     """Create necessary directories for the pipeline"""
     dirs = {
@@ -301,7 +311,7 @@ def annotate_proteins(df: pd.DataFrame, output_dirs: Dict[str, str]) -> None:
     # Rep proteins
     df_reps = df[
         df['protein_description'].str.contains('rep|Rep|replication|Replication|replicase|Replicase', case=False, na=False) &
-        ~df['protein_description'].str.contains('non-rep|non-Rep|non-replication|non-Replication', case=False, na=False)
+        ~df['protein_description'].str.contains('non-rep|non-Rep|non-replication|non-Replication|non-replicase|non-Replicase', case=False, na=False)
     ]
     
     if not df_reps.empty:
@@ -371,9 +381,9 @@ def main():
                        help='Taxonomy level to use for selection')
     parser.add_argument('-s', '--selected-taxonomies', nargs='+', 
                        help='Selected taxonomies (if not provided, will list available options)')
-    parser.add_argument('-o', '--output-dir', required=True,
+    parser.add_argument('-o', '--output-dir', default=".",
                        help='Output directory for database')
-    parser.add_argument('-e', '--email', required=True,
+    parser.add_argument('-e', '--email', default="my_email@gmail.com",
                        help='Email for NCBI Entrez')
     parser.add_argument('--threads', type=int, default=8,
                        help='Number of threads to use (default: 8)')
@@ -383,6 +393,12 @@ def main():
                        help='MCL inflation parameter (default: 1.5)')
     
     args = parser.parse_args()
+
+    # Create taxonomy name for output
+    taxonomy_name = "_".join(args.selected_taxonomies).replace(" ", "_")
+
+    # After you have taxonomy_name and args.output_dir
+    setup_logging(args.output_dir, taxonomy_name)
     
     # Load taxonomy data
     df_taxonomy = load_taxonomy_data(args.taxonomy_file)
@@ -403,9 +419,6 @@ def main():
     if df_filtered.empty:
         logging.error("No records found for selected taxonomies")
         return
-    
-    # Create taxonomy name for output
-    taxonomy_name = "_".join(args.selected_taxonomies).replace(" ", "_")
     
     # Setup directories
     dirs = setup_directories(args.output_dir, taxonomy_name)
