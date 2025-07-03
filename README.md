@@ -35,6 +35,18 @@ The [database](DB) consists of the following:
 - Contamination DB
 - tree_models.csv (table with the models computed by ModelFinder from IQ-TREE2 for each Rep and Cap DB grouped by family)
 
+You can also build your own DB using the build_db module. The accession numbers are available in this [file](DB/taxonomy_accession_number.csv)
+
+Below is an example building a small DB of the sequences of two Genus *Restivirus* and *Lophivirus*.
+```bash
+cressent db_builder \
+         -t ./DB/taxonomy_accession_number.csv \
+         -l Genus \
+         -s "Restivirus" "Lophivirus" \
+         -o ./my_DB \
+         -e your.email@gmail.com
+```
+The ouputs are folders containing the raw, Rep, Cap and non annotated sequences found in the selected taxonomies. 
 
 ## 1: Dereplication (Clustering) and/or Decontamination
 
