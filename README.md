@@ -150,6 +150,12 @@ cressent adjust_seq  \
          -o /path/to/output_directory # default is the current directory
          -m "ATCG..." # default: TAGTATTAC
 
+# or use REGEX
+cressent adjust_seq  \
+         -i /path/to/my_sequence.fa \
+         -o /path/to/output_directory # default is the current directory
+         -m ".{5}GK[TS].{4}"
+
 # If the pattern is found, the output is a fasta file with each sequence beginning with the sequence -m
 ```
 
