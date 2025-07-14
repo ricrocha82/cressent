@@ -14,7 +14,7 @@ dependencies:
   - blast=2.16.0
   - cd-hit>=4.5
   - diamond>= 2.0
-  - mcl >= 22.0
+  - mcl>=22.0
   - r-base>=4.0
   - r-ape=5.8
   - r-dendextend=1.19.0
@@ -42,5 +42,6 @@ dependencies:
   - seaborn=0.13.2
   - meme=5.5.7
   - python=3.10
+  - click
 
 

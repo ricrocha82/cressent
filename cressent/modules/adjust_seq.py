@@ -194,7 +194,7 @@ if __name__ == "__main__":
 
 # python /fs/project/PAS1117/ricardo/cressent/cressent/modules/adjust_seq.py \
 #             -i /fs/project/PAS1117/ricardo/test_cressent/data/alpha_complete.fa \
-#             -o /fs/project/PAS1117/ricardo/test_cressent/rearrange1 \
+#             -o /fs/project/PAS1117/ricardo/test_cressent/rearrange2 \
 #               -m "CCGCAAATAACACTAAC"
 
 
