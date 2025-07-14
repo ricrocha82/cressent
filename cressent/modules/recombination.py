@@ -782,7 +782,3 @@ if __name__ == "__main__":
     sys.exit(main())
 
 
-# python /fs/project/PAS1117/ricardo/cressent/cressent/modules/recombination.py \
-#     -i /fs/project/PAS1117/ricardo/cressent/test_data/recombination_test/recomb2.fa \
-#     -o test_2.csv \
-#     -d /fs/project/PAS1117/ricardo/cressent/test_data/recombination_test

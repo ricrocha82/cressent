@@ -332,35 +332,3 @@ if __name__ == "__main__":
     main()
 
 
-#  /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py --threads 24 \
-#                 --input_fasta /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/reps.fa \
-#                 -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/
-
-#  /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py --threads 24 \
-#                 --input_fasta /fs/project/PAS1117/ricardo/ssDNA_test/test_data/Circoviridae_caps.fa \
-#                 -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_3/
-
-#  /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py --threads 24 \
-#                 --input_fasta /fs/project/PAS1117/ricardo/ssDNA_test/test_data/Circoviridae_reps.fa \
-#                 -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_3/
-
-#  /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py --threads 24 \
-#                 --input_fasta /fs/project/PAS1117/ricardo/ssDNA_test/test_data/Circoviridae_reps.fa \
-#                 -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_3/
-
-
-#/fs/scratch/Sullivan_Lab/Ricardo/ssDNA_db/concat/reps
-
-
-# with DB
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py  --threads 24 \
-#                     --input_fasta /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/test_data/sub_reps.fa \
-#                     --db_family Circoviridae \
-#                     --db_path /fs/project/PAS1117/ricardo/ssDNA_tool/DB \
-#                      --protein_type reps \
-#                     -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/align_test
-
-# only input sequences
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/align.py  --threads 24 \
-#                       --input_fasta /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/test_data/sub_reps.fa \
-#                   -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_4/

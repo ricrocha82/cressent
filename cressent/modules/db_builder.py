@@ -473,9 +473,3 @@ if __name__ == "__main__":
     main()
 
 
-# /fs/project/PAS1117/ricardo/cressent/cressent/cli.py db_builder \
-#                             -t /fs/project/PAS1117/ricardo/cressent/DB/taxonomy_accession_number.csv \
-#                             -l Genus \
-#                             -s "Restivirus Lophivirus" \
-#                             -o /fs/project/PAS1117/ricardo/test_cressent/my_DB_cli \
-#                             -e your.email@gmail.com

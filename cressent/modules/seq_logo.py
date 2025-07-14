@@ -172,19 +172,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-# Example usage with bits method:
-# python seq_logo.py \
-#     -tb pattern_positions.txt \
-#     -o output_dir \
-#     --output_name bits_logo.pdf \
-#     --plot_title "Information Content Logo" \
-#     --method bits \
-#     --positions_per_row 50 \
-#     --max_positions_single_row 100
-
-# Example usage with probability method (default):
-# python seq_logo.py \
-#     -i sequences.fa \
-#     -o output_dir \
-#     --output_name prob_logo.pdf \
-#     --method prob

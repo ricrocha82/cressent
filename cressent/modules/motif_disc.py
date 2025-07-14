@@ -442,6 +442,4 @@ if __name__ == "__main__":
     main()
 
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif_disc.py \
-#                     -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/seq_meme.fa \
-#                     -o /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_disc
+

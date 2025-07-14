@@ -201,28 +201,3 @@ if __name__ == "__main__":
     main()
 
 
-# full Rep sequences
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
-#         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/aligned_trimmed_sequences.fasta \
-#         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/tree
-
-
-# Endonuclease domains
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
-#         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/split_sequences_endonuclease.fasta \
-#         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/tree_endonuc
-
-
-# Helicase domains
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
-#         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/split_sequences_helicase.fasta \
-#         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/tree_helic
-
-
-# /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_tree.py \
-#         -i /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/align_test/sub_reps_aligned_sequences.fasta \
-#         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data
-
-# /fs/project/PAS1117/ricardo/cressent/cressent/modules/build_tree.py \
-#         -i /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/sub_reps_aligned_sequences.fasta \
-#         -d /fs/project/PAS1117/ricardo/test_cressent/output/build_tree

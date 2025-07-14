@@ -107,12 +107,3 @@ dev.off()
 
 cat(sprintf("Tanglegram saved to %s\n", file.path(output_dir, output_name)))
 
-# Rscript /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/tanglegram.R \
-#     tree1=/fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/tree_helic/sanitized_sequences.fasta.treefile \
-#     tree2=/fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/tree_endonuc/sanitized_sequences.fasta.treefile \
-#     label1="Helicase" \
-#     label2="Endonuclease" \
-#     output=/fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output_2/ \
-#     name_tanglegram="my_tanglegram.pdf" \
-#     height=11 \
-#     width=20

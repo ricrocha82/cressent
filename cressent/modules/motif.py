@@ -310,17 +310,3 @@ if __name__ == "__main__":
     main()
 
 
-# python ./motif.py -i sequences.fasta -d /path/to/output -p "[GA].{4}GK[TS]" --split
-
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif.py \
-#                         -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif/ungapped_sequences.fasta \
-#                         -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_test \
-#                         -p "[GA].{4}GK[TS]" --split-sequence
-
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/motif.py \
-#               -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output/motif/ungapped_sequences.fasta \
-#                  -d /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/motif_test_2 \
-#                  -p "[GA].{4}GK[TS]" \
-#                  --generate-logo \
-#                  --logo-name motif_logo.pdf \
-#                  --plot-title "My Motif Logo"

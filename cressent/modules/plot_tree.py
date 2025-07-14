@@ -106,26 +106,3 @@ if __name__ == "__main__":
 
 
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/plot_tree.py \
-#      --tree=mytree.treefile --outdir=output_dir \
-#     --metadata=meta.csv --name_table=name_table.tsv --alignment=alignment.fasta \
-#     --layout=circular --branch_length=branch.length --open_angle=90 --offset=0.2 \
-#     --tip_label=family --color --fig_width=8 --fig_height=8 --plot_tips --dist_matrix \
-#     --plot_name=my_custom_tree.pdf
-
-# python /fs/project/PAS1117/ricardo/cressent/cressent_core/modules/plot_tree.py \
-#     --tree /fs/project/PAS1117/ricardo/cressent/test_data/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-#     --outdir /fs/project/PAS1117/ricardo/cressent/test_data/output/tree \
-#     --metadata_1 /fs/project/PAS1117/ricardo/cressent/test_data/output/metadata.csv \
-#     --metadata_2 /fs/project/PAS1117/ricardo/cressent/test_data/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv\
-#     --layout circular --branch_length branch.length --open_angle=90 --offset 0.2 \
-#     --tip_label family --fig_width 8 --fig_height 8 \
-#     --plot_name my_custom_tree.pdf
-
-# cressent plot_tree \
-#     --tree /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_sequences.fasta.treefile \
-#     --outdir /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/tree \
-#     --metadata_1 /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/metadata.csv \
-#     --metadata_2 /fs/project/PAS1117/ricardo/cressent_extra_files/test_data_1/output/tree/sub_reps_aligned_trimmed_sequences_sanitized_name_table.tsv\
-#     --tip_label family --fig_width 8 --fig_height 8 \
-#     --plot_name my_custom_tree_cressent_conda.pdf

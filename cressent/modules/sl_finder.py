@@ -325,17 +325,5 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/sl_finder.py \
-#     -i /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/test.fasta \
-#     --gff_in /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/test.gff \
-#     --output_dir /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data \
-#     --out_gff test_out.gff \
-#     --csv_out test.csv
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/sl_finder.py \
-#     -i /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/test.fasta \
-#     --gff_in /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/test.gff \
-#     --output_dir /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data \
-#     --out_gff test_out.gff \
-#     --csv_out test.csv 
     

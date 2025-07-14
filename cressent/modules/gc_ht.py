@@ -145,8 +145,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/gc_patchiness.py \
-#                                           -i /fs/project/PAS1117/ricardo/ssDNA_tool/test_fast.fa \
-#                                         --output /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/output \
-#                                           --output_name gc_heatmap.pdf \
-#                                         --fig_width 14 --fig_height 8 
+

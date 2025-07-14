@@ -331,8 +331,3 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/build_contaminant_db.py \
-#             --accession-csv /fs/project/PAS1117/ricardo/ssDNA_tool/DB/decont_accesion_list.csv \
-#             --output-dir /fs/project/PAS1117/ricardo/ssDNA_tool/DB \    
-#             --email pavan.4@osu.edu \
-#             --batch-size 10

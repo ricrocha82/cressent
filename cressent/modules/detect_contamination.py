@@ -449,10 +449,3 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/detect_contamination.py \
-#                     --input_fasta /fs/project/PAS1117/ricardo/CONGO/metaG/3.assembly/SRR6743910_spades_contigs.fasta \
-#                     --db /fs/project/PAS1117/ricardo/ssDNA_tool/DB/contaminant/contaminant_db.fasta \
-#                     --output-dir /fs/project/PAS1117/ricardo/ssDNA_tool/test_data/decont_results_1 \
-#                     --output-name decontaminated \
-#                     --threads 4 \
-#                     --keep-temp

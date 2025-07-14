@@ -190,16 +190,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# python /fs/project/PAS1117/ricardo/cressent/cressent/modules/adjust_seq.py \
-#             -i /fs/project/PAS1117/ricardo/test_cressent/data/alpha_complete.fa \
-#             -o /fs/project/PAS1117/ricardo/test_cressent/rearrange2 \
-#               -m "CCGCAAATAACACTAAC"
-
-
-
-# python /fs/project/PAS1117/ricardo/cressent/cressent/modules/adjust_seq.py \
-#             -i /fs/project/PAS1117/ricardo/test_cressent/genomo_output/rep/align_family/genomo_reann_1a_virus_AA.reps_merged.fasta \
-#             -o /fs/project/PAS1117/ricardo/test_cressent/genomo_output/rep/rearrange \
-#               -m ".{5}GK[TS].{4}"

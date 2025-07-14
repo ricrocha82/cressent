@@ -279,9 +279,3 @@ if __name__ == "__main__":
     main()
 
 
-
-# python /fs/project/PAS1117/ricardo/ssDNA_tool/ssDNA_annotator/modules/run_cruise.py \
-#         --outputDir /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data_1 \
-#         --inputFasta /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/test.fasta \
-#         --inputGFF /fs/project/PAS1117/ricardo/ssDNA_test/sl_finder_data/out_slf.gff \
-#         --outputGFF results_cruise.gff
