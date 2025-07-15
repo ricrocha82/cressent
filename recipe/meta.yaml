@@ -57,7 +57,7 @@ requirements:
     - bioconductor-ggtree >=3.14.0
     - bioconductor-ggtreeextra >=1.16.0
     - viennarna
-    - gffutils =0.13
+    - gffutils >=0.13
     - scipy >=1.15.2
     - matplotlib-base >=3.10.0
     - seaborn >=0.13.2
