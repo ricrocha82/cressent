@@ -13,6 +13,7 @@
 .Python
 build/
 recipe/*
+recipe/meta.yaml
 develop-eggs/
 dist/
 downloads/
