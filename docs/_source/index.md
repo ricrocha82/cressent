@@ -6,6 +6,11 @@ hide-toc: true
 
 CRESSENT (CRESS DNA Virus Analysis Tool) is a comprehensive bioinformatics pipeline designed for the analysis of ssDNA viruses. It provides state-of-the-art tools for phylogenetic analysis, recombination detection, motif discovery, and functional annotation of CRESS DNA viruses.
 
+```{image} _static/figures/fig_cressent_new.png
+:width: 400
+:class: no-scaled-link
+:align: center
+```
 
 ::::{grid}
 :gutter: 2
