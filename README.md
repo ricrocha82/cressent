@@ -28,6 +28,11 @@ docker pull ricrocha82/cressent
 # Run the image
 docker run --rm -ti -v "$(pwd):/app" ricrocha82/cressent
 ```
+
+# Documentation
+
+Read the documentation online at https://cressent.readthedocs.io/en/latest/
+
 ---
 # CRESSENT Pipeline Example
 
