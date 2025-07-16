@@ -22,5 +22,5 @@ formats:
 # See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
     install:
-    - requirements: _source/requirements_rtd.txt
+    - requirements: requirements_rtd.txt
         
