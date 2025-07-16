@@ -54,7 +54,7 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = "furo"
-html_favicon = "_static/figures/fig_cressent_new.jpg"
+html_favicon = "_static/figures/fig_cressent_new.png"
 pygments_style = "tango"
 pygments_dark_style = "tango"
 html_theme_options = {

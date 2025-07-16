@@ -382,9 +382,8 @@ echo "- Visualizations: output/*/tree/*.pdf"
 
 After completing this quickstart tutorial:
 
-1. Explore [individual modules](modules/align.md) for advanced parameter customization
-2. Learn about the complete [analysis pipeline](pipeline.md) for complex workflows  
-3. Check the [FAQ](faq.md) for common questions and troubleshooting
+1. Explore [individual modules](align.md) for advanced parameter customization
+2. Check the [FAQ](faq.md) for common questions and troubleshooting
 4. Try analysis with your own ssDNA virus sequences
 
 This quickstart provides a solid foundation for using CRESSENT effectively. The modular design allows you to adapt this workflow for different viral families and research questions.

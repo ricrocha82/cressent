@@ -8,9 +8,9 @@ Here you will find answers to common questions about CRESSENT. If you can't find
 
 If you want to speed up CRESSENT execution, several options are available:
 
-- **Use sequence clustering**: Run the [cluster](modules/cluster.md) module before phylogenetic analysis to remove redundant sequences
+- **Use sequence clustering**: Run the [cluster](preprocessing.md) module before phylogenetic analysis to remove redundant sequences
 - **Optimize thread usage**: Use the `--threads` parameter with appropriate values for your system
-- **Disable time-intensive modules**: Skip [recombination](modules/recombination.md) analysis if not needed for your research
+- **Disable time-intensive modules**: Skip [recombination](recombination.md) analysis if not needed for your research
 - **Use simpler models**: Choose faster evolutionary models (e.g., `-m GTR+G4` instead of `-m MFP`) for quick analysis
 
 Please note that some optimizations may reduce analysis depth or accuracy.
@@ -21,7 +21,7 @@ CRESSENT accepts the following input formats:
 
 - **FASTA files**: Nucleotide and protein sequences (required)
 - **Compressed files**: `.gz`, `.bz2`, and `.xz` compression supported
-- **GFF files**: For structural analysis modules like [sl_finder](modules/sl_finder.md)
+- **GFF files**: For structural analysis modules like [stem loops and iterons](secondary_structure.md)
 - **CSV files**: For database construction and metadata integration
 
 All sequence files must be in valid FASTA format with unique sequence identifiers.
@@ -51,7 +51,7 @@ Poor alignment quality can result from several issues:
 **Solutions:**
   - Verify that input sequences represent the same gene/protein
   - Remove sequences with >10% ambiguous characters
-  - Use [cluster](modules/cluster.md) to remove highly divergent sequences
+  - Use [cluster](preprocessing.md) to remove highly divergent sequences
   - Adjust `--mafft_ep` parameter for better alignment sensitivity
 
 ### Why does tree construction fail with "insufficient data" errors?
@@ -59,7 +59,7 @@ Poor alignment quality can result from several issues:
 Tree construction can fail when:
 
 - **Too few informative sites**: Sequences are too similar or too short
-- **Identical sequences**: Remove duplicates using [cluster](modules/cluster.md)
+- **Identical sequences**: Remove duplicates using [cluster](preprocessing.md)
 - **Poor alignment**: Insufficient overlap between sequences after trimming
 
 **Solutions:**
@@ -89,7 +89,7 @@ Poor sequence logo quality often indicates:
 **Solutions:**
 - Increase sequence number in the analysis
 - Refine motif search patterns
-- Use `--remove-gaps` option in [motif](modules/motif.md)
+- Use `--remove-gaps` option in [motif](motif.md)
 - Check alignment quality in the motif region
 
 ## Technical Issues
@@ -103,7 +103,7 @@ Memory errors typically occur with:
 - Database integration with large reference sets
 
 **Solutions:**
-- **Reduce dataset size**: Use [cluster](modules/cluster.md) for sequence reduction
+- **Reduce dataset size**: Use [cluster](preprocessing.md) for sequence reduction
 - **Decrease thread count**: Lower `--threads` parameter to reduce memory usage
 - **Increase system RAM**: Consider upgrading hardware for large analyses
 - **Process in batches**: Split large datasets into smaller chunks
@@ -137,21 +137,6 @@ Some modules compile required binaries automatically:
 - Install missing system dependencies
 
 ## Database and Integration
-
-### How do I build custom reference databases?
-
-Use the [db_builder](modules/db_builder.md) module:
-
-```bash
-cressent db_builder \
-    -t taxonomy_file.csv \
-    -l Genus \
-    -s "YourVirusGenus" \
-    -o custom_database \
-    -e your.email@example.com
-```
-
-Ensure your taxonomy file contains proper ICTV classifications and accession numbers.
 
 ### Why does database integration fail?
 

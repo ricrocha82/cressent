@@ -61,43 +61,18 @@ You should see help messages for each command without any errors.
 
 ## Running CRESSENT using containers
 
-You can also execute CRESSENT using containerization tools, such as Docker and Podman.
+You can also execute CRESSENT using containerization tools, such as Docker.
 
-::::{tab-set}
-
-:::{tab-item} Docker
 ```bash
-docker pull your-registry/cressent:latest
+docker pull ricrocha82/cressent:latest
 ```
-:::
-
-:::{tab-item} Podman
-```bash
-podman pull your-registry/cressent:latest
-```
-:::
-
-::::
 
 To start a CRESSENT container you have to mount a folder from the host system into the container with the `-v` argument. The following command mounts the current working directory (`$(pwd)`) under `/app` inside the container:
 
-::::{tab-set}
-
-:::{tab-item} Docker
 ```bash
-docker run -ti --rm -v "$(pwd):/app" your-registry/cressent:latest align --help
-docker run -ti --rm -v "$(pwd):/app" your-registry/cressent:latest build_tree input.fasta output/
+docker run -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest align --help
+docker run -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest build_tree input.fasta output/
 ```
-:::
-
-:::{tab-item} Podman
-```bash
-podman run -u 0 -ti --rm -v "$(pwd):/app" your-registry/cressent:latest align --help
-podman run -u 0 -ti --rm -v "$(pwd):/app" your-registry/cressent:latest build_tree input.fasta output/
-```
-:::
-
-::::
 
 ## Database Setup
 
@@ -114,6 +89,8 @@ cd DB
 - [REPS](https://github.com/ricrocha82/cressent/tree/main/DB/reps): Replication-associated protein sequences grouped by family
 - [Contamination](https://github.com/ricrocha82/cressent/blob/main/DB/contaminant/contaminant_db.fasta) DB
 - [tree_models.csv](https://github.com/ricrocha82/cressent/blob/main/DB/taxonomy_accession_number.csv): table with the models computed by ModelFinder from IQ-TREE2 for each Rep and Cap DB grouped by family
+
+The Databse is also available on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15981951.svg)](https://doi.org/10.5281/zenodo.15981951)
 
 ### Build Custom Databases
 
@@ -186,11 +163,3 @@ If you encounter installation issues:
    - Complete error messages
    - Installation method used
    - Output of `conda list` or `pip list`
-
-## Next Steps
-
-After successful installation:
-
-1. Follow the [Quickstart](quickstart.md) guide for your first analysis
-2. Explore the [Pipeline](pipeline.md) overview to understand CRESSENT's capabilities
-3. Review individual [module documentation](modules/align.md) for detailed usage

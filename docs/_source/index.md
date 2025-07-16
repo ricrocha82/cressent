@@ -6,6 +6,7 @@ hide-toc: true
 
 CRESSENT (CRESS DNA Virus Analysis Tool) is a comprehensive bioinformatics pipeline designed for the analysis of ssDNA viruses. It provides state-of-the-art tools for phylogenetic analysis, recombination detection, motif discovery, and functional annotation of CRESS DNA viruses.
 
+
 ::::{grid}
 :gutter: 2
 
@@ -53,43 +54,43 @@ Learn how to run CRESSENT and interpret its results with a step-by-step tutorial
 CRESSENT provides a modular analysis framework that can be customized for different research needs:
 
 :::{card} Preprocessing
-:link: modules/preprocessing
+:link: preprocessing
 :link-type: doc
 Quality control, dereplication, decontamination, and sequence adjustment tools.
 :::
 
 :::{card} Alignment
-:link: modules/phylogenetic_analysis
+:link: phylogenetic_analysis
 :link-type: doc
 A module to aligmen your sequences with a custom database.
 :::
 
 :::{card} Phylogenetic Analysis
-:link: modules/phylogenetic_analysis
+:link: phylogenetic_analysis
 :link-type: doc
 Sequence alignment, tree building, and comparative phylogenetic analysis.
 :::
 
 :::{card} Motif Discovery
-:link: modules/motif
+:link: motif
 :link-type: doc
 Pattern-based searching and de novo motif discovery with functional annotation.
 :::
 
 :::{card} Secondary Structure Detection
-:link: modules/secondary_structure
+:link: secondary_structure
 :link-type: doc
 Stem-loop and iteron identification for viral replication elements.
 :::
 
 :::{card} Recombination Detection
-:link: modules/recombination
+:link: recombination
 :link-type: doc
 Comprehensive recombination analysis using multiple detection methods.
 :::
 
 :::{card} Visualization Tools
-:link: modules/viz
+:link: viz
 :link-type: doc
 Publication-ready figures including sequence logos, trees, and motif maps.
 :::
@@ -149,10 +150,10 @@ CRESSENT workflows are designed to be modular and flexible, allowing researchers
 If you use CRESSENT in your work, please consider citing:
 
 :::{card}
-:link: #
+:link: [link to paper (still waiting)](https://www.biorxiv.org/)
 
 **CRESSENT: A comprehensive toolkit for CRESS DNA virus analysis**
-[Authors] — *[Journal]* ([Year]), DOI: [DOI].
+Pavan, R.R; Sullivan M.B.; Tisza, M. — *[Biorxiv]* ([2025]), DOI: [DOI].
 :::
 
 ## {octicon}`people;0.85em` Related Tools
@@ -188,12 +189,12 @@ faq
 :caption: Analysis Modules
 :hidden:
 
-modules/align.md
-modules/phylogenetic_analysis
-modules/preprocessing
-modules/motif
-modules/secondary_structure
-modules/recombination
-modules/viz
+align.md
+phylogenetic_analysis
+preprocessing
+motif
+secondary_structure
+recombination
+viz
 ```
 
