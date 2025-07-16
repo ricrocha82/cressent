@@ -54,66 +54,27 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'piccolo_theme'
+html_theme = "sphinx_rtd_theme"
 html_favicon = "_static/figures/fig_cressent_new.png"
 pygments_style = "tango"
 pygments_dark_style = "tango"
 
 html_theme_options = {
-    # "sidebar_hide_name": True,
-    "navigation_with_keys": True,
-    # "light_logo": "figures/log_cressent.png",
-    # "dark_logo": "figures/log_cressent.png",
-    # "light_css_variables": {
-    #     "font-stack": "'Nunito Sans',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif",
-    #     "font-stack--monospace": "ui-monospace,Cascadia Mono,Source Code Pro,Segoe UI Mono,Menlo,Monaco,Consolas,Courier New,monospace",
-    #     "admonition-title-font-size": "0.9rem",
-    #     "admonition-font-size": "0.9rem",
-    #     "color-foreground-primary": "#2c3e50",
-    #     "color-brand-primary": "#e74c3c",
-    #     "color-brand-content": "#e74c3c",
-    #     "color-foreground-muted": "#81868d",
-    # },
-    # "dark_css_variables": {
-    #     "color-problematic": "#b30000",
-    #     "color-foreground-primary": "#2c3e50",
-    #     "color-foreground-secondary": "#5a5c63",
-    #     "color-foreground-muted": "#81868d",
-    #     "color-foreground-border": "#878787",
-    #     "color-background-primary": "white",
-    #     "color-background-secondary": "#f8f9fb",
-    #     "color-background-hover": "#efeff4ff",
-    #     "color-background-hover--transparent": "#efeff400",
-    #     "color-background-border": "#eeebee",
-    #     "color-background-item": "#ccc",
-    #     "color-announcement-background": "#000000dd",
-    #     "color-announcement-text": "#eeebee",
-    #     "color-brand-primary": "#e74c3c",
-    #     "color-brand-content": "#e74c3c",
-    #     "color-highlighted-background": "#ddeeff",
-    #     "color-guilabel-background": "#ddeeff80",
-    #     "color-guilabel-border": "#bedaf580",
-    #     "color-api-keyword": "var(--color-foreground-secondary)",
-    #     "color-highlight-on-target": "#ffffcc",
-    #     "color-admonition-background": "transparent",
-    #     "color-card-border": "var(--color-background-secondary)",
-    #     "color-card-background": "transparent",
-    #     "color-card-marginals-background": "var(--color-background-hover)",
-    #     "color-code-foreground": "black",
-    #     "color-code-background": "#f8f9fb",
-    # },
-    # "footer_icons": [
-    #     {
-    #         "name": "GitHub",
-    #         "url": "https://github.com/ricrocha82/cressent/",
-    #         "html": """
-    #             <png stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
-    #                 <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
-    #             </png>
-    #         """,
-    #         "class": "",
-    #     },
-    # ],
+    # 📌 Sidebar layout
+    "collapse_navigation": True,   # Collapse navigation bar entries
+    "navigation_depth": 4,         # How many nested levels to show
+    "titles_only": False,          # Only show page titles (no subsections)
+
+    # 📌 Version control / menu
+    # "display_version": True,       # Show version in the sidebar
+    "sticky_navigation": True,     # Keeps sidebar scroll position
+    "includehidden": True,         # Include hidden toctree entries
+
+    # 📌 Branding
+    "logo_only": False,            # If True, only show logo image (no project name)
+
+    # 📌 Style tweaks (RTD theme uses CSS variables)
+    # As of v1.3+, you can use theme-specific colors via CSS, but not many built‑in variables.
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -121,3 +82,6 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
+html_js_files = [
+    'js/custom.js',
+]

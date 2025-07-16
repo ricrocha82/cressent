@@ -1,8 +1,6 @@
-# sphinx_rtd_theme==3.0.2
+sphinx_rtd_theme==3.0.2
 sphinx>=7.0.0
 myst-parser
 sphinx-design
 sphinx-copybutton
 sphinx-autobuild
-sphinx-piccolo-theme
-piccolo-theme
