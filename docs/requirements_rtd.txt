@@ -1,0 +1,7 @@
+sphinx_rtd_theme==3.0.2
+sphinx>=7.0.0
+furo
+myst-parser
+sphinx-design
+sphinx-copybutton
+sphinx-autobuild

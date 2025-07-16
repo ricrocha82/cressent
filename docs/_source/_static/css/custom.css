@@ -1,0 +1,8 @@
+/* Custom CSS for CRESSENT documentation */
+.bd-main .bd-content .bd-article-container {
+    max-width: none;
+  }
+  
+  .bd-sidebar-primary {
+    max-width: 20rem;
+  }
