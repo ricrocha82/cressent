@@ -7,6 +7,8 @@ a modular tool to help researchers to automatically annotate ssDNA contigs
 
 
 # Install
+First, you need to install CRESSENT. The best option would be using [Mamba](https://mamba.readthedocs.io/en/latest/). It fast and will handle the installation of all dependencies for you.
+
 ```bash
 mamba env create -f ./cressent/cressent_env.yaml
 
