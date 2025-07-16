@@ -8,7 +8,6 @@
 **/reps_model
 **/DB
 **/gene_map*
-*/docs/_source/.readthedocs.yaml
 */docs/_source/requirements_rtd.txt
 
 # Distribution / packaging
