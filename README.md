@@ -10,13 +10,21 @@ a modular tool to help researchers to automatically annotate ssDNA contigs
 ```bash
 mamba env create -f ./cressent/cressent_env.yaml
 
-# via bioconda (available soon)
+# via bioconda
 mamba create -n cressent
 mamba install -c bioconda -c conda-forge -c defaults cressent
 conda activate cressent
 # test installation
 cressent --help
 
+```
+Another option is to use Cressent through Docker.
+
+```bash
+# Pull the image
+docker pull ricrocha82/cressent
+# Run the image
+docker run --rm -ti -v "$(pwd):/app" ricrocha82/cressent
 ```
 ---
 # CRESSENT Pipeline Example
@@ -34,6 +42,8 @@ The [database](DB) consists of the following:
 - REPS (Replication-associated protein sequences grouped by family)
 - Contamination DB
 - tree_models.csv (table with the models computed by ModelFinder from IQ-TREE2 for each Rep and Cap DB grouped by family)
+
+Each folder is available for download on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15981951.svg)](https://doi.org/10.5281/zenodo.15981951)
 
 You can also build your own DB using the build_db module. The accession numbers are available in this [file](DB/taxonomy_accession_number.csv)
 
