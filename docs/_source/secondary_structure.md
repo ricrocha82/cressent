@@ -103,11 +103,12 @@ sequence_02    sl_finder    nonanucleotide    110    118    .    -    .    Name=
 
 ### CSV Output Format
 
-```csv
-seqID,matched,motif_start,stem_start,stem_end,score,folded_structure
-sequence_01,TAGTATTAC,165,150,201,8.5,(((((.......))))).....
-sequence_02,TAGTATTAC,110,89,145,6.2,(((((........))))).....
-```
+
+|   seqID   |matched    |motif_start    |   stem_start |   stem_end   |score  |   folded_structure
+|:--------------|:------------|:-----------|:------------|:-------|:------------|:-------|
+|   sequence_01|    TAGTATTAC|  165 |    150 |    201 |    8.5 |    (((((.......))))).....  |
+|   sequence_02|    TAGTATTAC|  110 |   89  |    145  |    6.2  |   (((((........))))).....    |
+
 
 ## Iteron Detection
 
