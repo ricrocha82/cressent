@@ -6,6 +6,13 @@ a modular tool to help researchers to automatically annotate ssDNA contigs
 </div>
 
 
+[![Bioconda Version](https://anaconda.org/bioconda/cressent/badges/version.svg)](https://anaconda.org/bioconda/cressent)
+[![Bioconda Latest Release Date](https://anaconda.org/bioconda/cressent/badges/latest_release_date.svg)](https://anaconda.org/bioconda/cressent)
+[![Bioconda Latest Release Relative Date](https://anaconda.org/bioconda/cressent/badges/latest_release_relative_date.svg)](https://anaconda.org/bioconda/cressent)
+[![Bioconda Platforms](https://anaconda.org/bioconda/cressent/badges/platforms.svg)](https://anaconda.org/bioconda/cressent)
+[![Bioconda License](https://anaconda.org/bioconda/cressent/badges/license.svg)](https://anaconda.org/bioconda/cressent)
+[![Bioconda Downloads](https://anaconda.org/bioconda/cressent/badges/downloads.svg)](https://anaconda.org/bioconda/cressent)
+
 # Install
 First, you need to install CRESSENT. The best option would be using [Mamba](https://mamba.readthedocs.io/en/latest/). It fast and will handle the installation of all dependencies for you.
 
