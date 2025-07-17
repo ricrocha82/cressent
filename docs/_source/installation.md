@@ -61,18 +61,43 @@ You should see help messages for each command without any errors.
 
 ## Running CRESSENT using containers
 
-You can also execute CRESSENT using containerization tools, such as Docker.
+You can also execute CRESSENT using containerization tools, such as Docker and Podman.
 
+::::{tab-set}
+
+:::{tab-item} Docker
 ```bash
-docker pull ricrocha82/cressent:latest
+docker pull your-registry/cressent:latest
 ```
+:::
+
+:::{tab-item} Podman
+```bash
+podman pull your-registry/cressent:latest
+```
+:::
+
+::::
 
 To start a CRESSENT container you have to mount a folder from the host system into the container with the `-v` argument. The following command mounts the current working directory (`$(pwd)`) under `/app` inside the container:
 
+::::{tab-set}
+
+:::{tab-item} Docker
 ```bash
-docker run -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest align --help
-docker run -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest build_tree input.fasta output/
+docker run -ti --rm -v "$(pwd):/app" your-registry/cressent:latest align --help
+docker run -ti --rm -v "$(pwd):/app" your-registry/cressent:latest build_tree input.fasta output/
 ```
+:::
+
+:::{tab-item} Podman
+```bash
+podman run -u 0 -ti --rm -v "$(pwd):/app" your-registry/cressent:latest align --help
+podman run -u 0 -ti --rm -v "$(pwd):/app" your-registry/cressent:latest build_tree input.fasta output/
+```
+:::
+
+::::
 
 ## Database Setup
 
