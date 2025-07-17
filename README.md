@@ -27,6 +27,7 @@ mamba env create -f ./cressent/cressent_env.yaml
 mamba create -n cressent
 mamba install -c bioconda -c conda-forge -c defaults cressent
 conda activate cressent
+
 # test installation
 cressent --help
 
