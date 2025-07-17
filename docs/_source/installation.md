@@ -67,13 +67,13 @@ You can also execute CRESSENT using containerization tools, such as Docker and P
 
 :::{tab-item} Docker
 ```bash
-docker pull your-registry/cressent:latest
+docker pull ricrocha82/cressent:latest
 ```
 :::
 
 :::{tab-item} Podman
 ```bash
-podman pull your-registry/cressent:latest
+podman pull ricrocha82/cressent:latest
 ```
 :::
 
@@ -85,15 +85,15 @@ To start a CRESSENT container you have to mount a folder from the host system in
 
 :::{tab-item} Docker
 ```bash
-docker run -ti --rm -v "$(pwd):/app" your-registry/cressent:latest align --help
-docker run -ti --rm -v "$(pwd):/app" your-registry/cressent:latest build_tree input.fasta output/
+docker run -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest align --help
+docker run -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest build_tree input.fasta output/
 ```
 :::
 
 :::{tab-item} Podman
 ```bash
-podman run -u 0 -ti --rm -v "$(pwd):/app" your-registry/cressent:latest align --help
-podman run -u 0 -ti --rm -v "$(pwd):/app" your-registry/cressent:latest build_tree input.fasta output/
+podman run -u 0 -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest align --help
+podman run -u 0 -ti --rm -v "$(pwd):/app" ricrocha82/cressent:latest build_tree input.fasta output/
 ```
 :::
 
