@@ -8,12 +8,11 @@
 [![Bioconda Downloads](https://anaconda.org/bioconda/cressent/badges/downloads.svg)](https://anaconda.org/bioconda/cressent)
 
 
-a modular tool to help researchers to automatically annotate ssDNA contigs
+a modular tool to help researchers automatically annotate ssDNA contigs
 
 <div align="center">
 <img width = "50%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent_new.jpg">
 </div>
-
 
 # Install
 First, you need to install CRESSENT. The best option would be using [Mamba](https://mamba.readthedocs.io/en/latest/). It fast and will handle the installation of all dependencies for you.
@@ -44,6 +43,15 @@ docker run --rm -ti -v "$(pwd):/app" ricrocha82/cressent
 # Documentation
 
 Read the documentation online at https://cressent.readthedocs.io/en/latest/
+
+# Citing CRESSENT
+
+If you are using CRESSENT in your research or work, please consider citing its manucript:
+
+> [**CRESSENT: a Bioinformatic Toolkit to Explore and Improve ssDNA Virus Annotation**](https://doi.org/10.1101/2025.07.14.664782)
+>
+> Pavan, R.R., Sullivan, M.B. and Tisza, M., 2025. — *Biorxiv* (2025). DOI: 10.1101/2025.07.14.664782.
+
 
 ---
 # CRESSENT Pipeline Example
