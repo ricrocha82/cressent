@@ -155,10 +155,12 @@ CRESSENT workflows are designed to be modular and flexible, allowing researchers
 If you use CRESSENT in your work, please consider citing:
 
 :::{card}
-:link: [link to paper](https://doi.org/10.1101/2025.07.14.664782)
+:link: https://doi.org/10.1101/2025.07.14.664782
 
 **CRESSENT: a Bioinformatic Toolkit to Explore and Improve ssDNA Virus Annotation**
-Pavan, R.R., Sullivan, M.B. and Tisza, M., 2025. CRESSENT: a Bioinformatic Toolkit to Explore and Improve ssDNA Virus Annotation. — *[Biorxiv]* ([2025]), DOI: [https://doi.org/10.1101/2025.07.14.664782].
+Pavan, R.R., Sullivan, M.B. and Tisza, M., 2025 — *Biorxiv*, 2025.
+
+DOI: 10.1101/2025.07.14.664782.
 
 :::
 
