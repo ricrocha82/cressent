@@ -82,15 +82,18 @@ cressent db_builder \
     -e your.email@example.com
 ```
 
-The final database contains:
+The final database would contain:
 ```
-custom_database/
+custom_database/YourVirusGenus/
 ├── annotated/
-│   ├── caps/           # Capsid proteins by cluster
-│   └── reps/           # Replication proteins by cluster
-├── unannotated/        # Unclassified ORFs
-├── aligned_db/         # Aligned sequences
-└── family_directories/ # Family-specific databases
+│   ├── caps/           # Capsid proteins by cluster (if there sequences were found)
+│   └── reps/           # Replication proteins by cluster (if there sequences were found)
+├── unannotated/        # Unclassified ORFs (if there sequences were found)
+├── cd_hit/             # CD-HIT output
+├── db_builder.log      # log file 
+├── diamond/            # diamond output
+├── mcl/                # MCL output
+├── raw_aa              # Family-specific raw protein sequences
 ```
 
 Ensure your taxonomy file contains proper ICTV classifications and accession numbers.
