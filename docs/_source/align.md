@@ -82,6 +82,17 @@ cressent db_builder \
     -e your.email@example.com
 ```
 
+The final database contains:
+```
+custom_database/
+├── annotated/
+│   ├── caps/           # Capsid proteins by cluster
+│   └── reps/           # Replication proteins by cluster
+├── unannotated/        # Unclassified ORFs
+├── aligned_db/         # Aligned sequences
+└── family_directories/ # Family-specific databases
+```
+
 Ensure your taxonomy file contains proper ICTV classifications and accession numbers.
 
 ## Parameters

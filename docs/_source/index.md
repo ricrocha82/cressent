@@ -165,9 +165,6 @@ DOI: 10.1101/2025.07.14.664782.
 
 :::
 
-
-
-
 ## {octicon}`people;0.85em` Related Tools
 
 CRESSENT integrates with and builds upon several established bioinformatics tools:
