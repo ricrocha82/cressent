@@ -7,9 +7,6 @@
 [![Bioconda License](https://anaconda.org/bioconda/cressent/badges/license.svg)](https://anaconda.org/bioconda/cressent)
 [![Bioconda Downloads](https://anaconda.org/bioconda/cressent/badges/downloads.svg)](https://anaconda.org/bioconda/cressent)
 
-
-a modular tool to help researchers automatically annotate ssDNA contigs
-
 <div align="center">
 <img width = "50%" img src="https://github.com/ricrocha82/cressent/blob/main/figs/fig_cressent_new.jpg">
 </div>
