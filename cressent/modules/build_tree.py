@@ -93,7 +93,7 @@ def generate_phylogenetic_tree(input_fasta, bootstrap, threads, output_prefix, e
         extra_args_str = ""
 
     
-    cmd = f"iqtree2 -s {input_fasta} -m {model} -B {bootstrap} -T {threads} --prefix {output_prefix} {extra_args_str}"
+    cmd = f"iqtree -s {input_fasta} -m {model} -B {bootstrap} -T {threads} --prefix {output_prefix} {extra_args_str}"
 
     logging.info(f"Running phylogenetic tree generation with command: {cmd}")
     run_command(cmd, "Error building Phylogenetic tree")
