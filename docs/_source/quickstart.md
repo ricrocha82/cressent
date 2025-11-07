@@ -1,6 +1,8 @@
 # Quickstart
 
-If you are running CRESSENT for the first time, follow the steps below to learn how to perform a complete ssDNA virus analysis. This guide uses Naryaviridae family sequences as an example from [Dai et al](https://www.researchsquare.com/article/rs-6208723/v1), following the workflow demonstrated in our test dataset.
+If you are running CRESSENT for the first time, follow the steps below to learn how to perform a complete ssDNA virus analysis. In this tutorial, we use sequences from the Naryaviridae family as an example, based on the dataset from [Dai et al](https://www.researchsquare.com/article/rs-6208723/v1), and demonstrate the workflow using our test dataset.
+
+You can download the data from the corresponding [folder](https://github.com/ricrocha82/cressent/tree/main/test) in the GitHub repository. 
 
 ## Setting up the environment
 
@@ -15,11 +17,11 @@ conda activate cressent
 For this tutorial, organize your data directory as follows:
 
 ```
-data/
-├── nary_genomes.fasta       # Nucleotide genome sequences
-├── nary_caps.faa            # Capsid protein sequences  
-├── nary_reps.faa            # Replication protein sequences
-└── nary_proteins.faa        # All protein sequences
+/test/naryaviridae
+├── Dai_naryaviridae_genome.fasta        # Nucleotide genome sequences
+├── Dai_naryaviridae_caps.faa            # Capsid protein sequences  
+├── Dai_naryaviridae_reps.faa            # Replication protein sequences
+└── Dai_naryaviridae_prot.faa            # All protein sequences
 ```
 
 Since this example uses only 3 sequences, we will skip preprocessing steps like clustering and contamination detection that are typically used for larger datasets.
@@ -33,7 +35,7 @@ First, align the nucleotide sequences for recombination analysis:
 ```bash
 cressent align \
     --threads 24 \
-    --input_fasta data/nary_genomes.fasta \
+    --input_fasta data/Dai_naryaviridae_genome.fasta \
     -o output/genome_align
 ```
 
@@ -43,7 +45,7 @@ Detect recombination events using all available methods:
 
 ```bash
 cressent recombination \
-    -i output/genome_align/nary_genomes_aligned_trimmed_sequences.fasta \
+    -i output/genome_align/Dai_naryaviridae_genome_aligned_trimmed_sequences.fasta \
     -o output/recombination \
     -f recomb_results.csv \
     --all
@@ -85,7 +87,7 @@ For larger datasets, you would typically cluster sequences first:
 ```bash
 # Skip clustering for small datasets, but clean sequence names
 cressent cluster \
-    -i data/nary_caps.faa \
+    -i data/Dai_naryaviridae_caps.faa \
     -o output/caps/cluster
 ```
 
@@ -96,12 +98,18 @@ Align capsid sequences with the Naryaviridae database for phylogenetic context:
 ```bash
 cressent align \
     --threads 24 \
-    --input_fasta data/nary_caps.faa \
-    --db_family "Naryaviridae" \
+    --input_fasta data/Dai_naryaviridae_caps.faa \
+    --db_family "Naryaviridae" \ # avoid using more than 1 family 
     --protein_type caps \
     --db_path /path/to/databases \
     -o output/caps/align_family
 ```
+
+<p align="center">⚠️⚠️  <b>CAUTION !!!</b>  ⚠️⚠️</p>
+
+Since CRESSENT was developed and tailored specifically for family-level ssDNA virus analysis, expanding the database to include multiple additional families may substantially increase processing time and computational cost. Therefore, use the full database with caution. 
+
+***We recommend performing analyses at the family level whenever possible.***
 
 ### Phylogenetic Tree Construction
 
@@ -113,6 +121,8 @@ cressent build_tree \
     -o output/caps/tree \
     -m Q.pfam+F+G4
 ```
+
+Evolutionary models have already been [precomputed](https://github.com/ricrocha82/cressent/blob/main/DB/tree_models.csv) by ModelFinder from IQ-TREE2, which can reduce both processing time and computational cost in this module.
 
 ### Tree Visualization
 
@@ -148,7 +158,7 @@ Discover conserved motifs in capsid proteins:
 
 ```bash
 cressent motif_discovery \
-    -i data/nary_caps.faa \
+    -i data/Dai_naryaviridae_caps.faa \
     -o output/caps/motif_discovery \
     -nmotifs 5 -minw 6 -maxw 10 \
     --meme_extra "-mod zoops -evt 0.05" \
@@ -330,13 +340,13 @@ mkdir -p output/{genome_align,recombination,caps,reps}
 
 # 1. Genome-level analysis
 echo "Step 1: Analyzing genome sequences..."
-cressent align --threads 24 --input_fasta data/nary_genomes.fasta -o output/genome_align
+cressent align --threads 24 --input_fasta data/Dai_naryaviridae_genome.fasta -o output/genome_align
 cressent recombination -i output/genome_align/nary_genomes_aligned_trimmed_sequences.fasta \
     -o output/recombination -f recomb_results.csv --all
 
 # 2. Capsid protein analysis
 echo "Step 2: Analyzing capsid proteins..."
-cressent align --threads 24 --input_fasta data/nary_caps.faa \
+cressent align --threads 24 --input_fasta data/Dai_naryaviridae_caps.faa \
     --db_family "Naryaviridae" --protein_type caps --db_path databases/ \
     -o output/caps/align_family
 

@@ -96,11 +96,18 @@ cressent build_tree \
     --bootstrap 100
 ```
 
+:bulb: Evolutionary models have already been [precomputed](https://github.com/ricrocha82/cressent/blob/main/DB/tree_models.csv) by ModelFinder from IQ-TREE2, which can reduce both processing time and computational cost in this module. :bulb:
+
 ## Advanced Phylogenetic Analyses
 
 ### Family-Level Comparative Analysis
 
-For comprehensive family-level studies:
+<p align="center">⚠️⚠️  <b>CAUTION !!!</b>  ⚠️⚠️</p>
+
+Since CRESSENT was developed and tailored specifically for family-level ssDNA virus analysis, expanding the database to include multiple additional families may substantially increase processing time and computational cost. Therefore, use the full database with caution. 
+
+***We recommend performing analyses at the family level whenever possible.***
+
 
 ```bash
 # 1. Align with complete family database
