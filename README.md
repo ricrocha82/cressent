@@ -174,7 +174,7 @@ results/
 └── clean_sequences_decontamination.log  # Detailed log file
 ```
 
-#### 1.3 Adjust seuqence by conserved sequence pattern
+#### 1.3 Adjust sequence by conserved sequence pattern
 
 Before the alignment, if you want to adjust the sequence to begin with determined conserved nonanucleotide sequence run:
 

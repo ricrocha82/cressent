@@ -78,6 +78,8 @@ cressent align \
     -o analysis/alignment_with_db
 ```
 
+Database can be downloaded from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15981951.svg)](https://doi.org/10.5281/zenodo.15981951)
+
 ### Step 2: Tree Construction
 
 ```bash

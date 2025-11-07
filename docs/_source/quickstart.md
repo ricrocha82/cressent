@@ -93,7 +93,7 @@ cressent cluster \
 
 ### Database-Integrated Alignment
 
-Align capsid sequences with the Naryaviridae database for phylogenetic context:
+Align capsid sequences with the Naryaviridae database [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15981951.svg)](https://doi.org/10.5281/zenodo.15981951) for phylogenetic context:
 
 ```bash
 cressent align \
