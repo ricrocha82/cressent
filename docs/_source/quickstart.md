@@ -157,7 +157,7 @@ cressent plot_tree \
 Discover conserved motifs in capsid proteins:
 
 ```bash
-cressent motif_discovery \
+cressent motif_disc \
     -i data/Dai_naryaviridae_caps.faa \
     -o output/caps/motif_discovery \
     -nmotifs 5 -minw 6 -maxw 10 \
