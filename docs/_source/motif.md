@@ -65,7 +65,7 @@ cressent motif -i cress_genomes.fasta \
 Discover unknown motifs using the MEME suite:
 
 ```bash
-cressent motif_discovery -i sequences.fasta \
+cressent motif_disc -i sequences.fasta \
                         -o meme_output/ \
                         -nmotifs 3 \
                         -minw 6 \
@@ -113,7 +113,7 @@ motif_discovery_output/
 For protein sequences, automatically annotate motifs with known functions:
 
 ```bash
-cressent motif_discovery -i proteins.fasta \
+cressent motif_disc -i proteins.fasta \
                         -o output/ \
                         --scanprosite
 ```
@@ -144,14 +144,14 @@ cressent motif -i sequences.fasta \
                -o analysis/
 
 # Step 2: Discover novel motifs
-cressent motif_discovery -i sequences.fasta \
+cressent motif_disc -i sequences.fasta \
                         -o analysis/meme/ \
                         -nmotifs 5 \
                         -minw 8 \
                         -maxw 15
 
 # Step 3: Functional annotation (for proteins)
-cressent motif_discovery -i proteins.fasta \
+cressent motif_disc -i proteins.fasta \
                         -o analysis/prosite/ \
                         --scanprosite
 ```
@@ -187,7 +187,7 @@ cressent motif_map_viz -f motif_table.csv \
 ### Custom MEME Parameters
 
 ```bash
-cressent motif_discovery -i sequences.fasta \
+cressent motif_disc -i sequences.fasta \
                         -o output/ \
                         --meme_extra -mod "zoops" -revcomp -dna
 ```
