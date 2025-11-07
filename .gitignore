@@ -12,8 +12,7 @@
 # Distribution / packaging
 .Python
 build/
-recipe/*
-recipe/meta.yaml
+recipe/
 develop-eggs/
 dist/
 downloads/
