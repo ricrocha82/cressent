@@ -267,6 +267,39 @@ def move_eps_files(output_dir: str):
     
     logging.info(f"Moved eps files to {eps_dir}")
 
+def parse_scanprosite_xml(xml_content):
+    """
+    Manually parse ScanProsite XML response when Bio.ExPASy.ScanProsite.read() fails.
+    
+    Parameters:
+        xml_content: XML string or bytes from ScanProsite response
+        
+    Returns:
+        List of dictionaries containing match information
+    """
+    if isinstance(xml_content, bytes):
+        xml_content = xml_content.decode('utf-8')
+    
+    try:
+        root = ET.fromstring(xml_content)
+        matches = []
+        
+        # Find all match elements
+        for match in root.findall('.//{urn:expasy:scanprosite}match'):
+            match_dict = {}
+            
+            # Extract each field from the match
+            for child in match:
+                tag = child.tag.split('}')[-1]  # Remove namespace
+                match_dict[tag] = child.text
+            
+            matches.append(match_dict)
+        
+        return matches
+    except Exception as e:
+        logging.error(f"Error parsing XML manually: {e}")
+        return []
+
 def run_scanprosite(fasta_file, seq_type):
     """
     Scans each protein sequence in the input FASTA file using Biopython's ScanProsite.
@@ -290,27 +323,55 @@ def run_scanprosite(fasta_file, seq_type):
         logging.info("Scanning protein sequences online against the Prosite database")
 
         for record in SeqIO.parse(fasta_file, "fasta"):
-            # Prepare the FASTA string for the protein sequence.
-            fasta_str = record.format("fasta")
+            # Use the sequence string directly (not FASTA format)
+            seq_str = str(record.seq)
+            
             try:
                 # Call ScanProsite via Biopython; this sends a request to the ExPASy server.
-                handle = ScanProsite.scan(seq=fasta_str, output = 'xml', skip=0)
-                scan_results = ScanProsite.read(handle)
+                handle = ScanProsite.scan(seq=seq_str, mirror='https://prosite.expasy.org')
+                
+                # Try to read with Biopython's parser first
+                scan_results = None
+                try:
+                    scan_results = ScanProsite.read(handle)
+                except (ValueError, AttributeError) as parse_error:
+                    # If Biopython parser fails, try manual XML parsing
+                    logging.debug(f"Biopython parser failed for {record.id}, trying manual parsing: {parse_error}")
+                    
+                    # Re-fetch to get fresh handle
+                    handle = ScanProsite.scan(seq=seq_str, mirror='https://prosite.expasy.org')
+                    xml_content = handle.read()
+                    scan_results = parse_scanprosite_xml(xml_content)
+                
+                # Check if results were returned
+                if not scan_results or len(scan_results) == 0:
+                    logging.info(f"No motifs found for sequence {record.id}")
+                    continue
+                
                 # Build a DataFrame from the scan results.
+                # scan_results is a list of dictionaries
                 df = pd.DataFrame(scan_results)
+                
                 # Add columns to track which sequence produced the results.
                 df["record_id"] = record.id
                 df["seqID"] = record.description
                 all_dfs.append(df)
+                
+                logging.info(f"Successfully scanned sequence {record.id}: {len(scan_results)} motifs found")
+                
             except Exception as e:
                 logging.error(f"Error scanning sequence {record.id}: {e}")
+                logging.error(f"Error type: {type(e).__name__}")
+            
             # Pause briefly to avoid overwhelming the ExPASy server.
-            time.sleep(1)
+            time.sleep(2)
 
         # Combine all individual DataFrames into one.
         if all_dfs:
             combined_df = pd.concat(all_dfs, ignore_index=True)
+            logging.info(f"Total sequences scanned: {len(all_dfs)}, Total motifs: {len(combined_df)}")
         else:
+            logging.warning("No ScanProsite results found for any sequence")
             combined_df = pd.DataFrame()
 
         return combined_df
