@@ -117,12 +117,12 @@ Build a phylogenetic tree using an appropriate evolutionary model:
 
 ```bash
 cressent build_tree \
-    -i output/caps/align_family/nary_caps_aligned_trimmed_sequences.fasta \
+    -i output/caps/align_family/Dai_naryaviridae_caps_aligned_trimmed_sequences.fasta \
     -o output/caps/tree \
     -m Q.pfam+F+G4
 ```
 
-Evolutionary models have already been [precomputed](https://github.com/ricrocha82/cressent/blob/main/DB/tree_models.csv) by ModelFinder from IQ-TREE2, which can reduce both processing time and computational cost in this module.
+💡💡 Evolutionary models have already been [precomputed](https://github.com/ricrocha82/cressent/blob/main/DB/tree_models.csv) by ModelFinder from IQ-TREE2, which can reduce both processing time and computational cost in this module. 💡💡
 
 ### Tree Visualization
 
@@ -131,10 +131,10 @@ Create publication-ready tree visualizations:
 ```bash
 # Basic circular tree
 cressent plot_tree \
-    --tree output/caps/tree/nary_caps_aligned_trimmed_sequences.treefile \
+    --tree output/caps/tree/Dai_naryaviridae_caps_aligned_trimmed_sequences.treefile \
     -o output/caps/tree \
     --metadata_1 output/caps/align_family/metadata.csv \
-    --metadata_2 output/caps/tree/nary_caps_aligned_trimmed_sequences_sanitized_name_table.tsv \
+    --metadata_2 output/caps/tree/Dai_naryaviridae_caps_aligned_trimmed_sequences_sanitized_name_table.tsv \
     --layout circular \
     --offset 0.15 \
     --fig_width 20 --fig_height 15 \
@@ -142,11 +142,11 @@ cressent plot_tree \
 
 # Tree with alignment visualization
 cressent plot_tree \
-    --tree output/caps/tree/nary_caps_aligned_trimmed_sequences.treefile \
+    --tree output/caps/tree/Dai_naryaviridae_caps_aligned_trimmed_sequences.treefile \
     -o output/caps/tree \
     --metadata_1 output/caps/align_family/metadata.csv \
     --metadata_2 output/caps/tree/nary_caps_aligned_trimmed_sequences_sanitized_name_table.tsv \
-    --alignment output/caps/align_family/nary_caps_aligned_trimmed_sequences.fasta \
+    --alignment output/caps/align_family/Dai_naryaviridae_caps_aligned_trimmed_sequences.fasta \
     --layout rectangular \
     --plot_tips False \
     --plot_name nary_caps_tree_with_alignment.pdf
@@ -181,7 +181,7 @@ cressent motif_map_viz \
 # Align replication proteins with database
 cressent align \
     --threads 24 \
-    --input_fasta data/nary_reps.faa \
+    --input_fasta data/Dai_naryaviridae_reps.faa \
     --db_family "Naryaviridae" \
     --protein_type reps \
     --db_path /path/to/databases \
@@ -189,7 +189,7 @@ cressent align \
 
 # Build phylogenetic tree
 cressent build_tree \
-    -i output/reps/align_family/nary_reps_aligned_trimmed_sequences.fasta \
+    -i output/reps/align_family/Dai_naryaviridae_reps_aligned_trimmed_sequences.fasta \
     -o output/reps/tree \
     -m Q.yeast+G4
 ```
@@ -200,7 +200,7 @@ Search for the Walker A motif and split sequences at this position:
 
 ```bash
 cressent motif \
-    -i output/reps/align_family/nary_reps_aligned_trimmed_sequences.fasta \
+    -i output/reps/align_family/Dai_naryaviridae_reps_aligned_trimmed_sequences.fasta \
     -o output/reps/motif \
     -p ".{5}GK[TS].{4}" \
     --remove-gaps \
@@ -350,19 +350,19 @@ cressent align --threads 24 --input_fasta data/Dai_naryaviridae_caps.faa \
     --db_family "Naryaviridae" --protein_type caps --db_path databases/ \
     -o output/caps/align_family
 
-cressent build_tree -i output/caps/align_family/nary_caps_aligned_trimmed_sequences.fasta \
+cressent build_tree -i output/caps/align_family/Dai_naryaviridae_caps_aligned_trimmed_sequences.fasta \
     -o output/caps/tree -m Q.pfam+F+G4
 
-cressent plot_tree --tree output/caps/tree/nary_caps_aligned_trimmed_sequences.treefile \
+cressent plot_tree --tree output/caps/tree/Dai_naryaviridae_caps_aligned_trimmed_sequences.treefile \
     -o output/caps/tree --layout circular --plot_name caps_tree.pdf
 
 # 3. Replication protein analysis
 echo "Step 3: Analyzing replication proteins..."
-cressent align --threads 24 --input_fasta data/nary_reps.faa \
+cressent align --threads 24 --input_fasta data/Dai_naryaviridae_reps.faa \
     --db_family "Naryaviridae" --protein_type reps --db_path databases/ \
     -o output/reps/align_family
 
-cressent motif -i output/reps/align_family/nary_reps_aligned_trimmed_sequences.fasta \
+cressent motif -i output/reps/align_family/Dai_naryaviridae_reps_aligned_trimmed_sequences.fasta \
     -o output/reps/motif -p ".{5}GK[TS].{4}" --split-sequences --generate-logo
 
 # 4. Domain comparison

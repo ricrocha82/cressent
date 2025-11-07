@@ -98,7 +98,7 @@ cressent build_tree \
     --bootstrap 100
 ```
 
-:bulb: Evolutionary models have already been [precomputed](https://github.com/ricrocha82/cressent/blob/main/DB/tree_models.csv) by ModelFinder from IQ-TREE2, which can reduce both processing time and computational cost in this module. :bulb:
+💡💡 Evolutionary models have already been [precomputed](https://github.com/ricrocha82/cressent/blob/main/DB/tree_models.csv) by ModelFinder from IQ-TREE2, which can reduce both processing time and computational cost in this module. 💡💡
 
 ## Advanced Phylogenetic Analyses
 
