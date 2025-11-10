@@ -66,7 +66,7 @@ The database consists of the following:
 - REPS (Replication-associated protein sequences grouped by family)
 - Contamination DB
 - `tree_models.csv` (table with the models computed by ModelFinder from IQ-TREE2 for each Rep and Cap DB grouped by family)
-- `taxonomy_accession_number.csv` (Virus Metadata Resource (VMR) downloaded from [ICTV](https://ictv.global/vmr)) - Version MSL39.v4
+- `taxonomy_accession_number_VERSION.csv` (Virus Metadata Resource (VMR) downloaded from [ICTV](https://ictv.global/vmr))
 
 Each folder is available for download on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15981951.svg)](https://doi.org/10.5281/zenodo.15981951)
 
