@@ -61,11 +61,12 @@ This pipeline demonstrates how to process metagenomic sequences and build phylog
 
 # Database
 
-The [database](DB) consists of the following:
+The database consists of the following:
 - CAPS (Capsid protein sequences grouped by family)
 - REPS (Replication-associated protein sequences grouped by family)
 - Contamination DB
-- tree_models.csv (table with the models computed by ModelFinder from IQ-TREE2 for each Rep and Cap DB grouped by family)
+- `tree_models.csv` (table with the models computed by ModelFinder from IQ-TREE2 for each Rep and Cap DB grouped by family)
+- `taxonomy_accession_number.csv` (Virus Metadata Resource (VMR) downloaded from [ICTV](https://ictv.global/vmr)) - Version MSL39.v4
 
 Each folder is available for download on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15981951.svg)](https://doi.org/10.5281/zenodo.15981951)
 
@@ -137,7 +138,7 @@ DB/
 ├── contaminant_db_protein_metadata.tsv # protein metadata
 └── contaminant_build.log               # log file
 ```
-Running `detect_contamination` using the [contaminant_db](DB/contaminant/contaminant_db.fasta) you can search for potential contaminating viral sequences.
+Running `detect_contamination` using the `contaminant_db` you can search for potential contaminating viral sequences.
 
 `--seq-type` is optional. the sequnces type will be detected automatically
 

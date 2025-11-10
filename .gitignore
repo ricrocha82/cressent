@@ -8,9 +8,11 @@
 **/reps_model
 DB/caps
 DB/reps
-DB/contaminant
 DB/scripts
+DB/contaminant
+DB/walkerA_motif_regex.csv
 **/gene_map*
+
 
 # Distribution / packaging
 .Python
