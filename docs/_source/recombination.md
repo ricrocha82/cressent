@@ -46,6 +46,80 @@ Events detected by multiple methods (≥3) are considered highly reliable:
 4. **Result Integration**: Combines outputs from multiple methods
 5. **Significance Filtering**: Applies statistical thresholds for reliable detection
 
+## Parameters
+
+`.ini` [configuration file](https://github.com/ricrocha82/cressent/blob/main/cressent/modules/openrdp/scripts/default_config.ini) defines the default OpenRDP parameters used by CRESSENT’s recombination detection module.
+
+#### General Settings
+
+- `circular_genome = False` — ssDNA viruses often have circular genomes, but alignments are linearized before recombination scanning to avoid false breakpoints at the artificial sequence junctions. This flag disables circular wraparound scanning by default.
+
+- `comparison_correction = bonferroni` — applies Bonferroni multiple-testing correction to maintain conservative significance thresholds across many pairwise tests, minimizing false positives in small viral datasets.
+
+#### Permutation Options
+
+- `num_permutations = 0` — disables permutation-based empirical p-value estimation, favoring analytical p-values for faster runtime on large datasets. Users can increase this number for stricter validation when small sample sizes permit.
+
+#### Data Processing
+
+- `min_num_detecting_events = 1` — requires that at least one independent method support a recombination event for it to be reported. Raising this threshold (e.g., 2 or 3) increases confidence but reduces sensitivity.
+
+#### RDP Method
+
+- `max_pvalue = 0.05` — classical significance threshold.
+
+- `window_size = 30` — scans triplets of sequences over 30-nt windows, appropriate for short ssDNA genomes (≈1–3 kb).
+
+- `min_identity / max_identity = 0–100` — allows detection across full diversity range rather than limiting to closely related sequences.
+
+- `reference_sequence = None` — indicates that all sequences are treated symmetrically (no fixed “reference” genome).
+
+#### GENECONV Method
+
+- Detects unusually long identical fragments between sequences.
+
+- `indels_as_polymorphisms = True` — treats small indels as informative events rather than missing data.
+
+- `mismatch_penalty = 1`, `min_len = 1`, `min_poly = 2`, `min_score = 2` — set liberal thresholds to detect short conversion tracts common in compact viral genomes.
+
+- `max_num = 1` — limits redundant event reporting for the same region.
+
+#### Bootscan Method
+
+- Performs sliding-window phylogenetic reconstruction.
+
+- `win_size = 200`, `step_size = 20` — windows of 200 bp shifted every 20 bp balance signal strength and resolution for 1–3 kb genomes.
+
+- `num_replicates = 100` — bootstrap replicates per window.
+
+- `cutoff_percentage = 0.7` — requires ≥70 % bootstrap support to accept a topology switch.
+
+- `model = Jukes–Cantor` — simplest substitution model suitable for short alignments with limited divergence.
+
+- `p_value_calculation = binomial` — uses binomial significance testing for breakpoint validation.
+
+#### MaxChi and Chimaera Methods
+
+- Both use chi-square tests on substitution patterns.
+
+- `win_size = 100–200` and `num_var_sites = 60–70` — define the number of polymorphic sites per window.
+
+- `strip_gaps = False` — retains indel positions since compact viral genomes often contain informative indels.
+
+- `max_pvalue = 0.05` — standard significance cutoff.
+
+#### SiScan Method
+
+- Uses similarity profiles between sequences to detect topological shifts.
+
+- `win_size = 200`, `step_size = 20` — same window scheme as Bootscan for consistent resolution.
+
+- `pvalue_perm_num = 1100`, `scan_perm_num = 100` — defines permutation counts for empirical p-value estimation and scanning.
+
+- `strip_gaps = True` — removes gap-rich regions to avoid spurious similarity spikes.
+
+- `fourth_seq_sel = outlier` — uses the most divergent sequence as the outgroup for normalization, which improves detection sensitivity across heterogeneous viral families.
+
 ## Usage
 
 ### Run All Methods
