@@ -1,6 +1,6 @@
 # Quickstart
 
-If you are running CRESSENT for the first time, follow the steps below to learn how to perform a complete ssDNA virus analysis. In this tutorial, we use sequences from the Naryaviridae family as an example, based on the dataset from [Dai et al](https://www.researchsquare.com/article/rs-6208723/v1), and demonstrate the workflow using our test dataset.
+If you are running CRESSENT for the first time, follow the steps below to learn how to perform a complete ssDNA virus analysis. In this tutorial, we use sequences from the Naryaviridae family as an example, based on the dataset from [Zhang et al](https://www.researchsquare.com/article/rs-6208723/v1), and demonstrate the workflow using our test dataset.
 
 You can download the data from the corresponding [folder](https://github.com/ricrocha82/cressent/tree/main/test) in the GitHub repository. 
 
