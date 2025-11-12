@@ -128,7 +128,7 @@ Detect recombination using all available methods:
 
 ```bash
 cressent recombination \
-    -i aligned_sequences.fasta \
+    -i sequences.fasta \
     -o output/recombination \
     -f recombination_results.csv \
     --all
@@ -140,7 +140,7 @@ Run selected methods for targeted analysis:
 
 ```bash
 cressent recombination \
-    -i aligned_sequences.fasta \
+    -i sequences.fasta \
     -o output/recombination \
     -f recombination_results.csv \
     -rdp -bootscan -maxchi
@@ -152,7 +152,7 @@ Use custom parameters via configuration file:
 
 ```bash
 cressent recombination \
-    -i aligned_sequences.fasta \
+    -i sequences.fasta \
     -o output/recombination \
     -f recombination_results.csv \
     -c custom_config.ini \
@@ -262,22 +262,22 @@ plt.show()
 Recombination detection should be performed before phylogenetic analysis:
 
 ```bash
-# 1. Align sequences
-cressent align \
-    --input_fasta sequences.fasta \
-    -o alignment/
-
-# 2. Detect recombination
+# 1. Detect recombination
 cressent recombination \
-    -i alignment/sequences_aligned_trimmed_sequences.fasta \
+    -i sequences.fasta \
     -o recombination/ \
     -f recomb_results.csv \
     --all
 
+# 2. Align sequences
+cressent align \
+    --input_fasta recombination/cleaned_sequences.fasta \
+    -o alignment/
+
 # 3. Analyze results and potentially remove recombinant sequences
 # 4. Build phylogenetic trees with cleaned dataset
 cressent build_tree \
-    -i cleaned_alignment.fasta \
+    -i alignment/cleaned_alignment.fasta \
     -o phylogeny/
 ```
 

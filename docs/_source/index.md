@@ -65,9 +65,9 @@ Quality control, dereplication, decontamination, and sequence adjustment tools.
 :::
 
 :::{card} Alignment
-:link: phylogenetic_analysis
+:link: align
 :link-type: doc
-A module to aligmen your sequences with a custom database.
+A module to align your sequences with a custom database.
 :::
 
 :::{card} Phylogenetic Analysis
@@ -177,7 +177,7 @@ CRESSENT integrates with and builds upon several established bioinformatics tool
 
 ## {octicon}`question;0.85em` Ask a question or report a bug
 
-If you want to ask a question about CRESSENT or report a problem, please create an issue in the [{octicon}`mark-github;0.95em` GitHub repository](https://github.com/your-repo/cressent).
+If you want to ask a question about CRESSENT or report a problem, please create an issue in the [{octicon}`mark-github;0.95em` GitHub repository](https://github.com/ricrocha82/cressent).
 
 ```{toctree}
 :hidden:
@@ -198,9 +198,9 @@ faq
 :caption: Analysis Modules
 :hidden:
 
-align.md
-phylogenetic_analysis
 preprocessing
+align
+phylogenetic_analysis
 motif
 secondary_structure
 recombination

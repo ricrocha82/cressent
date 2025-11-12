@@ -28,24 +28,13 @@ Since this example uses only 3 sequences, we will skip preprocessing steps like 
 
 ## Step 1: Genome Analysis
 
-### Nucleotide Sequence Alignment
-
-First, align the nucleotide sequences for recombination analysis:
-
-```bash
-cressent align \
-    --threads 24 \
-    --input_fasta data/Dai_naryaviridae_genome.fasta \
-    -o output/genome_align
-```
-
 ### Recombination Detection
 
 Detect recombination events using all available methods:
 
 ```bash
 cressent recombination \
-    -i output/genome_align/Dai_naryaviridae_genome_aligned_trimmed_sequences.fasta \
+    -i data/Dai_naryaviridae_genome.fasta \
     -o output/recombination \
     -f recomb_results.csv \
     --all
@@ -77,6 +66,19 @@ Expected output showing recombination events detected across all genomes:
 | Genome_1    | 0    | 2        | 1        | 1      | 2   | 6     |
 | Genome_2    | 0    | 3        | 1        | 4      | 9   | 17    |
 | Genome_3    | 1    | 1        | 0        | 0      | 1   | 3     |
+
+
+### Nucleotide Sequence Alignment
+
+First, align the nucleotide sequences for recombination analysis:
+
+```bash
+cressent align \
+    --threads 24 \
+    --input_fasta data/Dai_naryaviridae_genome.fasta \
+    -o output/genome_align
+```
+
 
 ## Step 2: Capsid Protein Analysis
 
