@@ -45,9 +45,9 @@ Read the documentation online at https://cressent.readthedocs.io/en/latest/
 
 If you are using CRESSENT in your research or work, please consider citing its manucript:
 
-> [**CRESSENT: a Bioinformatic Toolkit to Explore and Improve ssDNA Virus Annotation**](https://doi.org/10.1101/2025.07.14.664782)
+> [**CRESSENT: a Bioinformatic Toolkit to Explore and Improve ssDNA Virus Annotation**](https://doi.org/10.1099/mgen.0.001632)
 >
-> Pavan, R.R., Sullivan, M.B. and Tisza, M., 2025. — *Biorxiv* (2025). DOI: 10.1101/2025.07.14.664782.
+> Pavan et al., Microbial Genomics 2026;12:001632 DOI 10.1099/mgen.0.001632
 
 
 ---
